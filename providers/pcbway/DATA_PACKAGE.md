@@ -38,6 +38,7 @@ Wir benötigen einen **HDI-DFM- + Stackup-Partner** für das Mainboard. Kein Pro
 - **PCBWay-Credit** im öffentlichen README (Sponsoren-Sektion).
 - **Build-/Review-Beitrag** (Blog + Social) mit PCBWay-Logo nach Erhalt der Prototypen.
 - Projekt als **Open-Source-Projekt auf pcbway.com** (Community-Re-Order, 10 %-Programm).
+- Youtube Video und Erwähnung auf weiteren Platformen.
 
 ## Wichtiger Hinweis (Ehrlichkeit = Vertrauen)
 Die aktuellen KiCad-Dateien sind **Floorplans (NOT FOR FABRICATION)**. Wir suchen zuerst **DFM/Stackup-Beratung**, nicht sofort einen Fertigungslauf. Produktions-Gerber folgen erst nach Schließen der HOLD-Gates (LPDDR5-Topologie, UFS, FPGA, Stackup).
