@@ -24,6 +24,7 @@ Revision **EVT6** · Status **Architektur synchronisiert / Engineering-Phase** �
 - [Status-Modell (die eiserne Regel)](#status-modell)
 - [Repository-Struktur](#repository-struktur)
 - [Roadmap & Release-Gates](#roadmap--release-gates)
+- [Präsentation](#präsentation)
 - [Mitmachen / Sponsoring](#sponsoring)
 - [Sicherheit, Recht & verantwortungsvolle Nutzung](#sicherheit--recht)
 - [Lizenz](#lizenz)
@@ -163,6 +164,12 @@ Der Weg von der synchronisierten Architektur (EVT6) zum echten EVT-Prototyp — 
 | **G04** | HyperRF-FPGA-MPN-Freeze (quantitative Auswahl) | offen (HOLD) |
 | **G06** | PCBWay 12-Layer-HDI-Stackup/DFM | **Sponsor-Kontakt aktiv** |
 | **G07–G11** | Schaltplan-ERC · Layout-DRC/SI/PI · RF-EVT · Thermal · Akku-Compliance | offen |
+
+---
+
+## Präsentation
+
+Die interaktive Konzept-Präsentation (theme-aware, mit Architektur-, RF-Abdeckungs- und Front-Layout-Diagrammen) liegt als eigenständige HTML-Seite unter [`presentation/index.html`](presentation/index.html) — im Browser öffnen. Sie fasst These, Vergleich, Architektur, Spektrum, Release-Gates und Sponsoren auf einer Seite zusammen.
 
 ---
 
