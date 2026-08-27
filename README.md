@@ -175,10 +175,9 @@ Die interaktive Konzept-Präsentation (theme-aware, mit Architektur-, RF-Abdecku
 
 ## Sponsoring
 
-Dieses Projekt ist **Open Source** und sucht Fertigungs-/Engineering-Partner. Zwei Kontakte sind bereits aktiv (vollständige Vorlagen + Datenpakete unter [`providers/`](providers/)):
+Dieses Projekt ist **Open Source** und sucht Fertigungs-/Engineering-Partner. (vollständige Vorlagen + Datenpakete unter [`providers/`](providers/)):
 
-- **[PCBWay](providers/pcbway/)** — bietet kostenloses PCB-Prototyping; ideal für **G06** (12-Layer-HDI-DFM, Stackup, Microvia/Via-in-Pad, Impedanz, BGA-Escape, X-Ray).
-- **[Minewing](providers/minewing/)** — One-Stop-JDM/ODM (CN+VN, seit 2003); ideal für Schaltplan-Review, SI/PI, DFM, Komponenten-Sourcing, Mechanik/Thermal und EVT-Build.
+
 
 Interesse an Mitarbeit (Linux/DRM, RF, FPGA, KiCad, Mechanik)? → Issues & Discussions.
 
