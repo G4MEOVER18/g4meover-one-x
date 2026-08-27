@@ -123,7 +123,6 @@ Jede technische Aussage trägt einen Status. **Fehlende Herstellerdaten werden n
 | **HOLD** | **Nicht** produktionsbestätigt. Blocker muss geschlossen werden. |
 | **DEFERRED** | In EVT6 bewusst nicht beansprucht/freigegeben. |
 
-Verbotene Behauptungen (z. B. „PCIe Gen3 ×4", „DC-60 GHz SDR", „IP54 vor Validierung") stehen in der Master-Spec unter `claims_forbidden` und werden vom Validator geprüft:
 
 ```bash
 python tools/spec_validator.py          # prüft Konsistenz & verbotene Claims, erzeugt derived docs
