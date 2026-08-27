@@ -1,0 +1,46 @@
+﻿Subsystem,Ref,Qty,Manufacturer,MPN / class,Function,Status,Compatibility / blocker,Source
+Compute,U100,1,Rockchip,RK3576,Linux application SoC,FIXED,Production reference package still required,SRC-RK3576-OFFICIAL
+Compute,U101,1,Rockchip,RK806S-5,PMIC,TARGET,Exact rail map must follow RK3576 reference,SRC-RK3576-DATASHEET
+Memory,U102,1,TBD qualified vendor,16GB LPDDR5 topology,System RAM,HOLD,Capacity fixed; exact MPN/topology requires Rockchip confirmation,SRC-RK3576-DATASHEET
+Storage,U103,1,TBD qualified vendor,256GB UFS validated for RK3576,Internal storage,HOLD,Capacity fixed; generation/MPN not claimed until host/device validation,SRC-RK3576-DATASHEET
+Recovery,U104,1,Winbond/MXIC class,32MB SPI NOR,Recovery/boot,TARGET,Freeze exact part after boot design,
+Display,LCD1,1,Waveshare / OEM equivalent,5-DSI-TOUCH-B reference class,5in IPS 720x1280 DSI touch,TARGET,EVT module supports RK3576-class host; final panel driver/device tree validation,SRC-DISPLAY-WAVESHARE
+Display,JLCD,1,Hirose/JAE class,MIPI DSI FPC connector,Display FPC,TARGET,Exact connector follows selected production panel,
+Control,U200,1,Raspberry Pi,RP2350B,System-management MCU,FIXED,Use official minimal reference core,
+Control,U201,1,Winbond,W25Q128JV class,16MB QSPI MCU flash,FIXED,standard RP2350 design,
+UI,U210,1,Azoteq,IQS550-class,Circular capacitive touch ring,TARGET,Electrode tuning in final enclosure,
+UI,U211,1,Texas Instruments,DRV2605L,Haptic driver,TARGET,LRA tuning required,
+UI,M211,1,Jinlong/Precision Microdrives class,LRA motor,Haptics,TARGET,Mechanical/noise validation,
+Audio,U220,1,Nuvoton,NAU8822 class,Audio codec,TARGET,Exact suffix freeze,
+Audio,U221,1,MAXIM/ADI class,MAX98357A-class,Speaker amplifier,TARGET,Speaker/load selection required,
+Audio,MIC1,1,Knowles/TDK class,PDM MEMS microphone,Microphone,TARGET,acoustic port/mechanical tuning,
+Audio,SPK1,1,TBD,8ohm compact speaker,Speaker,TARGET,acoustic chamber needed,
+Sensors,U230,1,TDK InvenSense,ICM-42688-P,6-axis IMU,TARGET,placement/vibration review,
+Sensors,U231,1,ST,LIS2MDL,Magnetometer,TARGET,keep away from speakers/haptics/power inductors,
+Sensors,U232,1,Bosch,BMP390,Barometer,TARGET,vent path needed; no IP claim yet,
+Sensors,U233,1,Sensirion,SHT41,Temp/RH,TARGET,isolate from internal heat sources,
+Sensors,U234,1,Vishay,VEML7700,Ambient light,TARGET,light-pipe/window integration,
+Battery,CELL1-4,4,Molicel,INR-21700-P50B target,2S2P 72Wh-class pack,TARGET,pack engineering/certification still required,SRC-BATTERY-P50B
+Battery,U300,1,Texas Instruments,BQ25792 class,2S buck-boost charger,TARGET,reference-layout/config required,
+Battery,U301,1,Texas Instruments,BQ28Z620,2S gauge/protection,TARGET,cell characterization/learn cycle,
+PD,U302,1,Texas Instruments,TPS25751A,USB-C PD controller,TARGET,configuration/EVM checklist,
+Network,U400/U401,2,Realtek,RTL8211F-CG class,2× Gigabit Ethernet PHY,FIXED,reference RGMII/MDI layout,
+Wireless,U410,1,MediaTek/Gaoshengda,MT7921AUN / WXT2AM2101 class,Wi-Fi 6E + Bluetooth,FIXED,antenna clearance,
+Security,U420,1,Microchip,ATECC608C,Secure element,TARGET,production provisioning plan,
+RF Core,U500,1,Texas Instruments,CC1101,Sub-GHz,FIXED,regional matching values tune on EVT,
+RF Core,U501,1,Semtech,SX1262,LoRa/FSK,FIXED,regional matching values tune on EVT,
+RF Core,U502,1,Texas Instruments,CC2652P7,Zigbee/Thread/BLE,FIXED,RF reference layout,
+RF Core,U503,1,Silicon Labs,EFR32ZG23 class,Z-Wave/Z-Wave LR,TARGET,exact module/IC and regional RF freeze,
+RF Core,U504,1,NXP,PN7160,NFC/HF RFID,FIXED,antenna coil matching in enclosure,
+RF Core,U505,1,Texas Instruments / equivalent,LF RFID AFE,125kHz RFID,TARGET,coil/AFE exact part freeze,
+RF Core,U506,1,Impinj,E710 class,RAIN UHF RFID,TARGET,EU regional SAW/PA/antenna path validation,
+RF Core,D500/Q500,1,TBD,IR TX/RX pair,Infrared,TARGET,optical window,
+HyperRF,U600/U601,2,Lime Microsystems,LMS7002M,4RX/4TX coherent-capable SDR,TARGET,full RF front-end/isolation validation,SRC-LMS7002M
+HyperRF,U602/U603,2,Qorvo,RFFC5071A class,high-band conversion,TARGET,spur/filter/isolation lab validation,
+HyperRF,U610,1,TBD FPGA vendor,PCIe2.1 endpoint + DSP FPGA,FPGA DSP,HOLD,"MPN chosen only after I/O, transceiver, power and availability review",
+HyperRF,J620,1,Quectel,RM530N-GL class,5G Sub-6/mmWave,TARGET,module guide + antenna integration,SRC-RM530N
+HyperRF,U621,1,Quectel,BG95-S5 class,Rel-17 IoT NTN,TARGET,service/region/antenna validation,SRC-BG95S5
+HyperRF,U622,1,Semtech,LR1121,LoRa/LR-FHSS satellite capable radio,TARGET,separate matching per band,
+HyperRF,U623,1,u-blox,NEO-F10N-00B-20 class,L1/L5 raw GNSS + PPS,TARGET,antenna placement/blocker tests,SRC-NEOF10N
+HyperRF,U624,1,Qorvo,DW3000-series,UWB,HOLD,exact suffix/reference design not frozen,
+Radar,U630,1,Texas Instruments,IWRL6432W class,57-64GHz FMCW radar,TARGET,TI reference launch/antenna and RF window required,SRC-IWRL6432W

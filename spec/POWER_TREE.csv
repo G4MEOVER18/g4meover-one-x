@@ -1,0 +1,9 @@
+﻿Domain,Source,Nominal,Peak design target,Consumers,Status
+BAT_2S2P,4×21700 2S2P,7.2V nominal / 8.4V full,pack dependent,BQ25792 / system,FIXED topology
+USB-C PD input,TPS25751A-class,5-20V negotiated,up to 5A controller capability,charger/system,TARGET implementation
+VSYS,BQ25792-class power path,adapter/battery dependent,system peak,5V buck / PMIC,TARGET
++5V_SYS,high-current buck,5.0V,10A transient target,"RK806S, USB, fans, HyperRF",TARGET
++3V3_AON,low-Iq buck,3.3V,<1A,"RP2350, RTC, security",FIXED architecture
++3V3_SYS,system buck,3.3V,5A target,logic/radios/M.2,TARGET
+RK3576 rails,RK806S-5,dynamic,reference-dependent,CPU/GPU/NPU/DDR,HOLD exact rail map
+HyperRF AUX,system + optional external PD,5V,5A target,FPGA/SDR/5G/fans,TARGET

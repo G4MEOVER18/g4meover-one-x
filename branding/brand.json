@@ -1,0 +1,22 @@
+{
+  "brand": "G4MEOVER",
+  "product": "ONE-X",
+  "full_name": "G4MEOVER ONE-X",
+  "owner": "Yanis Ameseder",
+  "gamer_tag": "G4MEOVER18",
+  "tagline": "ein Vokabular · jedes Gerät seine Stärke · alles an einem Punkt",
+  "product_tagline": "Ein Gerät für absolut alles.",
+  "colors": {
+    "accent": "#2196f3",
+    "accent_2": "#4b9dea",
+    "gradient_teal": "#2DE1C6",
+    "gradient_blue": "#48B6F0",
+    "navy": "#213140",
+    "bg_dark": "#0f1722",
+    "panel": "#16212e",
+    "text": "#e7eef9",
+    "muted": "#8aa0b8"
+  },
+  "separator": "▮",
+  "note": "Abgeleitet aus dem G4MEOVER-Ökosystem-Branding (ecosystem/g4meover-control/branding.py) für konsistente Optik über alle Tools."
+}

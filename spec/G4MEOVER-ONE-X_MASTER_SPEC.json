@@ -1,0 +1,358 @@
+{
+  "project": "G4MEOVER ONE-X",
+  "revision": "EVT6",
+  "date": "2026-08-27",
+  "principle": "Single Source of Truth. No graphic, email, BOM or CAD may contradict this file.",
+  "status_model": {
+    "FIXED": "Project decision; may only change via explicit EVT6 change request.",
+    "VALIDATED_ARCH": "Architecture is supported by source/component capabilities; production details may still require implementation validation.",
+    "TARGET": "Desired implementation target; exact manufacturer item may still change.",
+    "HOLD": "Must not be represented as production-confirmed until blocker is closed.",
+    "DEFERRED": "Intentionally not claimed or released in EVT6."
+  },
+  "mechanical": {
+    "device_envelope_mm": {
+      "x": 230.0,
+      "y": 110.0,
+      "z": 64.0,
+      "status": "FIXED"
+    },
+    "design_language": {
+      "value": "Flipper-One-inspired wide handheld; larger, rugged, modular; not a dimensional clone",
+      "status": "FIXED"
+    },
+    "front_display_recess_mm": {
+      "x": 138.0,
+      "y": 81.0,
+      "status": "FIXED"
+    },
+    "visible_display_window_mm": {
+      "x": 112.5,
+      "y": 64.5,
+      "status": "FIXED"
+    },
+    "touch_ring_outer_diameter_mm": {
+      "value": 40.0,
+      "status": "FIXED"
+    },
+    "dpad_envelope_mm": {
+      "x": 34.0,
+      "y": 34.0,
+      "status": "FIXED"
+    },
+    "softkeys": {
+      "count": 5,
+      "status": "FIXED"
+    },
+    "external_sma_ports": {
+      "count": 4,
+      "status": "FIXED"
+    },
+    "environmental_rating": {
+      "value": "NO IP RATING CLAIM IN EVT6",
+      "status": "DEFERRED"
+    },
+    "mass_target_g": {
+      "min": 800,
+      "max": 950,
+      "status": "TARGET"
+    }
+  },
+  "display": {
+    "class": {
+      "value": "5.0-inch IPS capacitive touch",
+      "status": "FIXED"
+    },
+    "resolution_native": {
+      "value": "720x1280 portrait; used 1280x720 landscape by software rotation",
+      "status": "FIXED"
+    },
+    "host_interface": {
+      "value": "4-lane MIPI DSI direct from RK3576",
+      "status": "FIXED"
+    },
+    "touch_interface": {
+      "value": "I2C to RK3576/Linux input path; RP2350 may monitor wake IRQ only",
+      "status": "FIXED"
+    },
+    "evt_reference": {
+      "value": "Waveshare 5-DSI-TOUCH-B / equivalent 5-inch 720x1280 DSI",
+      "status": "TARGET"
+    },
+    "production_reference_class": {
+      "value": "4-lane MIPI DSI, ILI9881C-class + GT911-class, active area approx. 110.4x62.1 mm",
+      "status": "TARGET"
+    },
+    "driver_gate": {
+      "value": "Panel init/device-tree/Linux DRM validation on RK3576 required",
+      "status": "HOLD"
+    }
+  },
+  "compute": {
+    "soc": {
+      "value": "Rockchip RK3576",
+      "status": "FIXED"
+    },
+    "ram_capacity": {
+      "value": "16 GB LPDDR5",
+      "status": "FIXED"
+    },
+    "ram_exact_mpn_topology": {
+      "value": "TBD after Rockchip-supported 16GB topology confirmation",
+      "status": "HOLD"
+    },
+    "storage_capacity": {
+      "value": "256 GB UFS",
+      "status": "FIXED"
+    },
+    "storage_generation_mpn": {
+      "value": "TBD; must be validated against RK3576 UFS host",
+      "status": "HOLD"
+    },
+    "recovery_flash": {
+      "value": "32 MB SPI NOR target",
+      "status": "TARGET"
+    },
+    "control_mcu": {
+      "value": "RP2350B + 16 MB QSPI",
+      "status": "FIXED"
+    },
+    "control_role": {
+      "value": "power/wake/buttons/sensors/haptics/fans/status/debug; NOT main Linux framebuffer",
+      "status": "FIXED"
+    }
+  },
+  "battery": {
+    "topology": {
+      "value": "2S2P, four 21700 cells",
+      "status": "FIXED"
+    },
+    "cell_target": {
+      "value": "Molicel INR-21700-P50B, 5.0Ah 3.6V",
+      "status": "TARGET"
+    },
+    "nominal_pack_voltage_v": {
+      "value": 7.2,
+      "status": "FIXED"
+    },
+    "full_charge_voltage_v": {
+      "value": 8.4,
+      "status": "FIXED"
+    },
+    "nominal_capacity_ah": {
+      "value": 10.0,
+      "status": "TARGET"
+    },
+    "nominal_energy_wh": {
+      "value": 72.0,
+      "status": "TARGET"
+    },
+    "pack_protection": {
+      "value": "2S pack protection + fuse + NTC + BQ28Z620 gauge/protector + certified EVT pack practice",
+      "status": "FIXED"
+    },
+    "transport_certification": {
+      "value": "UN38.3 / pack compliance required before shipment/productization",
+      "status": "HOLD"
+    }
+  },
+  "network_io": {
+    "ethernet": {
+      "value": "2x native Gigabit Ethernet via RTL8211F-class PHY",
+      "status": "FIXED"
+    },
+    "wifi_bt": {
+      "value": "Wi-Fi 6E + Bluetooth onboard module",
+      "status": "FIXED"
+    },
+    "usb_c_1": {
+      "value": "USB-C PD + USB3 + DP Alt Mode target",
+      "status": "FIXED"
+    },
+    "usb_c_2": {
+      "value": "USB-C host/service",
+      "status": "FIXED"
+    },
+    "usb_a": {
+      "value": "USB-A 3.x host",
+      "status": "FIXED"
+    },
+    "hdmi": {
+      "value": "HDMI output",
+      "status": "FIXED"
+    },
+    "microsd": {
+      "value": "microSD",
+      "status": "FIXED"
+    },
+    "sim": {
+      "value": "Nano-SIM/eSIM path for modem",
+      "status": "FIXED"
+    },
+    "m2_host": {
+      "value": "M.2 B-Key; host high-speed path PCIe 2.1 x1 plus USB3/USB2 where routed",
+      "status": "FIXED"
+    }
+  },
+  "rf_core": {
+    "cc1101": {
+      "value": "Sub-GHz protocol/raw low-power radio",
+      "status": "FIXED"
+    },
+    "sx1262": {
+      "value": "LoRa/FSK Sub-GHz",
+      "status": "FIXED"
+    },
+    "cc2652p7": {
+      "value": "Zigbee/Thread/BLE",
+      "status": "FIXED"
+    },
+    "zwave": {
+      "value": "EFR32ZG23-class Z-Wave/Z-Wave LR",
+      "status": "TARGET"
+    },
+    "nfc": {
+      "value": "PN7160-class 13.56MHz NFC/HF",
+      "status": "FIXED"
+    },
+    "lf_rfid": {
+      "value": "125kHz LF RFID AFE + coil",
+      "status": "FIXED"
+    },
+    "uhf_rfid": {
+      "value": "Impinj E710-class 860-930MHz RAIN RFID",
+      "status": "TARGET"
+    },
+    "ir_1wire": {
+      "value": "IR TX/RX + protected 1-Wire/AUX",
+      "status": "FIXED"
+    }
+  },
+  "hyperrf": {
+    "sdr": {
+      "value": "2x LMS7002M coherent-capable 4RX/4TX architecture",
+      "status": "TARGET"
+    },
+    "native_sdr_range": {
+      "value": "~100kHz-3.8GHz LMS7002M native",
+      "status": "VALIDATED_ARCH"
+    },
+    "extended_sdr_target": {
+      "value": "100kHz-6GHz using high-band translation/filtering",
+      "status": "TARGET"
+    },
+    "not_claimed": {
+      "value": "No general-purpose 60GHz SDR claim",
+      "status": "FIXED"
+    },
+    "fpga": {
+      "value": "FPGA required for PCIe endpoint/DSP/channelization; exact MPN not frozen",
+      "status": "HOLD"
+    },
+    "host_limit": {
+      "value": "PCIe 2.1 x1; raw 4-channel maximum RFIC bandwidth cannot be streamed continuously; FPGA decimation/channelization required",
+      "status": "FIXED"
+    },
+    "fiveg": {
+      "value": "Quectel RM530N-GL-class 5G Sub-6 + mmWave module bay",
+      "status": "TARGET"
+    },
+    "ntn": {
+      "value": "Quectel BG95-S5-class 3GPP Rel-17 IoT-NTN",
+      "status": "TARGET"
+    },
+    "lora_sat": {
+      "value": "Semtech LR1121-class sub-GHz/2.4/L/S radio",
+      "status": "TARGET"
+    },
+    "gnss": {
+      "value": "u-blox NEO-F10N-00B-20-class L1/L5 raw GNSS + time pulse",
+      "status": "TARGET"
+    },
+    "uwb": {
+      "value": "Qorvo DW3000-series; exact suffix not frozen",
+      "status": "HOLD"
+    },
+    "radar": {
+      "value": "TI IWRL6432W-class 57-64GHz radar, separate RF window/tile",
+      "status": "TARGET"
+    },
+    "timing": {
+      "value": "10MHz reference + GNSS time pulse + FPGA timestamping",
+      "status": "TARGET"
+    }
+  },
+  "pcb": {
+    "mainboard_layers": {
+      "value": 12,
+      "status": "FIXED"
+    },
+    "mainboard_process": {
+      "value": "HDI target, final stackup/microvia/via-in-pad only after PCBWay DFM",
+      "status": "HOLD"
+    },
+    "mainboard_outline_mm": {
+      "x": 210.0,
+      "y": 92.0,
+      "status": "FIXED"
+    },
+    "ui_carrier_outline_mm": {
+      "x": 218.0,
+      "y": 100.0,
+      "status": "FIXED"
+    },
+    "rf_core_outline_mm": {
+      "x": 92.0,
+      "y": 66.0,
+      "status": "FIXED"
+    },
+    "hyperrf_outline_mm": {
+      "x": 136.0,
+      "y": 72.0,
+      "status": "FIXED"
+    },
+    "m2_bridge_mm": {
+      "x": 30.0,
+      "y": 52.0,
+      "status": "FIXED"
+    },
+    "antenna_rail_mm": {
+      "x": 150.0,
+      "y": 18.0,
+      "status": "FIXED"
+    },
+    "current_files_status": {
+      "value": "EVT6 includes current FLOORPLAN-ONLY KiCad boards; no final production schematic/Gerber until HOLD gates close",
+      "status": "FIXED"
+    }
+  },
+  "thermal": {
+    "architecture": {
+      "value": "separate main/HyperRF heat spreaders or vapor chamber targets + dual low-profile blowers; RF windows kept metal-free",
+      "status": "FIXED"
+    },
+    "analysis_status": {
+      "value": "EVT6 full-system 2D precheck only; final 3D CFD/measured EVT required",
+      "status": "HOLD"
+    }
+  },
+  "claims_forbidden": [
+    "IP54 or any IP rating before validation",
+    "PCIe Gen3 x4 host",
+    "DC-60GHz SDR",
+    "general-purpose 60GHz SDR",
+    "Zynq UltraScale+ unless FPGA is explicitly frozen later",
+    "UWB SR150 unless design is changed and verified",
+    "GNSS L1/L2/L5 when current target is NEO-F10N L1/L5",
+    "10+ external SMA ports",
+    "6-layer mainboard",
+    "256GB UFS 3.1 production-confirmed",
+    "16GB LPDDR5 exact topology production-confirmed",
+    "full-device CFD validation based only on simplified thermal model"
+  ],
+  "codename": "ONE-X",
+  "brand": "G4MEOVER",
+  "owner": "Yanis Ameseder (G4MEOVER18)",
+  "note": "Basis: ChatGPT-Handoff (ONE-X EVT6). UNTER ENGINEERING-REVIEW — Werte sind unabhaengig gegen Datenblaetter/Hersteller-Referenz zu verifizieren, siehe docs/CHATGPT_DATA_REWORK.md. Bis dahin Single Source of Truth fuer Konsistenz, aber nicht als produktionsbestaetigt zu lesen.",
+  "review_state": "imported_under_review"
+}

@@ -1,0 +1,16 @@
+﻿Item,X mm,Y mm,Z/thickness mm,Status/notes
+Device outer envelope,230,110,64,FIXED
+5-inch display module reference,135.65,78.56,4.2,TARGET class; landscape
+Visible display window,112.5,64.5,,FIXED front opening
+Display active area reference,110.4,62.1,,source class
+Main PCB,210,92,1.2,FLOORPLAN FIXED
+UI carrier,218,100,0.8,FLOORPLAN FIXED; 138x81 display keepout
+RF core,92,66,0.8,FLOORPLAN FIXED
+HyperRF,136,72,1.0,FLOORPLAN FIXED
+M.2 bridge,30,52,0.8,FLOORPLAN FIXED
+Antenna rail,150,18,10,4 SMA
+21700 cell target,21.55,21.55,70.15,P50B max dimensions
+Battery tray 4x21700,76,92,24,2S2P
+Main spreader target,150,82,2.0,TARGET
+HyperRF spreader target,142,78,2.0,TARGET
+Fan target,30,30,5,two low-profile fans

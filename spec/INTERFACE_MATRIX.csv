@@ -1,0 +1,14 @@
+﻿Interface,Source,Destination,Physical/Electrical,Target/Status,Critical note
+Display video,RK3576,5-inch IPS,4-lane MIPI DSI,FIXED,Direct Linux DRM/KMS path; panel init/device tree HOLD
+Touch,GT911-class touch IC,RK3576,I2C + IRQ,FIXED,"RP2350 may observe wake IRQ, not primary touch host"
+LPDDR5,RK3576,16GB memory topology,dual-channel x16 / x32 aggregate,CAPACITY FIXED / TOPOLOGY HOLD,Do not route before Rockchip-supported topology confirmation
+UFS,RK3576,256GB UFS,UFS M-PHY,CAPACITY FIXED / MPN HOLD,RK3576 public host spec UFS2.0; choose validated device
+RGMII0/1,RK3576,2× RTL8211F-class PHY,RGMII,FIXED,RGMII timing/reference layout review
+M.2 PCIe,RK3576,HyperRF/M.2,PCIe 2.1 x1,FIXED,No Gen3 x4 claim
+M.2 USB3,RK3576,5G/HyperRF,USB3,FIXED,Bandwidth/power arbitration required
+USB-C1,RK3576/PD path,external,USB3 + DP Alt Mode + PD,FIXED,PD controller/config still implementation work
+Control SPI,RK3576,RP2350B,SPI,FIXED,Commands/status/optional low-bandwidth graphics only
+Control I2C,RK3576,RP2350B,I2C,FIXED,Power/status/buttons/sensors
+Control UART,RK3576,RP2350B,UART,FIXED,debug/recovery/control
+GNSS time pulse,NEO-F10N-class,FPGA/RP2350/RK3576,CMOS timing,TARGET,shared timestamping
+RF hard kill,physical switch/supervisor,RF power/PA enables,hardware gate,FIXED,software cannot override emergency TX disable

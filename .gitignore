@@ -1,0 +1,28 @@
+# Build / Temp
+*.tmp
+*.log
+*.bak
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# KiCad Backups / Fabrication-Output
+*-backups/
+*.kicad_pcb-bak
+*.kicad_sch-bak
+fp-info-cache
+*.net
+
+# CAD build outputs (STL/STEP werden als Referenz eingecheckt, Build-Artefakte nicht)
+build/
+_build/
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Generierte, aber reproduzierbare Ableitungen dürfen eingecheckt bleiben —
+# spec/DERIVED_STATUS.md und spec/MASTER_SPEC_FLAT.csv werden bewusst versioniert.

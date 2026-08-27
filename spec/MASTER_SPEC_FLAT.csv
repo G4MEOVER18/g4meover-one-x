@@ -1,0 +1,75 @@
+key,value,status
+mechanical.device_envelope_mm,"{""x"": 230.0, ""y"": 110.0, ""z"": 64.0}",FIXED
+mechanical.design_language,"Flipper-One-inspired wide handheld; larger, rugged, modular; not a dimensional clone",FIXED
+mechanical.front_display_recess_mm,"{""x"": 138.0, ""y"": 81.0}",FIXED
+mechanical.visible_display_window_mm,"{""x"": 112.5, ""y"": 64.5}",FIXED
+mechanical.touch_ring_outer_diameter_mm,40.0,FIXED
+mechanical.dpad_envelope_mm,"{""x"": 34.0, ""y"": 34.0}",FIXED
+mechanical.softkeys,"{""count"": 5}",FIXED
+mechanical.external_sma_ports,"{""count"": 4}",FIXED
+mechanical.environmental_rating,NO IP RATING CLAIM IN EVT6,DEFERRED
+mechanical.mass_target_g,"{""min"": 800, ""max"": 950}",TARGET
+display.class,5.0-inch IPS capacitive touch,FIXED
+display.resolution_native,720x1280 portrait; used 1280x720 landscape by software rotation,FIXED
+display.host_interface,4-lane MIPI DSI direct from RK3576,FIXED
+display.touch_interface,I2C to RK3576/Linux input path; RP2350 may monitor wake IRQ only,FIXED
+display.evt_reference,Waveshare 5-DSI-TOUCH-B / equivalent 5-inch 720x1280 DSI,TARGET
+display.production_reference_class,"4-lane MIPI DSI, ILI9881C-class + GT911-class, active area approx. 110.4x62.1 mm",TARGET
+display.driver_gate,Panel init/device-tree/Linux DRM validation on RK3576 required,HOLD
+compute.soc,Rockchip RK3576,FIXED
+compute.ram_capacity,16 GB LPDDR5,FIXED
+compute.ram_exact_mpn_topology,TBD after Rockchip-supported 16GB topology confirmation,HOLD
+compute.storage_capacity,256 GB UFS,FIXED
+compute.storage_generation_mpn,TBD; must be validated against RK3576 UFS host,HOLD
+compute.recovery_flash,32 MB SPI NOR target,TARGET
+compute.control_mcu,RP2350B + 16 MB QSPI,FIXED
+compute.control_role,power/wake/buttons/sensors/haptics/fans/status/debug; NOT main Linux framebuffer,FIXED
+battery.topology,"2S2P, four 21700 cells",FIXED
+battery.cell_target,"Molicel INR-21700-P50B, 5.0Ah 3.6V",TARGET
+battery.nominal_pack_voltage_v,7.2,FIXED
+battery.full_charge_voltage_v,8.4,FIXED
+battery.nominal_capacity_ah,10.0,TARGET
+battery.nominal_energy_wh,72.0,TARGET
+battery.pack_protection,2S pack protection + fuse + NTC + BQ28Z620 gauge/protector + certified EVT pack practice,FIXED
+battery.transport_certification,UN38.3 / pack compliance required before shipment/productization,HOLD
+network_io.ethernet,2x native Gigabit Ethernet via RTL8211F-class PHY,FIXED
+network_io.wifi_bt,Wi-Fi 6E + Bluetooth onboard module,FIXED
+network_io.usb_c_1,USB-C PD + USB3 + DP Alt Mode target,FIXED
+network_io.usb_c_2,USB-C host/service,FIXED
+network_io.usb_a,USB-A 3.x host,FIXED
+network_io.hdmi,HDMI output,FIXED
+network_io.microsd,microSD,FIXED
+network_io.sim,Nano-SIM/eSIM path for modem,FIXED
+network_io.m2_host,M.2 B-Key; host high-speed path PCIe 2.1 x1 plus USB3/USB2 where routed,FIXED
+rf_core.cc1101,Sub-GHz protocol/raw low-power radio,FIXED
+rf_core.sx1262,LoRa/FSK Sub-GHz,FIXED
+rf_core.cc2652p7,Zigbee/Thread/BLE,FIXED
+rf_core.zwave,EFR32ZG23-class Z-Wave/Z-Wave LR,TARGET
+rf_core.nfc,PN7160-class 13.56MHz NFC/HF,FIXED
+rf_core.lf_rfid,125kHz LF RFID AFE + coil,FIXED
+rf_core.uhf_rfid,Impinj E710-class 860-930MHz RAIN RFID,TARGET
+rf_core.ir_1wire,IR TX/RX + protected 1-Wire/AUX,FIXED
+hyperrf.sdr,2x LMS7002M coherent-capable 4RX/4TX architecture,TARGET
+hyperrf.native_sdr_range,~100kHz-3.8GHz LMS7002M native,VALIDATED_ARCH
+hyperrf.extended_sdr_target,100kHz-6GHz using high-band translation/filtering,TARGET
+hyperrf.not_claimed,No general-purpose 60GHz SDR claim,FIXED
+hyperrf.fpga,FPGA required for PCIe endpoint/DSP/channelization; exact MPN not frozen,HOLD
+hyperrf.host_limit,PCIe 2.1 x1; raw 4-channel maximum RFIC bandwidth cannot be streamed continuously; FPGA decimation/channelization required,FIXED
+hyperrf.fiveg,Quectel RM530N-GL-class 5G Sub-6 + mmWave module bay,TARGET
+hyperrf.ntn,Quectel BG95-S5-class 3GPP Rel-17 IoT-NTN,TARGET
+hyperrf.lora_sat,Semtech LR1121-class sub-GHz/2.4/L/S radio,TARGET
+hyperrf.gnss,u-blox NEO-F10N-00B-20-class L1/L5 raw GNSS + time pulse,TARGET
+hyperrf.uwb,Qorvo DW3000-series; exact suffix not frozen,HOLD
+hyperrf.radar,"TI IWRL6432W-class 57-64GHz radar, separate RF window/tile",TARGET
+hyperrf.timing,10MHz reference + GNSS time pulse + FPGA timestamping,TARGET
+pcb.mainboard_layers,12,FIXED
+pcb.mainboard_process,"HDI target, final stackup/microvia/via-in-pad only after PCBWay DFM",HOLD
+pcb.mainboard_outline_mm,"{""x"": 210.0, ""y"": 92.0}",FIXED
+pcb.ui_carrier_outline_mm,"{""x"": 218.0, ""y"": 100.0}",FIXED
+pcb.rf_core_outline_mm,"{""x"": 92.0, ""y"": 66.0}",FIXED
+pcb.hyperrf_outline_mm,"{""x"": 136.0, ""y"": 72.0}",FIXED
+pcb.m2_bridge_mm,"{""x"": 30.0, ""y"": 52.0}",FIXED
+pcb.antenna_rail_mm,"{""x"": 150.0, ""y"": 18.0}",FIXED
+pcb.current_files_status,EVT6 includes current FLOORPLAN-ONLY KiCad boards; no final production schematic/Gerber until HOLD gates close,FIXED
+thermal.architecture,separate main/HyperRF heat spreaders or vapor chamber targets + dual low-profile blowers; RF windows kept metal-free,FIXED
+thermal.analysis_status,EVT6 full-system 2D precheck only; final 3D CFD/measured EVT required,HOLD
