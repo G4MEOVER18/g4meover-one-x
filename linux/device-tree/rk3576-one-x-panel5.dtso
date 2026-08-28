@@ -1,0 +1,144 @@
+// SPDX-License-Identifier: (GPL-2.0-or-later OR MIT)
+/*
+ * G4MEOVER ONE-X — Device-Tree-Overlay-SKELETT
+ * 5,0" 720x1280 4-lane MIPI-DSI Panel (ILI9881C-Klasse) + I2C-Touch (GT911-Klasse)
+ * Ziel: RK3576, Gate G01 (Display-Bringup) — siehe ../BRINGUP_CHECKLIST_G01.md
+ *
+ * ┌──────────────────────────────────────────────────────────────────────────┐
+ * │  DIES IST EIN SKELETT — NICHT PRODUKTIONSFERTIG.                          │
+ * │  Vor jedem realen Flash zu setzen/verifizieren:                          │
+ * │   VERIFY  Node-Labels gegen das TATSAECHLICHE RK3576-BSP/DTSI            │
+ * │           (&dsi0, &dsi0_in, &vop, &vp*, &mipidcphy0, &i2c* koennen        │
+ * │           gegenueber RK3588 abweichen).                                   │
+ * │   HOLD    GPIO-/Pin-Nummern (haengen vom Devboard bzw. spaeter vom        │
+ * │           ONE-X-Mainboard-Schaltplan ab, Gate G07).                       │
+ * │   HOLD    DSI-Timings + Panel-Init-Sequenz aus dem Panel-DATENBLATT       │
+ * │           (siehe ../panel/PANEL_CANDIDATE.md). NICHT RATEN.               │
+ * │  FIXED aus Master-Spec: 720x1280, 4 Lanes, Touch ueber I2C.              │
+ * └──────────────────────────────────────────────────────────────────────────┘
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/pinctrl/rockchip.h>
+
+/ {
+	compatible = "rockchip,rk3576";   /* VERIFY: exakter Board-Compatible-String */
+};
+
+/*
+ * --- Regulatoren / Backlight (Platzhalter) -------------------------------
+ * HOLD: Rails, PWM-Quelle und Regler haengen vom Devboard/Panel ab.
+ */
+&{/} {
+	panel_bl: onex-panel-backlight {
+		compatible = "pwm-backlight";
+		pwms = <&pwm0 0 25000 0>;          /* VERIFY: PWM-Instanz  · HOLD: Periode aus Datenblatt */
+		brightness-levels = <0 32 64 128 192 255>;
+		default-brightness-level = <4>;
+		status = "okay";
+	};
+};
+
+/*
+ * --- MIPI-DSI-Host + Panel ------------------------------------------------
+ * VERIFY: Label &dsi0 / &dsi0_in / &mipidcphy0 gegen RK3576-DTSI.
+ */
+&dsi0 {                                       /* VERIFY label */
+	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	panel@0 {
+		compatible = "ilitek,ili9881c";   /* VERIFY: passt Treiber? sonst panel-simple-dsi + Init-Array (PANEL_CANDIDATE.md) */
+		reg = <0>;
+
+		backlight = <&panel_bl>;
+		reset-gpios = <&gpio1 5 GPIO_ACTIVE_LOW>;   /* HOLD: Pin + Polaritaet */
+		/* HOLD: Versorgungen — Namen/Rails aus Datenblatt
+		 * vcc-supply   = <&vcc3v3_panel>;
+		 * iovcc-supply = <&vcc1v8_panel>;
+		 */
+
+		dsi,flags = <(0)>;                /* HOLD: MIPI_DSI_MODE_VIDEO|_BURST|... aus Datenblatt */
+		dsi,format = <0>;                 /* MIPI_DSI_FMT_RGB888 = 0 (VERIFY) */
+		dsi,lanes  = <4>;                 /* FIXED (Master-Spec) */
+
+		/* HOLD: exakte Timings aus Panel-Datenblatt setzen — Werte unten sind PLATZHALTER */
+		panel-timing {
+			clock-frequency = <0>;    /* HOLD 📄 Pixelclock */
+			hactive      = <720>;     /* FIXED */
+			vactive      = <1280>;    /* FIXED */
+			hfront-porch = <0>;       /* HOLD 📄 */
+			hback-porch  = <0>;       /* HOLD 📄 */
+			hsync-len    = <0>;       /* HOLD 📄 */
+			vfront-porch = <0>;       /* HOLD 📄 */
+			vback-porch  = <0>;       /* HOLD 📄 */
+			vsync-len    = <0>;       /* HOLD 📄 */
+		};
+
+		port {
+			panel_in: endpoint {
+				remote-endpoint = <&dsi0_out_panel>;
+			};
+		};
+	};
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		port@1 {
+			reg = <1>;
+			dsi0_out_panel: endpoint {
+				remote-endpoint = <&panel_in>;
+			};
+		};
+	};
+};
+
+/*
+ * VERIFY: Verknuepfung DSI-Eingang <-> VOP-Videoport.
+ * Auf RK3576/RK3588-Klasse haengt der DSI-Input an einem VOP-Video-Port (&vp0/&vp1).
+ * Label unten pruefen; ggf. muss stattdessen der VOP-Port-Endpoint gesetzt werden.
+ */
+&dsi0_in {                                    /* VERIFY label (DSI-Input-Port) */
+	dsi0_in_vp: endpoint {
+		remote-endpoint = <&vp1_out_dsi0>;    /* VERIFY: &vp0 vs &vp1 */
+	};
+};
+
+&vp1 {                                        /* VERIFY: welcher Video-Port das DSI treibt */
+	vp1_out_dsi0: endpoint {
+		remote-endpoint = <&dsi0_in_vp>;
+	};
+};
+
+/*
+ * --- Touch (I2C) ----------------------------------------------------------
+ * FIXED: Touch laeuft ueber I2C in den RK3576/Linux-Input-Pfad.
+ *        RP2350 ueberwacht spaeter nur die Wake-IRQ (kein Datenpfad).
+ * VERIFY: &i2c1-Label + Bus-Nummer.  HOLD: IRQ/Reset-Pins + Adresse aus Modul.
+ */
+&i2c1 {                                       /* VERIFY label / Busnummer */
+	status = "okay";
+	clock-frequency = <400000>;
+
+	touchscreen@5d {
+		compatible = "goodix,gt911";      /* VERIFY vs. konkretem Touch-IC */
+		reg = <0x5d>;                     /* HOLD: 0x5d oder 0x14 (modulabhaengig) */
+
+		interrupt-parent = <&gpio0>;      /* HOLD: GPIO-Bank */
+		interrupts = <RK_PA0 IRQ_TYPE_EDGE_FALLING>;  /* HOLD: Pin */
+		irq-gpios   = <&gpio0 RK_PA0 GPIO_ACTIVE_HIGH>; /* HOLD */
+		reset-gpios = <&gpio0 RK_PA1 GPIO_ACTIVE_HIGH>; /* HOLD */
+
+		/* Landscape-Mapping erst nach DRM-Rotation kalibrieren (Checkliste 5–6):
+		 * touchscreen-swapped-x-y;
+		 * touchscreen-inverted-x;  / touchscreen-inverted-y;
+		 */
+	};
+};

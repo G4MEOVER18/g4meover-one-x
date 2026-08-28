@@ -12,6 +12,23 @@
 
 ---
 
+## 2026-08-28 — Session 3 (Phase 1 / G01 — Linux-Display-Bringup-Skelett)
+
+**Umgesetzt (`linux/` angelegt, vorher leer):**
+- `linux/README.md` — Linux-Plattform-Strategie + G01-Scope; klare FIXED/TARGET/HOLD-Tabellen (Display-Fähigkeit FIXED, Treiber/Bringup HOLD via `display.driver_gate`).
+- `linux/BRINGUP_CHECKLIST_G01.md` — 8-stufige Bringup-Checkliste (Panel-Power → DSI/PHY → DT-Overlay → DRM/KMS-Modeset → SW-Rotation Landscape → Touch-I²C → Suspend/Resume → Abschluss). Jede Stufe mit ✅-Kriterium; G01 gilt erst bei HW-Nachweis geschlossen.
+- `linux/device-tree/rk3576-one-x-panel5.dtso` — Device-Tree-Overlay-**Skelett** (Panel ILI9881C-Klasse + Touch GT911-Klasse). Alle unsicheren Stellen als `VERIFY` (Node-Labels vs. RK3576-BSP) bzw. `HOLD 📄` (Pins, DSI-Timings, Init-Sequenz aus Datenblatt) markiert. FIXED-Werte (720×1280, 4 Lanes, Touch-I²C) gesetzt.
+- `linux/device-tree/Makefile` — cpp+dtc-Build (KDIR auf RK3576-Kernelbaum anpassen).
+- `linux/panel/PANEL_CANDIDATE.md` — Panel-/Touch-Datenpunkte; benötigte Datenblatt-Werte als TBD/HOLD gelistet (nicht geraten).
+
+**Bewusst NICHT getan:** Gate-Status **nicht** geändert — G01 bleibt „offen", `display.driver_gate` bleibt HOLD (kein HW-Nachweis vorhanden). Keine DSI-Timings/Node-Labels erfunden.
+
+**Validator:** Exit 0 (nur Dateien hinzugefügt, keine Spec-Änderung).
+
+**Nächster Schritt (Session 4):** Wahlweise (a) Phase 2 `firmware/rp2350/`-Modularchitektur (power/wake/buttons/touch_ring/haptik/sensors/fan/battery/watchdog/rk3576_link/recovery/rf_kill/protocol), oder (b) Industrie-Design vertiefen: `mechanical/generate_enclosure.py` (CadQuery-Gehäuse) an neue Formsprache/Front-Geometrie angleichen, oder (c) Software-/UI-Ebene: ONE-X-Launcher-Konzept.
+
+---
+
 ## 2026-08-28 — Session 2 (Rework-Direktive + Design-Neuaufbau, Teil 1)
 
 **Neue Owner-Direktive (2026-08-28):** Das Projekt wird **komplett neu umgesetzt** — „alles überarbeiten, auch designtechnisch". Vier Design-Ebenen betroffen (Industrie-/Produktdesign, Visual-/Marken-Auftritt, Engineering-Architektur, Software-/UI). Vorgehen: **sofort autonom bauen**. **Design-Orientierung: letzte ChatGPT-Vorlagen** (`ONE-X_EVT6_VERIFIED_GRAPHICS_PACKAGE`, `…MASTER_ALL_FILES…2026-08-27`). **Alle KiCad/PCB-Dateien = Vorerzeugnisse** (Drafts), nicht als final behandeln. HOLD-Disziplin bleibt ([[feedback-chatgpt-data-rework]], [[feedback-no-unconfirmed-partners]]).
