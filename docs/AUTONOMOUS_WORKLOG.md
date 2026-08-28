@@ -12,6 +12,24 @@
 
 ---
 
+## 2026-08-28 — Session 5 (Industrie-Design — CadQuery-Gehäuse spec-getrieben)
+
+**Befund:** `mechanical/generate_enclosure.py` war bereits im **korrekten Querformat** und maßlich spec-konform (230×110×64, Fenster 112,5×64,5, Ring Ø40, Boards 210×92/136×72/92×66, Rail 150×18, Akku 2S2P/4×21700) — anders als das alte Front-SVG. Fehlend war **Spec-Rückverfolgbarkeit + HOLD-Disziplin**, plus ein Export-Bug.
+
+**Umgesetzt (Geometrie unangetastet, nur nachvollziehbar/ehrlich gemacht):**
+- Modul-Docstring mit Provenienz (Master-Spec = SoT), Querformat-Formsprache, Status-Legende.
+- Jeder Maß-Parameter mit Spec-Key + Status getaggt (FIXED/TARGET/HOLD inline).
+- **HOLD-Banner** an Thermik (Spreader/Fans → Gate G10) und Akku-Pack-Compliance (→ Gate G11): explizit „Kollisions-/Bauraum-Referenz, nicht validiert".
+- **Bugfix:** `fan2` wurde erzeugt + in Assembly genutzt, aber nie als Teil exportiert → jetzt beide Blower exportiert (`fan_30x30x5_dummy_1/_2`).
+- Bounding-Box-Plausibilitätsprüfung + HOLD-Erinnerung am Skriptende (Warnung bei Envelope-Überschreitung).
+- `mechanical/README.md` neu (Erzeugen, Formsprache, Status-Tabelle).
+
+**Validierung:** `python -m py_compile` OK (CadQuery hier nicht installiert; Laufzeit-Erzeugung nicht getestet — Geometrie-Logik unverändert). Spec-Validator Exit 0.
+
+**Nächster Schritt (Session 6):** Software-/UI-Ebene — ONE-X-Launcher-/UI-Konzept für 5″-Touch (Landscape); danach ggf. Phase 3 Vendor-Docs/Core-BOM-Freeze (G02/G03) vorbereiten.
+
+---
+
 ## 2026-08-28 — Session 4 (Phase 2 — RP2350B System-Manager-Architektur)
 
 **Umgesetzt (`firmware/rp2350/` angelegt, vorher leer):**

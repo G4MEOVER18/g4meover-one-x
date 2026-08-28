@@ -1,3 +1,24 @@
+"""
+G4MEOVER ONE-X - Gehaeuse-/Mechanik-Generator (CadQuery)
+========================================================
+Erzeugt STEP/STL-Referenzen: Gehaeuse, Boards, Akku, Thermik, Antennen-Rail.
+
+Single Source of Truth: ../spec/G4MEOVER-ONE-X_MASTER_SPEC.json
+Nichts hier darf der Master-Spec widersprechen. Jeder Mass-Parameter traegt
+seinen Spec-Key und Status. Ausgabe = EVT-Referenz-/Kollisionsmodell, KEINE
+Fertigungsfreigabe.
+
+Querformat-Formsprache (vgl. docs/graphics/front_layout.svg):
+  Touch-Ring links | 5"-Display mittig | D-Pad rechts | 5 Softkeys unten | 4x SMA oben.
+
+Status-Legende:
+  FIXED   Projektentscheidung (Aussengeometrie, Boards, Akku-Topologie)
+  TARGET  Ziel, exaktes Bauteil kann sich aendern (Displaymodul, Zellmass)
+  HOLD    NICHT produktionsbestaetigt behandeln:
+            Thermik (Spreader/Fans/Kurven) -> Gate G10
+            Akku-Pack-Compliance (UN38.3/BMS/NTC) -> Gate G11
+            finaler Eckenradius/Wandstaerke/Stackup -> nach DFM (G06/G08)
+"""
 
 import cadquery as cq
 from cadquery import exporters
@@ -8,18 +29,20 @@ OUT_STL  = Path(__file__).resolve().parents[1] / "STL"
 OUT_STEP.mkdir(parents=True, exist_ok=True)
 OUT_STL.mkdir(parents=True, exist_ok=True)
 
+# === Aussengehaeuse === (FIXED: mechanical.device_envelope_mm = 230x110x64)
 W, H, D = 230.0, 110.0, 64.0
-FRONT_D = 14.0
+FRONT_D = 14.0            # Fronttiefe (Design)
 REAR_D = D - FRONT_D
-WALL = 2.4
-CORNER = 9.0
+WALL = 2.4               # Wandstaerke (TARGET, DFM)
+CORNER = 9.0             # Eck-Chamfer (TARGET, Formsprache "rugged")
 
-DISPLAY_MODULE_W = 135.65
-DISPLAY_MODULE_H = 78.56
-DISPLAY_MODULE_T = 4.2
-DISPLAY_WINDOW_W = 112.5
-DISPLAY_WINDOW_H = 64.5
-DISPLAY_Y = 4.0
+# === Display === (FIXED Fenster / TARGET Modul)
+DISPLAY_MODULE_W = 135.65   # TARGET Modul-Aussenmass (ILI9881C-Klasse)
+DISPLAY_MODULE_H = 78.56    # TARGET
+DISPLAY_MODULE_T = 4.2      # TARGET
+DISPLAY_WINDOW_W = 112.5    # FIXED: mechanical.visible_display_window_mm.x
+DISPLAY_WINDOW_H = 64.5     # FIXED: mechanical.visible_display_window_mm.y
+DISPLAY_Y = 4.0             # Y-Versatz (Design: Platz fuer Softkey-Reihe unten)
 
 def chamfered_prism(w,h,d,c=8.0,z=0.0):
     pts=[
@@ -38,6 +61,7 @@ def circle_cut(x,y,r,z0=-2,d=24):
 face = chamfered_prism(W,H,3.2,CORNER,0)
 face = face.cut(rect_cut(0,DISPLAY_Y,DISPLAY_WINDOW_W,DISPLAY_WINDOW_H))
 
+# D-Pad rechts (FIXED: mechanical.dpad_envelope_mm = 34x34), 5 Softkeys unten, SMA/Sensoren.
 DPAD_X, DPAD_Y = 91.5, 5.0
 face = face.cut(rect_cut(DPAD_X,DPAD_Y,34,9).union(rect_cut(DPAD_X,DPAD_Y,9,34)))
 for x in [-28,-14,0,14,28]:
@@ -70,22 +94,23 @@ for x,y,w,h in [(72,24,24,12),(72,-24,24,12),(92,0,18,22),(45,-31,18,10)]:
 
 # Display and controls.
 display_module = cq.Workplane("XY").box(DISPLAY_MODULE_W,DISPLAY_MODULE_H,DISPLAY_MODULE_T,centered=(True,True,False)).translate((0,DISPLAY_Y,3.4))
-display_active = cq.Workplane("XY").box(110.4,62.1,0.8,centered=(True,True,False)).translate((0,DISPLAY_Y,2.8))
-touch_ring = cq.Workplane("XY").circle(20).circle(16).extrude(2.0).translate((-91.0,4.0,0.8))
+display_active = cq.Workplane("XY").box(110.4,62.1,0.8,centered=(True,True,False)).translate((0,DISPLAY_Y,2.8))  # TARGET aktive Flaeche
+touch_ring = cq.Workplane("XY").circle(20).circle(16).extrude(2.0).translate((-91.0,4.0,0.8))  # FIXED Touch-Ring Oe40 (r=20), links
 dpad = cq.Workplane("XY").rect(31,8).extrude(2.5).union(cq.Workplane("XY").rect(8,31).extrude(2.5)).union(cq.Workplane("XY").circle(5).extrude(2.5)).translate((DPAD_X,DPAD_Y,0.7))
 softkey = cq.Workplane("XY").rect(9.5,4.5).extrude(2.4)
 
-# Board dummies.
-main_pcb = cq.Workplane("XY").box(210,92,1.2,centered=(True,True,False)).translate((0,0,-4.5))
-ui_outer = cq.Workplane("XY").box(218,100,0.8,centered=(True,True,False)).translate((0,0,8.0))
-ui_cut = cq.Workplane("XY").box(138,81,2.0,centered=(True,True,False)).translate((0,DISPLAY_Y,7.5))
+# Board dummies. (FIXED Outlines: pcb.*_outline_mm)
+main_pcb = cq.Workplane("XY").box(210,92,1.2,centered=(True,True,False)).translate((0,0,-4.5))     # FIXED 210x92
+ui_outer = cq.Workplane("XY").box(218,100,0.8,centered=(True,True,False)).translate((0,0,8.0))     # FIXED 218x100
+ui_cut = cq.Workplane("XY").box(138,81,2.0,centered=(True,True,False)).translate((0,DISPLAY_Y,7.5)) # FIXED Recess 138x81
 ui_carrier = ui_outer.cut(ui_cut)
-rf_core = cq.Workplane("XY").box(92,66,0.8,centered=(True,True,False)).translate((54,10,-18))
-hyperrf = cq.Workplane("XY").box(136,72,1.0,centered=(True,True,False)).translate((35,0,-29))
-m2_bridge = cq.Workplane("XY").box(30,52,0.8,centered=(True,True,False)).translate((10,0,-16))
+rf_core = cq.Workplane("XY").box(92,66,0.8,centered=(True,True,False)).translate((54,10,-18))       # FIXED 92x66
+hyperrf = cq.Workplane("XY").box(136,72,1.0,centered=(True,True,False)).translate((35,0,-29))       # FIXED 136x72
+m2_bridge = cq.Workplane("XY").box(30,52,0.8,centered=(True,True,False)).translate((10,0,-16))      # FIXED 30x52
 
-# 2S2P battery, 4x P50B target.
-cell_d, cell_l = 21.55, 70.15
+# Akku: 2S2P, 4x 21700 (FIXED Topologie: battery.topology). Zellmass TARGET.
+# HOLD: Pack-Compliance (UN38.3 / BMS / Sicherung / NTC / mech. Schutz) -> Gate G11.
+cell_d, cell_l = 21.55, 70.15   # TARGET 21700-Zellmass
 cell_shapes=[]
 for yy in [-33,-11,11,33]:
     wp = cq.Workplane("YZ").circle(cell_d/2).extrude(cell_l).translate((-85,yy,-32))
@@ -95,7 +120,8 @@ battery_tray_outer = cq.Workplane("XY").box(76,92,24,centered=(True,True,False))
 battery_tray_inner = cq.Workplane("XY").box(72,88,22,centered=(True,True,False)).translate((-50,0,-42))
 battery_tray = battery_tray_outer.cut(battery_tray_inner)
 
-# Thermal.
+# Thermal. HOLD: reale Fan-P/Q-Kurven + 3D-CFD/Mess-EVT ersetzen diese Platzhalter -> Gate G10.
+# Spreader/Fans hier sind Kollisions-/Bauraum-Referenzen, KEINE thermisch validierten Bauteile.
 main_spreader = cq.Workplane("XY").box(150,82,2.0,centered=(True,True,False)).translate((25,0,-9))
 hyper_spreader = cq.Workplane("XY").box(142,78,2.0,centered=(True,True,False)).translate((35,0,-35))
 for x,y,w,h in [(72,24,26,14),(72,-24,26,14),(92,0,20,24)]:
@@ -103,7 +129,7 @@ for x,y,w,h in [(72,24,26,14),(72,-24,26,14),(92,0,20,24)]:
 fan1 = cq.Workplane("XY").box(30,30,5,centered=(True,True,False)).translate((10,22,-41))
 fan2 = cq.Workplane("XY").box(30,30,5,centered=(True,True,False)).translate((10,-22,-41))
 
-# Antenna rail.
+# Antenna rail. (FIXED: pcb.antenna_rail_mm = 150x18; external_sma_ports = 4)
 rail = cq.Workplane("XY").box(150,18,10,centered=(True,True,False)).translate((28,46,-52))
 for x in [-40,-13,14,41]:
     hole = cq.Workplane("XZ").circle(3.2).extrude(24).translate((28+x,35,-47))
@@ -127,7 +153,8 @@ parts={
     "battery_cells_4x21700_dummy":battery_cells,
     "main_spreader":main_spreader,
     "hyperrf_spreader":hyper_spreader,
-    "fan_30x30x5_dummy":fan1,
+    "fan_30x30x5_dummy_1":fan1,   # dual low-profile blowers (Spec) — beide exportieren
+    "fan_30x30x5_dummy_2":fan2,
     "antenna_rail_4sma":rail,
 }
 for name,shape in parts.items():
@@ -143,3 +170,14 @@ assembly_shapes = [
 ]
 assembly = cq.Compound.makeCompound(assembly_shapes)
 exporters.export(assembly,str(OUT_STEP/"ONE-X_EVT6_ASSEMBLY_REFERENCE.step"))
+
+# --- Zusammenfassung / Bauraum-Plausibilitaet -------------------------------
+bb = assembly.BoundingBox()
+print(f"[ONE-X] {len(parts)} Teile exportiert nach {OUT_STEP} und {OUT_STL}")
+print(f"[ONE-X] Assembly-Bounding-Box: "
+      f"{bb.xlen:.1f} x {bb.ylen:.1f} x {bb.zlen:.1f} mm "
+      f"(FIXED-Envelope 230 x 110 x 64)")
+if bb.xlen > W + 0.5 or bb.ylen > H + 0.5 or bb.zlen > D + 0.5:
+    print("[ONE-X] WARNUNG: Bounding-Box ueberschreitet das FIXED-Envelope — pruefen!")
+print("[ONE-X] HOLD-Erinnerung: Thermik (G10) und Akku-Pack-Compliance (G11) sind "
+      "NICHT validiert; Ausgabe ist EVT-Referenz, keine Fertigungsfreigabe.")
