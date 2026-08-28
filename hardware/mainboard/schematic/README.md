@@ -15,19 +15,21 @@ Produktions-Schaltplan des Mainboards (210 × 92 mm, 12-Layer-HDI) als **reviewb
 | 05 | UFS | 256 GB, M-PHY | **G03 (HOLD)** | ⛔ Platzhalter |
 | 06 | Recovery/Boot | 32 MB SPI-NOR, BootSel | — | 🟡 Entwurf |
 | 07 | USB-C PD/USB3/DP | TPS25751A, Mux | — | 🟡 Entwurf |
-| 08 | USB-Host | USB-A, Hub | — | ⬜ |
-| 09 | HDMI/DP-Out | Display-Out | — | ⬜ |
+| 08 | USB-Host | USB-A, Hub | — | 🟡 Entwurf |
+| 09 | HDMI/DP-Out | Display-Out | — | 🟡 Entwurf |
 | 10 | Ethernet ×2 | 2× RTL8211F, RGMII, Magnetics | — | 🟡 Entwurf |
 | 11 | Wi-Fi 6E/BT | MT7921-Klasse, Antenne | — | 🟡 Entwurf |
 | 12 | M.2 / HyperRF-Link | PCIe 2.1 ×1 + USB3 | — | 🟡 Entwurf |
 | 13 | RP2350-Link | SPI/I²C/UART zum System-Manager | — | 🟡 Entwurf |
-| 14 | Audio | Codec, Amp, Mic | — | ⬜ |
-| 15 | Sensoren | IMU/Mag/Baro/Temp/ALS (I²C) | — | ⬜ |
-| 16 | Debug/Recovery | JTAG/SWD, UART-Konsole, Testmodi | — | ⬜ |
-| 17 | Connectors | FPC/Board-to-Board, Power | — | ⬜ |
-| 18 | Testpoints | Bring-up-/Mess-Punkte, Coupons | — | ⬜ |
+| 14 | Audio | Codec, Amp, Mic | — | 🟡 Entwurf |
+| 15 | Sensoren | IMU/Mag/Baro/Temp/ALS (I²C) | — | 🟡 Entwurf |
+| 16 | Debug/Recovery | JTAG/SWD, UART-Konsole, Testmodi | — | 🟡 Entwurf |
+| 17 | Connectors | FPC/Board-to-Board, Power | — | 🟡 Entwurf |
+| 18 | Testpoints | Bring-up-/Mess-Punkte, Coupons | — | 🟡 Entwurf |
 
 Legende: 🟡 Entwurf · ⬜ offen · ⛔ blockiert (HOLD, nicht routen/finalisieren bis Gate schließt).
+
+**Fortschritt:** 16/18 Sheets als Design-Spec-Entwurf vorhanden; 04 (LPDDR5) + 05 (UFS) bleiben Platzhalter bis G02/G03. Damit ist der **Schaltplan-Design-Spec-Satz strukturell vollständig** — bereit für die KiCad-Zeichnung + Minewing-ERC-Review (Gate G07). Noch offen vor „ERC clean": bestätigte Herstellerwerte (📄/HOLD) einsetzen, Sheets 04/05 nach G02/G03 vervollständigen.
 
 > **Sheets 04 (LPDDR5) und 05 (UFS) werden bewusst nicht finalisiert**, bis G02/G03 mit Herstellerdaten geschlossen sind (siehe [`../../../manufacturing/`](../../../manufacturing/)). Bis dahin nur Platzhalter-Sheets mit Anforderungen.
 

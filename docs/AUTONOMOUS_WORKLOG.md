@@ -12,6 +12,24 @@
 
 ---
 
+## 2026-08-28 — Session 9 (Mainboard-Schaltplan — alle 18 Sheets als Design-Spec)
+
+**Umgesetzt:** Der komplette Schaltplan-Design-Spec-Satz für das Mainboard (`hardware/mainboard/schematic/`) — 16 Entwurfs-Sheets + 2 ehrliche Platzhalter:
+- **Fundament:** 01 Power-Tree · 02 RK806S-PMIC · 03 RK3576-Core.
+- **Speicher (blockiert):** 04 LPDDR5 (G02) · 05 UFS (G03) — Platzhalter mit Anforderungen + „was zum Schließen gebraucht wird", nicht geroutet.
+- **Boot/Debug:** 06 Recovery/SPI-NOR · 16 Debug/Recovery (RK3576-Maskrom + RP2350-BOOTSEL getrennt).
+- **I/O:** 07 USB-C-PD/USB3/DP · 08 USB-Host · 09 HDMI/DP-Out · 10 Ethernet×2 · 11 Wi-Fi 6E/BT · 12 M.2/HyperRF (PCIe 2.1×1+USB3) · 13 RP2350-Link.
+- **Peripherie:** 14 Audio · 15 Sensoren.
+- **Integration:** 17 Connectors (Inter-Board) · 18 Testpoints (gestaffelter Bring-up).
+
+**Disziplin durchgehend:** Struktur/Netze/ERC-Absicht vollständig; jeder Herstellerwert (Ball-/Rail-Map, DSI-/RGMII-Timings, Boot-Straps, Wi-Fi-Bus) bleibt sichtbar `TBD 📄`/HOLD statt geraten. Forbidden-Claims respektiert (kein Gen3×4, kein 6-Layer, UFS/LPDDR5 nicht produktionsbestätigt).
+
+**Ergebnis:** Schaltplan-Design-Spec strukturell **vollständig** → bereit für KiCad-Zeichnung + Minewing-ERC-Review (Gate G07). Vor „ERC clean": bestätigte 📄/HOLD-Werte einsetzen, 04/05 nach G02/G03 vervollständigen.
+
+**Nächster Schritt (Session 10+):** je nach Owner-Wunsch — (a) KiCad-Zeichnung aus den Design-Specs beginnen, (b) RF-Core-/HyperRF-Schaltpläne analog aufbauen, (c) G04 FPGA-Scored-Candidate-Matrix, (d) auf Vendor-Rückmeldungen (PCBWay/Minewing) warten und HOLDs schließen.
+
+---
+
 ## 2026-08-28 — Session 8 (Phase 5 Kickoff — Mainboard-Schaltplan)
 
 **Umgesetzt (`hardware/mainboard/schematic/` angelegt):**
