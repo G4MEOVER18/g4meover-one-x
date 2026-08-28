@@ -12,6 +12,22 @@
 
 ---
 
+## 2026-08-28 — Session 4 (Phase 2 — RP2350B System-Manager-Architektur)
+
+**Umgesetzt (`firmware/rp2350/` angelegt, vorher leer):**
+- `README.md` — Rolle (FIXED: Always-On, power/wake/buttons/sensors/haptik/fans/status/debug, **kein** Linux-Framebuffer), Nicht-Ziele, Statusdisziplin (alle Pins HOLD → pin-unabhängige Verträge).
+- `ARCHITECTURE.md` — kooperatives tickbasiertes Ausführungsmodell (Core0-Superloop, Core1 für Echtzeit/RF-Kill-Latch), 12-Modul-Landkarte nach Sicherheitspriorität, System-Zustandsmaschine (OFF/BOOT/RUN/SUSPEND/SHUTDOWN/FAULT), Watchdog-Politik, **RF-Kill-Grundsatz** (HW-erzwungen, Default nach Boot/Reset/Fault = Kill aktiv).
+- `PROTOCOL.md` — ONE-X-Link v1: Framing (SOF `0xA5 0x5A`, VER/TYPE/SEQ/LEN/CRC-16-CCITT), Zuverlässigkeit (ACK/NACK+SEQ), vollständiges Nachrichten-Set (Host→Mgr Kommandos, Mgr→Host Events), sicherheitskritische RF-Kill-Semantik (Manager = Autorität, Freigabe nur mit Regulierungsprofil+Token).
+- `include/onex_proto.h` + `include/onex_modules.h` — kompilierbare C-Verträge (Frame/Enums/CRC-Proto; Modul-Interface init/tick/event). **gcc-Syntaxcheck OK** (`-std=c11 -Wall -Wextra`).
+
+**Bewusst pin-unabhängig:** keine GPIO-/Bus-Zuordnungen erfunden (HOLD bis Mainboard-Schaltplan, Gate G07); HAL-Schicht folgt in Phase 5.
+
+**Validator:** Exit 0 (nur Dateien hinzugefügt).
+
+**Nächster Schritt (Session 5):** Industrie-Design vertiefen (`mechanical/generate_enclosure.py` an neue Front-Geometrie/Formsprache angleichen) **oder** Software-/UI-Ebene (ONE-X-Launcher-Konzept für 5″-Touch, Landscape).
+
+---
+
 ## 2026-08-28 — Session 3 (Phase 1 / G01 — Linux-Display-Bringup-Skelett)
 
 **Umgesetzt (`linux/` angelegt, vorher leer):**
