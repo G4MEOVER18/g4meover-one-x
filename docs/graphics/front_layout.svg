@@ -1,55 +1,102 @@
-<svg viewBox="0 0 560 720" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,system-ui,Arial,sans-serif">
+<svg viewBox="0 0 2200 1300" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,system-ui,Arial,sans-serif">
+  <!--
+    G4MEOVER ONE-X — Frontansicht (verbindliche Geometrie)
+    Quelle: spec/G4MEOVER-ONE-X_MASTER_SPEC.json (Single Source of Truth), Rev EVT6.
+    Maßstab: 1 mm = 8 px. Ursprung Gehäuse-Ecke oben-links bei px (180,210).
+    Orientierung: Querformat, Redesign orientiert an ChatGPT-EVT6-Vorlage
+      (Touch-Ring links · 5"-Display mittig · D-Pad rechts · 5 Softkeys unten · 4× SMA oben).
+    Alle bemaßten Werte sind FIXED. Nichts hier darf der Master-Spec widersprechen.
+  -->
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#2DE1C6"/><stop offset="1" stop-color="#48B6F0"/>
     </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8aa0b8"/>
+    </marker>
+    <marker id="arrowStart" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M10,0 L0,5 L10,10 z" fill="#8aa0b8"/>
+    </marker>
   </defs>
-  <rect x="0" y="0" width="560" height="720" fill="#0f1722"/>
-  <text x="32" y="40" fill="url(#g)" font-size="22" font-weight="800">Front-Layout · ONE-X</text>
-  <text x="32" y="62" fill="#8aa0b8" font-size="13">230 × 110 × 64 mm · maßstäbliche Anordnung</text>
 
-  <!-- device body -->
-  <rect x="70" y="90" width="420" height="560" rx="34" fill="#16212e" stroke="url(#g)" stroke-width="2.5"/>
+  <!-- background -->
+  <rect x="0" y="0" width="2200" height="1300" fill="#0f1722"/>
 
-  <!-- antenna rail (top) -->
-  <rect x="110" y="104" width="340" height="34" rx="8" fill="#0f1722" stroke="#213140"/>
-  <g fill="url(#g)">
-    <circle cx="160" cy="121" r="7"/><circle cx="235" cy="121" r="7"/>
-    <circle cx="325" cy="121" r="7"/><circle cx="400" cy="121" r="7"/>
+  <!-- title block -->
+  <text x="180" y="70" fill="url(#grad)" font-size="40" font-weight="800">G4MEOVER ONE-X</text>
+  <text x="180" y="112" fill="#e7eef9" font-size="24" font-weight="600">Frontansicht — verbindliche Geometrie</text>
+  <text x="180" y="146" fill="#8aa0b8" font-size="17">Querformat · 230 × 110 × 64 mm · maßstäblich (1 mm = 8 px) · alle Maße FIXED</text>
+  <text x="2020" y="70" fill="#8aa0b8" font-size="16" text-anchor="end">Rev EVT6 · 2026-08-27</text>
+  <text x="2020" y="94" fill="#8aa0b8" font-size="16" text-anchor="end">Quelle: spec/G4MEOVER-ONE-X_MASTER_SPEC.json</text>
+  <text x="2020" y="118" fill="#8aa0b8" font-size="16" text-anchor="end">Design-Orientierung: ChatGPT-EVT6-Vorlage</text>
+
+  <!-- ===================== DEVICE (offset 180,210 · scale 8 px/mm) ===================== -->
+  <!-- body 230 x 110 mm, corner R16 -->
+  <rect x="180" y="210" width="1840" height="880" rx="128" fill="#16212e" stroke="url(#grad)" stroke-width="3"/>
+
+  <!-- 4x SMA antenna ports on the TOP edge (external_sma_ports = 4, FIXED) -->
+  <g stroke="#48B6F0" stroke-width="2" fill="#0f1722">
+    <g transform="translate(620,210)"><rect x="-16" y="-26" width="32" height="30" rx="4"/><circle cx="0" cy="-11" r="7" fill="#2DE1C6" stroke="none"/></g>
+    <g transform="translate(980,210)"><rect x="-16" y="-26" width="32" height="30" rx="4"/><circle cx="0" cy="-11" r="7" fill="#2DE1C6" stroke="none"/></g>
+    <g transform="translate(1340,210)"><rect x="-16" y="-26" width="32" height="30" rx="4"/><circle cx="0" cy="-11" r="7" fill="#2DE1C6" stroke="none"/></g>
+    <g transform="translate(1700,210)"><rect x="-16" y="-26" width="32" height="30" rx="4"/><circle cx="0" cy="-11" r="7" fill="#2DE1C6" stroke="none"/></g>
   </g>
-  <text x="280" y="126" fill="#8aa0b8" font-size="10" text-anchor="middle">4× SMA — Antennen-Rail</text>
+  <text x="1160" y="192" fill="#8aa0b8" font-size="17" text-anchor="middle">4× SMA — Antennen-Rail (HyperRF / RF-Core)</text>
 
-  <!-- display -->
-  <rect x="110" y="158" width="340" height="300" rx="10" fill="#0b1017" stroke="#48B6F0" stroke-width="1.5"/>
-  <text x="280" y="300" fill="#4b9dea" font-size="16" text-anchor="middle" font-weight="700">5,0″ IPS Multitouch</text>
-  <text x="280" y="322" fill="#8aa0b8" font-size="12" text-anchor="middle">1280 × 720 · Landscape</text>
+  <!-- display recess (bezel) 138 x 81 mm, centered -->
+  <rect x="548" y="326" width="1104" height="648" rx="28" fill="#0b1017" stroke="#213140" stroke-width="2"/>
+  <!-- visible display window 112.5 x 64.5 mm, centered in recess -->
+  <rect x="650" y="392" width="900" height="516" rx="14" fill="#0a0e14" stroke="#48B6F0" stroke-width="2"/>
+  <text x="1100" y="618" fill="#4b9dea" font-size="30" text-anchor="middle" font-weight="700">5,0″ IPS Multitouch</text>
+  <text x="1100" y="656" fill="#e7eef9" font-size="20" text-anchor="middle">720 × 1280 nativ · 1280 × 720 Landscape</text>
+  <text x="1100" y="686" fill="#8aa0b8" font-size="18" text-anchor="middle">4-lane MIPI-DSI → RK3576 · Touch I²C</text>
+  <text x="1100" y="716" fill="#6f8399" font-size="15" text-anchor="middle">sichtbares Fenster 112,5 × 64,5 mm · Recess 138 × 81 mm</text>
 
-  <!-- softkeys -->
-  <g fill="#213140" stroke="#4b9dea" stroke-width="1">
-    <rect x="120" y="474" width="52" height="26" rx="6"/>
-    <rect x="184" y="474" width="52" height="26" rx="6"/>
-    <rect x="248" y="474" width="52" height="26" rx="6"/>
-    <rect x="312" y="474" width="52" height="26" rx="6"/>
-    <rect x="376" y="474" width="52" height="26" rx="6"/>
+  <!-- touch ring Ø40 mm, left, vertically centered (center mm 26,55) -->
+  <circle cx="388" cy="650" r="160" fill="none" stroke="url(#grad)" stroke-width="10"/>
+  <circle cx="388" cy="650" r="132" fill="none" stroke="#213140" stroke-width="2"/>
+  <circle cx="388" cy="650" r="22" fill="#2DE1C6"/>
+  <text x="388" y="860" fill="#8aa0b8" font-size="18" text-anchor="middle">Touch-Ring</text>
+  <text x="388" y="884" fill="#6f8399" font-size="16" text-anchor="middle">Ø 40 mm</text>
+
+  <!-- d-pad 34 x 34 mm, right, vertically centered (center mm 207,55) -->
+  <g fill="#213140" stroke="#48B6F0" stroke-width="2">
+    <rect x="1792" y="514" width="88" height="272" rx="10"/>
+    <rect x="1700" y="606" width="272" height="88" rx="10"/>
   </g>
-  <text x="280" y="516" fill="#8aa0b8" font-size="11" text-anchor="middle">5 Softkeys</text>
+  <rect x="1792" y="606" width="88" height="88" fill="#16212e" stroke="#48B6F0" stroke-width="2"/>
+  <text x="1836" y="860" fill="#8aa0b8" font-size="18" text-anchor="middle">D-Pad</text>
+  <text x="1836" y="884" fill="#6f8399" font-size="16" text-anchor="middle">34 × 34 mm</text>
 
-  <!-- touch ring (left) -->
-  <circle cx="165" cy="580" r="42" fill="none" stroke="url(#g)" stroke-width="6"/>
-  <circle cx="165" cy="580" r="8" fill="#2DE1C6"/>
-  <text x="165" y="640" fill="#8aa0b8" font-size="11" text-anchor="middle">40 mm Touch-Ring</text>
-
-  <!-- d-pad (right) -->
-  <g fill="#213140" stroke="#48B6F0" stroke-width="1.5">
-    <rect x="378" y="558" width="24" height="24" rx="4"/>
-    <rect x="352" y="584" width="24" height="24" rx="4"/>
-    <rect x="404" y="584" width="24" height="24" rx="4"/>
-    <rect x="378" y="610" width="24" height="24" rx="4"/>
+  <!-- 5 softkeys along the bottom center (softkeys count = 5, FIXED) -->
+  <g fill="#213140" stroke="#4b9dea" stroke-width="2">
+    <rect x="836" y="1002" width="80" height="48" rx="8"/>
+    <rect x="948" y="1002" width="80" height="48" rx="8"/>
+    <rect x="1060" y="1002" width="80" height="48" rx="8"/>
+    <rect x="1172" y="1002" width="80" height="48" rx="8"/>
+    <rect x="1284" y="1002" width="80" height="48" rx="8"/>
   </g>
-  <rect x="378" y="584" width="24" height="24" rx="4" fill="#16212e" stroke="#48B6F0"/>
-  <text x="390" y="654" fill="#8aa0b8" font-size="11" text-anchor="middle">D-Pad 34×34</text>
+  <text x="1100" y="1080" fill="#8aa0b8" font-size="18" text-anchor="middle">5 Softkeys</text>
 
-  <!-- grip zones note -->
-  <text x="42" y="360" fill="#8aa0b8" font-size="10" transform="rotate(-90 42 360)">Griffzone (SMA-frei)</text>
-  <text x="524" y="360" fill="#8aa0b8" font-size="10" transform="rotate(90 524 360)">Griffzone (SMA-frei)</text>
+  <!-- ===================== DIMENSIONS ===================== -->
+  <!-- 230 mm width (below body) -->
+  <line x1="180" y1="1160" x2="2020" y2="1160" stroke="#8aa0b8" stroke-width="1.5" marker-start="url(#arrowStart)" marker-end="url(#arrow)"/>
+  <line x1="180" y1="1120" x2="180" y2="1170" stroke="#42546a" stroke-width="1"/>
+  <line x1="2020" y1="1120" x2="2020" y2="1170" stroke="#42546a" stroke-width="1"/>
+  <rect x="1055" y="1146" width="90" height="28" fill="#0f1722"/>
+  <text x="1100" y="1166" fill="#e7eef9" font-size="19" text-anchor="middle">230 mm</text>
+
+  <!-- 110 mm height (left of body) -->
+  <line x1="120" y1="210" x2="120" y2="1090" stroke="#8aa0b8" stroke-width="1.5" marker-start="url(#arrowStart)" marker-end="url(#arrow)"/>
+  <line x1="100" y1="210" x2="150" y2="210" stroke="#42546a" stroke-width="1"/>
+  <line x1="100" y1="1090" x2="150" y2="1090" stroke="#42546a" stroke-width="1"/>
+  <text x="120" y="650" fill="#e7eef9" font-size="19" text-anchor="middle" transform="rotate(-90 120 650)">110 mm</text>
+
+  <!-- grip-zone notes (SMA-free) -->
+  <text x="205" y="650" fill="#6f8399" font-size="14" text-anchor="middle" transform="rotate(-90 205 650)">Griffzone links</text>
+  <text x="1995" y="650" fill="#6f8399" font-size="14" text-anchor="middle" transform="rotate(90 1995 650)">Griffzone rechts</text>
+
+  <!-- footer / status legend -->
+  <text x="180" y="1230" fill="#6f8399" font-size="15">Status: alle bemaßten Elemente = FIXED (device_envelope, front_display_recess, visible_display_window, touch_ring, dpad, softkeys, sma).</text>
+  <text x="180" y="1256" fill="#6f8399" font-size="15">HOLD/TARGET (LPDDR5-Topologie, UFS-MPN, HyperRF-FPGA) sind Elektronik/BOM — nicht Teil dieser Außengeometrie. Reproduzierbar aus Master-Spec.</text>
 </svg>
