@@ -14,13 +14,13 @@ Produktions-Schaltplan des Mainboards (210 × 92 mm, 12-Layer-HDI) als **reviewb
 | 04 | LPDDR5 | 16 GB, Topologie | **G02 (HOLD)** | ⛔ blockiert |
 | 05 | UFS | 256 GB, M-PHY | **G03 (HOLD)** | ⛔ blockiert |
 | 06 | Recovery/Boot | 32 MB SPI-NOR, BootSel | — | ⬜ |
-| 07 | USB-C PD/USB3/DP | TPS25751A, Mux | — | ⬜ |
+| 07 | USB-C PD/USB3/DP | TPS25751A, Mux | — | 🟡 Entwurf |
 | 08 | USB-Host | USB-A, Hub | — | ⬜ |
 | 09 | HDMI/DP-Out | Display-Out | — | ⬜ |
 | 10 | Ethernet ×2 | 2× RTL8211F, RGMII, Magnetics | — | ⬜ |
 | 11 | Wi-Fi 6E/BT | MT7921-Klasse, Antenne | — | ⬜ |
-| 12 | M.2 / HyperRF-Link | PCIe 2.1 ×1 + USB3 | — | ⬜ |
-| 13 | RP2350-Link | SPI/I²C/UART zum System-Manager | — | ⬜ |
+| 12 | M.2 / HyperRF-Link | PCIe 2.1 ×1 + USB3 | — | 🟡 Entwurf |
+| 13 | RP2350-Link | SPI/I²C/UART zum System-Manager | — | 🟡 Entwurf |
 | 14 | Audio | Codec, Amp, Mic | — | ⬜ |
 | 15 | Sensoren | IMU/Mag/Baro/Temp/ALS (I²C) | — | ⬜ |
 | 16 | Debug/Recovery | JTAG/SWD, UART-Konsole, Testmodi | — | ⬜ |
