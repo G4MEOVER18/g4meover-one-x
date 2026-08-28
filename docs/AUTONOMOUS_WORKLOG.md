@@ -28,7 +28,10 @@
 
 **Validator:** `python tools/spec_validator.py` → Exit 0 (FIXED=47, HOLD=8, TARGET=17; keine verbotenen Claims).
 
-**Nächster Schritt (Session 3):** `presentation/index.html` (inline-SVGs) an die neuen Vorlagen angleichen; parallel Phase 1/G01 `linux/`-Display-Bringup-Skelett beginnen (Device-Tree + DSI-Panel-Checkliste RK3576 + 5″ 720×1280).
+- **`presentation/index.html` synchronisiert** — drei veraltete Inline-SVGs (u.a. das falsche Hochformat-Frontlayout + alte RF-Grafik) durch externe `<img>`-Referenzen auf die neuen `docs/graphics/*.svg` ersetzt → eine Quelle pro Grafik, Präsentation bleibt automatisch synchron. `.fig img`-CSS ergänzt, `.tall` beim jetzt querformatigen Frontlayout entfernt. Ganze Seite via Edge-Headless gerendert/verifiziert (alle 3 Diagramme laden, Layout konsistent, Partner-Abschnitt de-claimed).
+  - Hinweis: Bei späterer Artifact-Veröffentlichung (strikte CSP, keine externen Refs) müssten die SVGs wieder inline oder als data:-URI eingebettet werden. Für lokal/Repo/Pages ist die `<img>`-Referenz korrekt.
+
+**Nächster Schritt (Session 3):** Phase 1/G01 `linux/`-Display-Bringup-Skelett beginnen (Device-Tree-Overlay-Struktur + DSI-Panel-Bringup-Checkliste RK3576 + 5″ 720×1280, Touch-I²C, Suspend/Resume); danach `firmware/rp2350/`-Modularchitektur (Phase 2).
 
 **Offene HOLDs (unverändert):** LPDDR5-Topologie (G02), UFS-MPN (G03), FPGA-MPN (G04), DW3000-Suffix (G05), HDI-Stackup (G06), finale Thermik (G10), Akku-Compliance (G11).
 
