@@ -9,8 +9,8 @@ Produktions-Schaltplan des Mainboards (210 × 92 mm, 12-Layer-HDI) als **reviewb
 | # | Sheet | Kern | Abh. Gate | Status |
 |---|---|---|---|---|
 | 01 | Power-Tree / Entry | USB-C-PD-Eingang, VSYS, Rails-Übersicht | — | 🟡 Entwurf |
-| 02 | RK806S PMIC | RK3576-Rail-Map, Sequencing | G07 (Rail-Map HOLD) | ⬜ |
-| 03 | RK3576 Core | SoC, Entkopplung, Straps, Clocks | — | ⬜ |
+| 02 | RK806S PMIC | RK3576-Rail-Map, Sequencing | G07 (Rail-Map HOLD) | 🟡 Entwurf |
+| 03 | RK3576 Core | SoC, Entkopplung, Straps, Clocks | — | 🟡 Entwurf |
 | 04 | LPDDR5 | 16 GB, Topologie | **G02 (HOLD)** | ⛔ blockiert |
 | 05 | UFS | 256 GB, M-PHY | **G03 (HOLD)** | ⛔ blockiert |
 | 06 | Recovery/Boot | 32 MB SPI-NOR, BootSel | — | ⬜ |
