@@ -40,11 +40,11 @@ Kleine, prüfbare Schritte statt riesiger unverifizierter Rewrites.
 
 ## 4. Release-Gates
 
-Keine Produktions-Gerber/CPL für das direkte RK3576-Mainboard, bevor die Gates in `docs/ROADMAP.md` (G01–G11) geschlossen sind. Aktueller Schwerpunkt: G01 (Display-Bringup), G06 (PCBWay-HDI-DFM, Sponsor aktiv), G04 (FPGA-Auswahl).
+Keine Produktions-Gerber/CPL für das direkte RK3576-Mainboard, bevor die Gates in `docs/ROADMAP.md` (G01–G11) geschlossen sind. Aktueller Schwerpunkt: G01 (Display-Bringup), G06 (PCBWay-HDI-DFM, Outreach vorbereitet — keine Zusage), G04 (FPGA-Auswahl).
 
 ## 5. Provider / Sponsoren
 
-`providers/pcbway/` und `providers/minewing/` enthalten Mail-Vorlagen + Datenpakete. **Mails werden nicht autonom versendet** — Vorlagen bereitstellen, Versand macht der Owner.
+Anfrage-Unterlagen (Mail-Vorlagen + Datenpakete für PCBWay/Minewing) werden **bewusst nicht öffentlich** geführt und liegen lokal beim Owner (nicht im Repo). Auf GitHub gilt ausschließlich **Outreach-Phase / keine Zusage** — nie als bestätigte Partner darstellen. **Mails werden nicht autonom versendet** — Versand macht der Owner.
 
 ## 6. Dateiregeln
 

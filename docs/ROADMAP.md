@@ -11,7 +11,7 @@ Weg von der synchronisierten Architektur (EVT6) zum echten EVT-Prototyp — **oh
 | **G03** | Exaktes 256-GB-UFS-Teil | RK3576-UFS-Host/Device-Validierung | HOLD |
 | **G04** | HyperRF-FPGA-MPN-Freeze | quantitative Auswahl (I/O, SERDES, PCIe-EP, BRAM, DSP, Power, Verfügbarkeit) | HOLD |
 | **G05** | DW3000-UWB-Suffix-Freeze | Bauteilauswahl | HOLD |
-| **G06** | PCBWay 12-Layer-HDI-Stackup/DFM | **PCBWay-Sponsor-Kontakt aktiv** | in Arbeit |
+| **G06** | PCBWay 12-Layer-HDI-Stackup/DFM | Outreach vorbereitet (noch keine Zusage) | geplant |
 | **G07** | Produktions-Schaltplan ERC clean | nach G02/G03 | offen |
 | **G08** | Produktions-Layout DRC/SI/PI komplett | Return-Path, Impedanz, Länge/Skew, IR-Drop | offen |
 | **G09** | RF-EVT-Tuning | Matching auf realer Hardware, nie nur aus Simulation einfrieren | offen |

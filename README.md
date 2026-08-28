@@ -25,7 +25,7 @@ Revision **EVT6** · Status **Architektur synchronisiert / Engineering-Phase** �
 - [Repository-Struktur](#repository-struktur)
 - [Roadmap & Release-Gates](#roadmap--release-gates)
 - [Präsentation](#präsentation)
-- [Mitmachen / Sponsoring](#sponsoring)
+- [Mitmachen / Partner](#mitmachen--partner)
 - [Sicherheit, Recht & verantwortungsvolle Nutzung](#sicherheit--recht)
 - [Lizenz](#lizenz)
 
@@ -143,7 +143,6 @@ g4meover-one-x/
 ├── mechanical/      # CadQuery-Quelle, STEP/STL-Referenzen
 ├── validation/      # Geometrie-, Thermal-, Regressions-Checks
 ├── manufacturing/   # DFM, Stackup, EVT-Build-Prozess
-├── providers/       # Sponsor-/Fertigungspartner: PCBWay, Minewing (Mails + Datenpakete)
 ├── branding/        # Marken-Tokens, Logo
 ├── presentation/    # Konzept-Präsentation
 └── reference_evt6/  # eingefrorene EVT6-Handoff-Referenz
@@ -161,24 +160,27 @@ Der Weg von der synchronisierten Architektur (EVT6) zum echten EVT-Prototyp — 
 | **G02** | Exakte 16-GB-LPDDR5-Topologie | offen (HOLD) |
 | **G03** | Exaktes 256-GB-UFS-Teil | offen (HOLD) |
 | **G04** | HyperRF-FPGA-MPN-Freeze (quantitative Auswahl) | offen (HOLD) |
-| **G06** | PCBWay 12-Layer-HDI-Stackup/DFM | **Sponsor-Kontakt aktiv** |
+| **G06** | 12-Layer-HDI-Stackup/DFM (Prototyping-Anbieter) | Outreach-Phase (keine Zusage) |
 | **G07–G11** | Schaltplan-ERC · Layout-DRC/SI/PI · RF-EVT · Thermal · Akku-Compliance | offen |
 
 ---
 
 ## Präsentation
 
-Die interaktive Konzept-Präsentation (theme-aware, mit Architektur-, RF-Abdeckungs- und Front-Layout-Diagrammen) liegt als eigenständige HTML-Seite unter [`presentation/index.html`](presentation/index.html) — im Browser öffnen. Sie fasst These, Vergleich, Architektur, Spektrum, Release-Gates und Sponsoren auf einer Seite zusammen.
+Die interaktive Konzept-Präsentation (theme-aware, mit Architektur-, RF-Abdeckungs- und Front-Layout-Diagrammen) liegt als eigenständige HTML-Seite unter [`presentation/index.html`](presentation/index.html) — im Browser öffnen. Sie fasst These, Vergleich, Architektur, Spektrum, Release-Gates und angestrebte Partner (Outreach) auf einer Seite zusammen.
 
 ---
 
-## Sponsoring
+## Mitmachen / Partner
 
-Dieses Projekt ist **Open Source** und sucht Fertigungs-/Engineering-Partner. (vollständige Vorlagen + Datenpakete unter [`providers/`](providers/)):
+Dieses Projekt ist **Open Source** und sucht Fertigungs-/Engineering-Partner. Angestrebt werden derzeit:
 
+- ein **HDI-PCB-Prototyping-/DFM-Anbieter** für **G06** (12-Layer-HDI-Stackup, Microvia/Via-in-Pad, Impedanz, BGA-Escape, X-Ray);
+- ein **JDM/ODM-Engineering-Partner** für Schaltplan-/Layout-Review, SI/PI, DFM, Komponenten-Sourcing, Mechanik/Thermal und EVT-Build.
 
+> Status: **Outreach-Phase.** Es besteht derzeit **keine** Sponsoren- oder Fertigungspartnerschaft. Konkrete Ansprechpartner und Anfrage-Unterlagen werden bewusst **nicht öffentlich** geführt.
 
-Interesse an Mitarbeit (Linux/DRM, RF, FPGA, KiCad, Mechanik)? → Issues & Discussions.
+Interesse an Mitarbeit (Linux/DRM, RF, FPGA, KiCad, Mechanik) oder als Fertigungspartner? → Issues & Discussions oder Kontakt über das Profil.
 
 ---
 
