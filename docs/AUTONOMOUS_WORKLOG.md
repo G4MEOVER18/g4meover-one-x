@@ -12,6 +12,26 @@
 
 ---
 
+## 2026-08-28 — Session 7 (Fertigungs-Handoff-Paket — `manufacturing/`)
+
+**Owner-Direktive:** Produkt fertigungsbereit machen, um es an die **zwei Firmen** (PCBWay + Minewing) weiterzugeben. Rückfrage geklärt: **„Paket + Schaltplan selbst bauen"**, **EVT 1–3 Einheiten**, Ownership Hybrid (Annahme).
+
+**Ehrliche Einordnung (dem Owner offengelegt):** Finale Gerber/CPL sind **nicht** seriös erzeugbar — G02(LPDDR5)/G03(UFS)/G04(FPGA)/G06(Stackup) sind HOLD und werden **genau von den zwei Firmen** geschlossen. Der korrekte Übergabestand ist ein **DFM-/RFQ- + Engineering-Handoff-Paket**, nicht geratene Gerber.
+
+**Umgesetzt (`manufacturing/` angelegt, vorher leer):**
+- `README.md` — Handoff-Hub + EVT-Umfang (1–3) + Ownership + „was NICHT hier ist".
+- `MANUFACTURING_READINESS_REVIEW.md` — Gate-für-Gate-Reifegrad-Scorecard (🟢/🟡/🔴), wer schließt was, Forbidden-Claims-Guard.
+- `BOARD_SET.md` — 6-Board-Set (Mainboard 210×92/12L-HDI, HyperRF 136×72, RF-Core 92×66, UI-Carrier 218×100, M.2-Bridge 30×52, Antenna-Rail 150×18), Verbindungen, kritische Layout-Themen.
+- `DFM_RFQ_PCBWAY.md` — sende-fertige PCB-/DFM-RFQ mit **präzisen Stackup-/Impedanz-/Microvia-Fragen** (G06).
+- `ENGINEERING_HANDOFF_MINEWING.md` — JDM-Scope + **Sourcing-Aufträge für die HOLD-Teile** (G02/G03/G04/G05/G11) + Review-Umfang.
+- `BOM_EVT.csv` — vollständige Fertigungs-BOM (45 Positionen) mit Status + **Sourcing_Owner + Gate** je Position.
+
+**Validator:** Exit 0.
+
+**Nächster Schritt (Session 8):** Phase 5 starten — Produktions-Schaltplan (`hardware/schematic/`): Sheet-Plan (18 Sheets) + Netz-/Power-Definitionen, sheet-für-sheet als reviewbare Design-Spezifikation (Basis für KiCad-Zeichnung + Minewing-ERC-Review, Gate G07).
+
+---
+
 ## 2026-08-28 — Session 6 (Software-/UI-Ebene — ONE-X-Launcher-Konzept)
 
 **Umgesetzt (`linux/ui/` angelegt) — schließt die 4. Design-Ebene:**

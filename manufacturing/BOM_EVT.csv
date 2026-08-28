@@ -1,0 +1,46 @@
+Subsystem,Ref,Qty,Manufacturer,MPN / class,Function,Status,Sourcing_Owner,Gate,Compatibility / blocker
+Compute,U100,1,Rockchip,RK3576,Linux application SoC,FIXED,wir (verify),G07,Production reference package still required
+Compute,U101,1,Rockchip,RK806S-5,PMIC,TARGET,wir+Minewing,G07,Exact rail map must follow RK3576 reference
+Memory,U102,1,TBD qualified vendor,16GB LPDDR5 topology,System RAM,HOLD,Minewing+Rockchip,G02,Capacity fixed; exact MPN/topology requires Rockchip confirmation
+Storage,U103,1,TBD qualified vendor,256GB UFS validated for RK3576,Internal storage,HOLD,Minewing,G03,Capacity fixed; generation/MPN not claimed until host/device validation
+Recovery,U104,1,Winbond/MXIC class,32MB SPI NOR,Recovery/boot,TARGET,wir,G07,Freeze exact part after boot design
+Display,LCD1,1,Waveshare / OEM equivalent,5-DSI-TOUCH-B reference class,5in IPS 720x1280 DSI touch,TARGET,wir,G01,EVT module supports RK3576-class host; final panel driver/DT validation
+Display,JLCD,1,Hirose/JAE class,MIPI DSI FPC connector,Display FPC,TARGET,wir,G01,Exact connector follows selected production panel
+Control,U200,1,Raspberry Pi,RP2350B,System-management MCU,FIXED,wir,G07,Use official minimal reference core
+Control,U201,1,Winbond,W25Q128JV class,16MB QSPI MCU flash,FIXED,wir,G07,standard RP2350 design
+UI,U210,1,Azoteq,IQS550-class,Circular capacitive touch ring,TARGET,wir,G07,Electrode tuning in final enclosure
+UI,U211,1,Texas Instruments,DRV2605L,Haptic driver,TARGET,wir,G07,LRA tuning required
+UI,M211,1,Jinlong/Precision Microdrives class,LRA motor,Haptics,TARGET,Minewing,G07,Mechanical/noise validation
+Audio,U220,1,Nuvoton,NAU8822 class,Audio codec,TARGET,wir,G07,Exact suffix freeze
+Audio,U221,1,MAXIM/ADI class,MAX98357A-class,Speaker amplifier,TARGET,wir,G07,Speaker/load selection required
+Audio,MIC1,1,Knowles/TDK class,PDM MEMS microphone,Microphone,TARGET,wir,G07,acoustic port/mechanical tuning
+Audio,SPK1,1,TBD,8ohm compact speaker,Speaker,TARGET,Minewing,G07,acoustic chamber needed
+Sensors,U230,1,TDK InvenSense,ICM-42688-P,6-axis IMU,TARGET,wir,G07,placement/vibration review
+Sensors,U231,1,ST,LIS2MDL,Magnetometer,TARGET,wir,G07,keep away from speakers/haptics/power inductors
+Sensors,U232,1,Bosch,BMP390,Barometer,TARGET,wir,G07,vent path needed; no IP claim yet
+Sensors,U233,1,Sensirion,SHT41,Temp/RH,TARGET,wir,G07,isolate from internal heat sources
+Sensors,U234,1,Vishay,VEML7700,Ambient light,TARGET,wir,G07,light-pipe/window integration
+Battery,CELL1-4,4,Molicel,INR-21700-P50B target,2S2P 72Wh-class pack,TARGET,Minewing,G11,pack engineering/UN38.3 certification still required
+Battery,U300,1,Texas Instruments,BQ25792 class,2S buck-boost charger,TARGET,wir+Minewing,G11,reference-layout/config required
+Battery,U301,1,Texas Instruments,BQ28Z620,2S gauge/protection,TARGET,Minewing,G11,cell characterization/learn cycle
+PD,U302,1,Texas Instruments,TPS25751A,USB-C PD controller,TARGET,wir,G07,configuration/EVM checklist
+Network,U400/U401,2,Realtek,RTL8211F-CG class,2x Gigabit Ethernet PHY,FIXED,wir,G07,reference RGMII/MDI layout
+Wireless,U410,1,MediaTek/Gaoshengda,MT7921AUN / WXT2AM2101 class,Wi-Fi 6E + Bluetooth,FIXED,wir,G07,antenna clearance
+Security,U420,1,Microchip,ATECC608C,Secure element,TARGET,wir,G07,production provisioning plan
+RF Core,U500,1,Texas Instruments,CC1101,Sub-GHz,FIXED,wir,G09,regional matching values tune on EVT
+RF Core,U501,1,Semtech,SX1262,LoRa/FSK,FIXED,wir,G09,regional matching values tune on EVT
+RF Core,U502,1,Texas Instruments,CC2652P7,Zigbee/Thread/BLE,FIXED,wir,G09,RF reference layout
+RF Core,U503,1,Silicon Labs,EFR32ZG23 class,Z-Wave/Z-Wave LR,TARGET,wir,G09,exact module/IC and regional RF freeze
+RF Core,U504,1,NXP,PN7160,NFC/HF RFID,FIXED,wir,G09,antenna coil matching in enclosure
+RF Core,U505,1,Texas Instruments / equivalent,LF RFID AFE,125kHz RFID,TARGET,wir,G09,coil/AFE exact part freeze
+RF Core,U506,1,Impinj,E710 class,RAIN UHF RFID,TARGET,wir,G09,EU regional SAW/PA/antenna path validation
+RF Core,D500/Q500,1,TBD,IR TX/RX pair,Infrared,TARGET,wir,G07,optical window
+HyperRF,U600/U601,2,Lime Microsystems,LMS7002M,4RX/4TX coherent-capable SDR,TARGET,wir+Minewing,G09,full RF front-end/isolation validation
+HyperRF,U602/U603,2,Qorvo,RFFC5071A class,high-band conversion,TARGET,wir+Minewing,G09,spur/filter/isolation lab validation
+HyperRF,U610,1,TBD FPGA vendor,PCIe2.1 endpoint + DSP FPGA,FPGA DSP,HOLD,wir+Minewing,G04,MPN chosen only after I/O/transceiver/power/availability review
+HyperRF,J620,1,Quectel,RM530N-GL class,5G Sub-6/mmWave,TARGET,wir,G09,module guide + antenna integration
+HyperRF,U621,1,Quectel,BG95-S5 class,Rel-17 IoT NTN,TARGET,wir,G09,service/region/antenna validation
+HyperRF,U622,1,Semtech,LR1121,LoRa/LR-FHSS satellite capable radio,TARGET,wir,G09,separate matching per band
+HyperRF,U623,1,u-blox,NEO-F10N-00B-20 class,L1/L5 raw GNSS + PPS,TARGET,wir,G09,antenna placement/blocker tests
+HyperRF,U624,1,Qorvo,DW3000-series,UWB,HOLD,wir+Minewing,G05,exact suffix/reference design not frozen
+Radar,U630,1,Texas Instruments,IWRL6432W class,57-64GHz FMCW radar,TARGET,wir,G09,TI reference launch/antenna and RF window required
