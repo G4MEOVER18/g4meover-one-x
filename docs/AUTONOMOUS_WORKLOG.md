@@ -12,6 +12,20 @@
 
 ---
 
+## 2026-08-28 — Session 6 (Software-/UI-Ebene — ONE-X-Launcher-Konzept)
+
+**Umgesetzt (`linux/ui/` angelegt) — schließt die 4. Design-Ebene:**
+- `linux/ui/mockup_home.svg` — Launcher-Home-Mockup in nativer Landscape-Auflösung (1280×720). Vier farbkodierte Funkdomänen (identische Farben wie `architecture.svg`), RF-Kill-Status prominent in der Statusleiste (rot = aktiv, aus RP2350-Heartbeat), HOLD/TARGET-Reife als Micro-Badge (FPGA G04, 5G/NTN, Kern FIXED, RP2350-Telemetrie), 5 Softkeys + Touch-Ring/D-Pad-Hinweise. Via Edge-Headless gerendert/verifiziert.
+- `linux/ui/README.md` — Leitidee (UI spiegelt Hardware-Realität + Reife), Eingabemodell (Touch / Touch-Ring / D-Pad / 5 Softkeys, blindbedienbar), Informationsarchitektur, **Firmware-Anbindung** (UI = Consumer der RP2350-Telemetrie über ONE-X-Link; RF-Kill-Freigabe = Policy-Anfrage, kein Toggle), Umsetzungs-Skizze (Wayland+SW-Rotation, App-Framework TARGET).
+
+**Statusdisziplin:** Explizit „Konzept, keine Implementierung bis G01 real läuft". App-Framework = TARGET (Auswahl nach Perf-Messung).
+
+**Damit alle 4 Owner-Design-Ebenen adressiert:** Visual/Marke ✅ · Industrie-Design ✅ · Engineering-Architektur (Diagramm+G01+Phase2) ✅ · Software/UI ✅.
+
+**Nächster Schritt (Session 7):** Engineering-Tiefe — Phase 3 Vendor-Docs/Core-BOM-Freeze vorbereiten (G02 LPDDR5-Topologie / G03 UFS-MPN: Anforderungs-/Recherche-Templates, ohne zu raten), oder G04 FPGA-Scored-Candidate-Matrix-Gerüst.
+
+---
+
 ## 2026-08-28 — Session 5 (Industrie-Design — CadQuery-Gehäuse spec-getrieben)
 
 **Befund:** `mechanical/generate_enclosure.py` war bereits im **korrekten Querformat** und maßlich spec-konform (230×110×64, Fenster 112,5×64,5, Ring Ø40, Boards 210×92/136×72/92×66, Rail 150×18, Akku 2S2P/4×21700) — anders als das alte Front-SVG. Fehlend war **Spec-Rückverfolgbarkeit + HOLD-Disziplin**, plus ein Export-Bug.

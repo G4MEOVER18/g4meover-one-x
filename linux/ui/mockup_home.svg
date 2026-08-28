@@ -1,0 +1,113 @@
+<svg viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI,system-ui,Arial,sans-serif">
+  <!--
+    G4MEOVER ONE-X - Launcher Home (KONZEPT-Mockup)
+    Native Landscape 1280x720 (720x1280-Panel per SW-Rotation, Spec-FIXED).
+    Domaenenfarben wie docs/graphics/architecture.svg (Compute/Control/HyperRF/RF-Core).
+    RF-Kill-Status = RP2350-Telemetrie (firmware/rp2350 EVT_HEARTBEAT.flags bit0).
+    HOLD/TARGET-Reife als Micro-Badge sichtbar (Spec-Disziplin bis in die UI).
+  -->
+  <defs>
+    <linearGradient id="gv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DE1C6"/><stop offset="1" stop-color="#48B6F0"/></linearGradient>
+    <style>
+      .t{fill:#e7eef9} .m{fill:#8aa0b8} .s{fill:#6f8399}
+      .panel{fill:#16212e;stroke:#213140;stroke-width:1}
+      .tile{fill:#0f1826;stroke:#243342;stroke-width:1}
+      .lab{fill:#c7d4e3;font-size:14px;text-anchor:middle}
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="720" fill="#0b111a"/>
+
+  <!-- ===================== STATUS BAR ===================== -->
+  <rect x="0" y="0" width="1280" height="46" fill="#0f1722"/>
+  <text x="20" y="30" fill="url(#gv)" font-size="20" font-weight="800">◆ ONE-X</text>
+  <text x="150" y="30" class="s" font-size="13">Rev EVT6 · Landscape 1280×720</text>
+  <text x="640" y="30" class="t" font-size="17" font-weight="600" text-anchor="middle">14:32</text>
+  <!-- RF-KILL (sicherheitskritisch, aus RP2350-Heartbeat) -->
+  <rect x="866" y="12" width="120" height="24" rx="12" fill="#2a1512" stroke="#f0714b" stroke-width="1.5"/>
+  <circle cx="882" cy="24" r="5" fill="#f0714b"/>
+  <text x="895" y="29" fill="#f0714b" font-size="13" font-weight="700">RF-KILL AN</text>
+  <!-- connectivity + battery -->
+  <text x="1010" y="30" class="m" font-size="13">GNSS</text>
+  <text x="1062" y="30" class="m" font-size="13">ETH</text>
+  <text x="1108" y="30" class="m" font-size="13">WLAN</text>
+  <rect x="1158" y="14" width="40" height="20" rx="4" fill="none" stroke="#8aa0b8" stroke-width="1.5"/>
+  <rect x="1160" y="16" width="28" height="16" rx="2" fill="#3ecf8e"/>
+  <rect x="1198" y="19" width="4" height="10" rx="1" fill="#8aa0b8"/>
+  <text x="1230" y="30" class="t" font-size="13" font-weight="600" text-anchor="end">82%</text>
+
+  <!-- ===================== DOMAIN PANELS (2x2) ===================== -->
+  <!-- helper: each panel has an accent bar (domain color), header, 4 tiles, status note -->
+
+  <!-- P1 HyperRF (violet) -->
+  <g>
+    <rect class="panel" x="16" y="54" width="616" height="300" rx="14"/>
+    <rect x="16" y="54" width="7" height="300" rx="3" fill="#9b8cff"/>
+    <text x="40" y="86" fill="#9b8cff" font-size="19" font-weight="800">HyperRF · SDR</text>
+    <rect x="470" y="70" width="146" height="22" rx="11" fill="#1c1710"/><text x="543" y="86" fill="#f0b048" font-size="12" text-anchor="middle">FPGA · HOLD (G04)</text>
+    <!-- tiles -->
+    <g>
+      <g transform="translate(44,110)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#9b8cff"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">SP</text><text x="66" y="104" class="lab">Spektrum</text><text x="66" y="124" class="s" font-size="11" text-anchor="middle">100 kHz–6 GHz</text></g>
+      <g transform="translate(192,110)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#9b8cff"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">WF</text><text x="66" y="104" class="lab">Wasserfall</text><text x="66" y="124" class="s" font-size="11" text-anchor="middle">4RX/4TX</text></g>
+      <g transform="translate(340,110)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#9b8cff"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">ID</text><text x="66" y="104" class="lab">Signal-ID</text></g>
+      <g transform="translate(488,110)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#9b8cff"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">RE</text><text x="66" y="104" class="lab">Rec / Replay</text></g>
+    </g>
+    <text x="40" y="290" class="s" font-size="12">5G · NTN · GNSS · UWB · 60-GHz-Radar → separate Kacheln (TARGET/HOLD)</text>
+  </g>
+
+  <!-- P2 RF-Core (amber) -->
+  <g>
+    <rect class="panel" x="648" y="54" width="616" height="300" rx="14"/>
+    <rect x="648" y="54" width="7" height="300" rx="3" fill="#f0b048"/>
+    <text x="672" y="86" fill="#f0b048" font-size="19" font-weight="800">RF-Core · Low-Power</text>
+    <rect x="1090" y="70" width="150" height="22" rx="11" fill="#101c14"/><text x="1165" y="86" fill="#3ecf8e" font-size="12" text-anchor="middle">Kern-Radios · FIXED</text>
+    <g>
+      <g transform="translate(676,110)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#f0b048"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">SG</text><text x="66" y="104" class="lab">Sub-GHz</text><text x="66" y="124" class="s" font-size="11" text-anchor="middle">CC1101 · SX1262</text></g>
+      <g transform="translate(824,110)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#f0b048"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">NF</text><text x="66" y="104" class="lab">NFC / RFID</text><text x="66" y="124" class="s" font-size="11" text-anchor="middle">PN7160 · LF/UHF</text></g>
+      <g transform="translate(972,110)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#f0b048"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">ZB</text><text x="66" y="104" class="lab">Zigbee / BLE</text><text x="66" y="124" class="s" font-size="11" text-anchor="middle">CC2652P7</text></g>
+      <g transform="translate(1120,110)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#f0b048"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">IR</text><text x="66" y="104" class="lab">Infrarot</text><text x="66" y="124" class="s" font-size="11" text-anchor="middle">+ 1-Wire</text></g>
+    </g>
+    <text x="672" y="290" class="s" font-size="12">Physischer TX/RF-Kill greift für ALLE Sender (RP2350, HW-erzwungen)</text>
+  </g>
+
+  <!-- P3 Connectivity (blue) -->
+  <g>
+    <rect class="panel" x="16" y="368" width="616" height="300" rx="14"/>
+    <rect x="16" y="368" width="7" height="300" rx="3" fill="#48B6F0"/>
+    <text x="40" y="400" fill="#48B6F0" font-size="19" font-weight="800">Konnektivität</text>
+    <rect x="486" y="384" width="130" height="22" rx="11" fill="#1c1710"/><text x="551" y="400" fill="#f0b048" font-size="12" text-anchor="middle">5G/NTN · TARGET</text>
+    <g>
+      <g transform="translate(44,424)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#48B6F0"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">WL</text><text x="66" y="104" class="lab">WLAN 6E</text></g>
+      <g transform="translate(192,424)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#48B6F0"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">ET</text><text x="66" y="104" class="lab">Ethernet ×2</text></g>
+      <g transform="translate(340,424)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#48B6F0"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">5G</text><text x="66" y="104" class="lab">5G / NTN</text></g>
+      <g transform="translate(488,424)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#48B6F0"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">GP</text><text x="66" y="104" class="lab">GNSS</text><text x="66" y="124" class="s" font-size="11" text-anchor="middle">L1/L5 raw</text></g>
+    </g>
+  </g>
+
+  <!-- P4 System (teal) -->
+  <g>
+    <rect class="panel" x="648" y="368" width="616" height="300" rx="14"/>
+    <rect x="648" y="368" width="7" height="300" rx="3" fill="#2DE1C6"/>
+    <text x="672" y="400" fill="#2DE1C6" font-size="19" font-weight="800">System</text>
+    <rect x="1058" y="384" width="182" height="22" rx="11" fill="#0e1a1c"/><text x="1149" y="400" fill="#2DE1C6" font-size="12" text-anchor="middle">RP2350-Telemetrie live</text>
+    <g>
+      <g transform="translate(676,424)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#2DE1C6"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">FI</text><text x="66" y="104" class="lab">Dateien</text></g>
+      <g transform="translate(824,424)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#2DE1C6"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">TE</text><text x="66" y="104" class="lab">Terminal</text></g>
+      <g transform="translate(972,424)"><rect class="tile" width="132" height="150" rx="12"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#2DE1C6"/><text x="66" y="55" fill="#0b111a" font-size="18" font-weight="800" text-anchor="middle">ST</text><text x="66" y="104" class="lab">Einstellungen</text></g>
+      <g transform="translate(1120,424)"><rect class="tile" width="132" height="150" rx="12" stroke="#f0714b"/><rect x="42" y="24" width="48" height="48" rx="12" fill="#f0714b"/><text x="66" y="56" fill="#0b111a" font-size="22" font-weight="800" text-anchor="middle">!</text><text x="66" y="104" class="lab">RF-Kill</text><text x="66" y="124" fill="#f0714b" font-size="11" text-anchor="middle">Freigabe</text></g>
+    </g>
+    <text x="672" y="604" class="s" font-size="12">Akku 82 % · Lüfter Auto · Watchdog OK — gemeldet vom Always-On-RP2350B</text>
+  </g>
+
+  <!-- ===================== SOFTKEY / INPUT BAR ===================== -->
+  <rect x="0" y="676" width="1280" height="44" fill="#0f1722"/>
+  <text x="20" y="703" class="s" font-size="12">Touch-Ring: Tuning/Scroll · D-Pad: Navigation · Touch: direkt</text>
+  <g font-size="13" text-anchor="middle">
+    <g transform="translate(560,688)"><rect width="120" height="24" rx="6" fill="#16212e" stroke="#243342"/><text x="60" y="17" class="t">Menü</text></g>
+    <g transform="translate(688,688)"><rect width="120" height="24" rx="6" fill="#16212e" stroke="#243342"/><text x="60" y="17" class="t">Zurück</text></g>
+    <g transform="translate(816,688)"><rect width="120" height="24" rx="6" fill="#16212e" stroke="#243342"/><text x="60" y="17" class="t">Scan</text></g>
+    <g transform="translate(944,688)"><rect width="120" height="24" rx="6" fill="#16212e" stroke="#243342"/><text x="60" y="17" class="t">Favorit</text></g>
+    <g transform="translate(1072,688)"><rect width="120" height="24" rx="6" fill="#16212e" stroke="#243342"/><text x="60" y="17" class="t">Power</text></g>
+  </g>
+  <text x="1264" y="703" class="s" font-size="11" text-anchor="end">5 physische Softkeys</text>
+</svg>
