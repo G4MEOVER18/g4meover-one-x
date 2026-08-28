@@ -12,6 +12,18 @@
 
 ---
 
+## 2026-08-28 — Session 8 (Phase 5 Kickoff — Mainboard-Schaltplan)
+
+**Umgesetzt (`hardware/mainboard/schematic/` angelegt):**
+- `README.md` — Schaltplan-Methodik (reviewbare Design-Spec je Sheet statt sofort KiCad → SoT-Disziplin bleibt), **18-Sheet-Index** mit Status, **Netz-/Power-Namenskonvention** (aus POWER_TREE.csv), Impedanz-/SI-Ziele (50 Ω SE / 90 Ω / 100 Ω diff), ERC-Absicht (G07). Sheets 04 (LPDDR5) + 05 (UFS) bewusst **⛔ blockiert** bis G02/G03.
+- `sheet_01_power_tree.md` — erstes fundamentales Sheet: Blockfluss (USB-C-PD → Charger → VSYS → Rails), Netz-Tabelle, Kern-Bauteile (TPS25751A/BQ25792/BQ28Z620/RK806S), kritische Notizen (Sequencing, +3V3_AON-immer-an für RP2350, IR-Drop 10 A, RF-Kill-Bezug), ERC-Absicht, HOLD (RK806S-Rail-Map).
+
+**Methodik-Entscheidung:** Schaltplan als versionierbare Design-Spezifikation (diff-bar, HOLD sichtbar); KiCad-Zeichnung wird daraus deterministisch. Basis für Minewing-ERC-Review (G07).
+
+**Nächster Schritt (Session 9+):** restliche Sheets sheet-für-sheet — als Nächstes Sheet 03 (RK3576-Core) + Sheet 02 (RK806S-PMIC, Rail-Map-Anforderungen), dann RP2350-Link/USB-C-PD/Ethernet/M.2 usw. Sheets 04/05 bleiben Platzhalter bis G02/G03.
+
+---
+
 ## 2026-08-28 — Session 7 (Fertigungs-Handoff-Paket — `manufacturing/`)
 
 **Owner-Direktive:** Produkt fertigungsbereit machen, um es an die **zwei Firmen** (PCBWay + Minewing) weiterzugeben. Rückfrage geklärt: **„Paket + Schaltplan selbst bauen"**, **EVT 1–3 Einheiten**, Ownership Hybrid (Annahme).
