@@ -12,6 +12,19 @@
 
 ---
 
+## 2026-09-01 — Session 12 (Board-Schaltpläne: UI-Carrier / M.2-Bridge / Antenna-Rail)
+
+**Umgesetzt:** die drei **nicht-HOLD-blockierten** Board-Schaltpläne als Design-Spec (gleiche Methodik wie Mainboard/RF-Core) — damit ist der Schaltplan-Satz für **5 von 6 Boards** komplett (nur HyperRF bleibt FPGA-/HOLD-blockiert bis G04).
+- **`hardware/ui-carrier/schematic/`** (218×100) — README + 4 Sheets. Kern-Designentscheidung: **Zwei-Domänen-Trennung** über einen `J_UI` — Anzeige/kap. Touch → RK3576 (DSI+I²C), physische Bedienung (Ring/D-Pad/5 Softkeys/Haptik/LEDs) → **RP2350** (funktioniert vor/ohne Linux, für Wake/Recovery/RF-Kill-Bestätigung). Sheet 01 DSI/Backlight · 02 Touch(GT911-Klasse, Adress-Strapping-Gotcha) · 03 Ring-AFE/D-Pad/Softkeys · 04 Haptik/Status-LED (`LED_RFKILL` aus RP2350, nicht Linux)/`J_UI`.
+- **`hardware/m2-bridge/schematic/`** (30×52) — README + 2 Sheets. High-Speed-Brücke **PCIe 2.1 ×1 + USB3** (FIXED; **kein** Gen3 ×4). Sheet 01 PCIe/USB3-Diff-Paare + AC-Kopplung + RefClk · 02 Sideband(PERST/CLKREQ/WAKE) + Power inkl. `HYPERRF_AUX_5V`-Durchführung + TPs.
+- **`hardware/antenna-rail/schematic/`** (150×18) — README + 1 Sheet. **Genau 4× SMA** (Forbidden „10+ SMA" respektiert), 50-Ω-Feeds, Pi/L-Matching- + SAW-Footprints (DNP bis G09), ESD je Port, Masse-Rückführung. Band-/Radio-Zuordnung je SMA = TBD 📄; Matching wird **auf realer HW getunt (G09)**, nie nur Simulation.
+
+**Statusdisziplin durchgehend:** Busse/Signale FIXED aus Spec; alle Herstellerwerte (DSI-Timings, Touch-Register, Ring-AFE-MPN, AC-Cs, Steckertyp/-höhe, Matching-Werte) sichtbar `TBD 📄`/TARGET statt geraten. Kein Gate geschlossen. Validator Exit 0.
+
+**Nächster Schritt (Session 13+):** (a) KiCad-Zeichnung aus den fertigen Mainboard-/RF-Core-Specs beginnen (Richtung G07 ERC), (b) HyperRF-Schaltplan-Sheets, soweit **nicht** FPGA-abhängig (LMS-Analog-Frontend, Power, Clock), vorbereiten, (c) auf Vendor-Rückmeldungen (PCBWay/Minewing) warten und HOLDs schließen.
+
+---
+
 ## 2026-09-01 — Session 11 (Phase 8 / Gate G04 — HyperRF-FPGA Scored Candidate Matrix)
 
 **Kontext-Fix zuerst:** Session 10 (RF-Core-Schaltplan) war committet (`a54e006`), aber **nicht** im Worklog dokumentiert — siehe Nachtrag unten (Session 10). Kein Code-Verlust, nur Protokoll nachgezogen.
