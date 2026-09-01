@@ -1,0 +1,23 @@
+{
+  "meta": {
+    "filename": "m2-bridge.kicad_pro",
+    "version": 1
+  },
+  "board": {},
+  "libraries": {
+    "pinned_footprint_libs": [],
+    "pinned_symbol_libs": []
+  },
+  "schematic": {},
+  "sheets": [
+    [
+      "0117343f-4ba7-5ee1-ad00-a4c789dc0ed1",
+      "01:M.2-Bridge Sheet 01 — High-Speed (PCIe 2.1 ×1 / USB3)"
+    ],
+    [
+      "04a0c0f6-94ae-50ed-b537-e5e503cc5adb",
+      "02:M.2-Bridge Sheet 02 — Sideband / Power / Testpoints"
+    ]
+  ],
+  "text_variables": {}
+}

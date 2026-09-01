@@ -1,0 +1,1021 @@
+{
+  "board": "mainboard",
+  "root_uuid": "674468c4-de73-5c94-b1cc-3b16121ca2e4",
+  "sheet_count": 18,
+  "generator": "tools/gen_kicad_project.py",
+  "source": "hardware/mainboard/schematic/",
+  "sheets": [
+    {
+      "num": "01",
+      "file": "sheet_01_power_tree.md",
+      "kicad_file": "sheet_01_power_tree.kicad_sch",
+      "title": "Sheet 01 — Power-Tree / Entry",
+      "uuid": "cf9fa8dc-e346-5a06-a796-2b5d461e7836",
+      "nets": [
+        "BAT_2S2P",
+        "GND",
+        "HYPERRF_AUX_5V",
+        "PG",
+        "PWR_EN",
+        "RESET_*n",
+        "RF_KILL",
+        "VBUS_C",
+        "VSYS"
+      ],
+      "interboard_nets": [
+        "BAT_2S2P",
+        "HYPERRF_AUX_5V",
+        "RF_KILL"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "02",
+      "file": "sheet_02_rk806s_pmic.md",
+      "kicad_file": "sheet_02_rk806s_pmic.kicad_sch",
+      "title": "Sheet 02 — RK806S PMIC",
+      "uuid": "37005048-d521-5037-bb41-558f9d83efbf",
+      "nets": [
+        "NPOR",
+        "PMIC",
+        "PMIC_INT",
+        "PMIC_SDA",
+        "PMIC_SLEEP",
+        "PMIC_SPI",
+        "RESET_n",
+        "VCC_1V8",
+        "VCC_3V3",
+        "VDD_CPU_B",
+        "VDD_CPU_L",
+        "VDD_DDR",
+        "VDD_GPU",
+        "VDD_LOGIC",
+        "VDD_NPU",
+        "VSYS"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "03",
+      "file": "sheet_03_rk3576_core.md",
+      "kicad_file": "sheet_03_rk3576_core.kicad_sch",
+      "title": "Sheet 03 — RK3576 Core",
+      "uuid": "d8d7d92c-a79a-50fe-bb8d-9fa951f1b513",
+      "nets": [
+        "DSI0_CLK_P",
+        "DSI0_D0..3_P",
+        "I2C<n",
+        "I2S",
+        "NPOR",
+        "PCIE_*_P",
+        "PMIC_INT",
+        "PMIC_SLEEP",
+        "RESET_n",
+        "RGMII",
+        "RTC_32K_IN",
+        "SDIO",
+        "USB3_*_P",
+        "VCCIO",
+        "VCC_1V8",
+        "VCC_3V3",
+        "VDD_CPU_B",
+        "VDD_CPU_L",
+        "VDD_DDR",
+        "VDD_GPU",
+        "VDD_LOGIC",
+        "VDD_NPU",
+        "XIN_24M",
+        "XOUT_24M"
+      ],
+      "interboard_nets": [
+        "DSI0_CLK_P",
+        "DSI0_D0..3_P"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "04",
+      "file": "sheet_04_lpddr5.md",
+      "kicad_file": "sheet_04_lpddr5.kicad_sch",
+      "title": "Sheet 04 — LPDDR5 ⛔ BLOCKIERT (Gate G02)",
+      "uuid": "79cf390b-c211-5435-95f7-4dfef76e1932",
+      "nets": [
+        "DQS",
+        "VDDQ",
+        "VDD_DDR"
+      ],
+      "interboard_nets": [],
+      "hold_stub": true
+    },
+    {
+      "num": "05",
+      "file": "sheet_05_ufs.md",
+      "kicad_file": "sheet_05_ufs.kicad_sch",
+      "title": "Sheet 05 — UFS ⛔ BLOCKIERT (Gate G03)",
+      "uuid": "651b1a0f-1ba4-5569-adc6-ccbbd0d7a7e3",
+      "nets": [
+        "REF_CLK",
+        "RESET_n",
+        "UFS_RX_P",
+        "UFS_TX_P",
+        "VCC",
+        "VCCQ",
+        "VCCQ2"
+      ],
+      "interboard_nets": [],
+      "hold_stub": true
+    },
+    {
+      "num": "06",
+      "file": "sheet_06_recovery_boot.md",
+      "kicad_file": "sheet_06_recovery_boot.kicad_sch",
+      "title": "Sheet 06 — Recovery / Boot (SPI-NOR)",
+      "uuid": "41b18ecd-7e7a-5c26-b4e1-ce884ee58df4",
+      "nets": [
+        "CMD_RECOVERY",
+        "MASKROM_n",
+        "RECOVERY_BTN_n",
+        "SPI_NOR",
+        "SPI_NOR_HOLDn",
+        "SPI_NOR_SCK",
+        "SPI_NOR_WPn"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "07",
+      "file": "sheet_07_usbc_pd.md",
+      "kicad_file": "sheet_07_usbc_pd.kicad_sch",
+      "title": "Sheet 07 — USB-C (PD / USB3 / DP-Alt)",
+      "uuid": "08017d17-6876-52d9-a3ee-f1c5b6e96aa8",
+      "nets": [
+        "CC1",
+        "CMD",
+        "DP_AUX_P",
+        "DP_LANE0..3_P",
+        "PD_I2C",
+        "PD_INT_n",
+        "SBU1",
+        "USB2_D_P",
+        "USB3_RX_P",
+        "USB3_TX_P",
+        "VBUS_C"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "08",
+      "file": "sheet_08_usb_host.md",
+      "kicad_file": "sheet_08_usb_host.kicad_sch",
+      "title": "Sheet 08 — USB-Host (USB-A)",
+      "uuid": "f8ae569b-143c-5a9b-b72f-61c9962e0b9b",
+      "nets": [
+        "USBA_D_P",
+        "USBA_EN",
+        "USBA_OC_n",
+        "USBA_SS_RX_P",
+        "USBA_SS_TX_P",
+        "USBA_VBUS"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "09",
+      "file": "sheet_09_hdmi_dp_out.md",
+      "kicad_file": "sheet_09_hdmi_dp_out.kicad_sch",
+      "title": "Sheet 09 — HDMI / DP-Out",
+      "uuid": "077a7857-4bb6-5d64-b930-cc9f0f3d9d91",
+      "nets": [
+        "DDC",
+        "HDMI_CEC",
+        "HDMI_CLK_P",
+        "HDMI_DDC_SCL",
+        "HDMI_HPD",
+        "HDMI_TX0..2_P"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "10",
+      "file": "sheet_10_ethernet.md",
+      "kicad_file": "sheet_10_ethernet.kicad_sch",
+      "title": "Sheet 10 — Ethernet ×2",
+      "uuid": "3175db75-5443-5fd1-b809-6e0dd7bb6cf4",
+      "nets": [
+        "ETH*_RST_n",
+        "ETH0_INT_n",
+        "ETH0_LED",
+        "ETH0_MDI0..3_P",
+        "ETH0_RST_n",
+        "MDC",
+        "MDIO",
+        "RGMII0_RXC",
+        "RGMII0_RXD0..3",
+        "RGMII0_RX_CTL",
+        "RGMII0_TXC",
+        "RGMII0_TXD0..3",
+        "RGMII0_TX_CTL"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "11",
+      "file": "sheet_11_wifi_bt.md",
+      "kicad_file": "sheet_11_wifi_bt.kicad_sch",
+      "title": "Sheet 11 — Wi-Fi 6E / Bluetooth",
+      "uuid": "5a7f5534-024a-5a55-9b82-254efe2c9396",
+      "nets": [
+        "BT_UART",
+        "PCIE",
+        "PCM",
+        "SDIO",
+        "WIFI_ANT_2G4",
+        "WIFI_ANT_5G6G",
+        "WIFI_CLK_32K",
+        "WIFI_RST_n",
+        "WIFI_USB_D_P",
+        "WIFI_WAKE",
+        "WL_INT"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "12",
+      "file": "sheet_12_m2_hyperrf_link.md",
+      "kicad_file": "sheet_12_m2_hyperrf_link.kicad_sch",
+      "title": "Sheet 12 — M.2 / HyperRF-Link",
+      "uuid": "69791d9f-6933-58e4-81df-276dbdd8229d",
+      "nets": [
+        "GPIO",
+        "HYPERRF_AUX_5V",
+        "I2C",
+        "LED",
+        "PCIE_CLKREQ_n",
+        "PCIE_PERST_n",
+        "PCIE_REFCLK",
+        "PCIE_REFCLK_P",
+        "PCIE_RX_P",
+        "PCIE_TX_P",
+        "PCIE_WAKE_n",
+        "REFCLK",
+        "USB2_M2_D_P",
+        "USB3_M2_RX_P",
+        "USB3_M2_TX_P"
+      ],
+      "interboard_nets": [
+        "HYPERRF_AUX_5V",
+        "PCIE_CLKREQ_n",
+        "PCIE_PERST_n",
+        "PCIE_REFCLK",
+        "PCIE_REFCLK_P",
+        "PCIE_RX_P",
+        "PCIE_TX_P",
+        "PCIE_WAKE_n",
+        "USB2_M2_D_P",
+        "USB3_M2_RX_P",
+        "USB3_M2_TX_P"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "13",
+      "file": "sheet_13_rp2350_link.md",
+      "kicad_file": "sheet_13_rp2350_link.kicad_sch",
+      "title": "Sheet 13 — RP2350-Link (System-Manager-Anbindung)",
+      "uuid": "edeee546-2dcf-5485-96f3-4a7127c1714d",
+      "nets": [
+        "CMD_RECOVERY",
+        "FAN_PWM",
+        "HAPTIC",
+        "PWR_BTN_n",
+        "RF_KILL",
+        "RP_BOOTSEL",
+        "RP_I2C_SCL",
+        "RP_IRQ_n",
+        "RP_RUN_n",
+        "RP_SPI_SCK",
+        "RP_UART_TX",
+        "SOFTKEY",
+        "SYS_PWR_EN",
+        "TOUCHRING",
+        "TOUCH_WAKE"
+      ],
+      "interboard_nets": [
+        "RF_KILL"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "14",
+      "file": "sheet_14_audio.md",
+      "kicad_file": "sheet_14_audio.kicad_sch",
+      "title": "Sheet 14 — Audio",
+      "uuid": "f64a66ab-b0d7-5a71-902d-76d9e514069a",
+      "nets": [
+        "AUDIO_I2C",
+        "HP_DET",
+        "HP_L",
+        "I2S",
+        "I2S_BCLK",
+        "PDM_CLK",
+        "SPK_P"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "15",
+      "file": "sheet_15_sensors.md",
+      "kicad_file": "sheet_15_sensors.kicad_sch",
+      "title": "Sheet 15 — Sensoren",
+      "uuid": "aeed64eb-dfb2-5ae5-b815-c2717f43db65",
+      "nets": [
+        "IMU_INT1",
+        "SENS_3V3",
+        "SENS_I2C",
+        "SENS_I2C_SCL"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "16",
+      "file": "sheet_16_debug_recovery.md",
+      "kicad_file": "sheet_16_debug_recovery.kicad_sch",
+      "title": "Sheet 16 — Debug / Recovery",
+      "uuid": "9286bbea-2847-505d-90b4-a20c3f0b0a93",
+      "nets": [
+        "CMD_RECOVERY",
+        "DBG_UART_TX",
+        "JTAG",
+        "MASKROM_n",
+        "RK_RESET_n",
+        "RP_BOOTSEL",
+        "RP_RUN_n",
+        "RP_SWD_IO",
+        "RP_USB_D_P",
+        "SWD"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "17",
+      "file": "sheet_17_connectors.md",
+      "kicad_file": "sheet_17_connectors.kicad_sch",
+      "title": "Sheet 17 — Connectors (Inter-Board)",
+      "uuid": "746861f6-add7-5476-9da9-586207ed181b",
+      "nets": [
+        "ANT_1",
+        "ANT_2",
+        "ANT_3",
+        "ANT_4",
+        "BAT_2S2P",
+        "BL_EN",
+        "BL_PWM",
+        "DSI0",
+        "DSI0_CLK_P",
+        "DSI0_D0..D3_P",
+        "HYPERRF_AUX_5V",
+        "J_ANT",
+        "J_BAT",
+        "J_DSI",
+        "J_M2",
+        "J_PWR",
+        "J_RFCORE",
+        "J_UI",
+        "KEY",
+        "LCD_RST_n",
+        "LED",
+        "RFC_I2C",
+        "RFC_IRQ",
+        "RFC_SPI",
+        "RFC_UART",
+        "RF_KILL",
+        "RF_KILL_SW_n",
+        "TP_INT",
+        "TP_RST",
+        "TP_SCL",
+        "TP_SDA",
+        "TX_GATE_OK",
+        "VBUS_C"
+      ],
+      "interboard_nets": [
+        "ANT_1",
+        "ANT_2",
+        "ANT_3",
+        "ANT_4",
+        "BAT_2S2P",
+        "BL_EN",
+        "BL_PWM",
+        "DSI0_CLK_P",
+        "DSI0_D0..D3_P",
+        "HYPERRF_AUX_5V",
+        "LCD_RST_n",
+        "RFC_I2C",
+        "RFC_IRQ",
+        "RFC_SPI",
+        "RFC_UART",
+        "RF_KILL",
+        "RF_KILL_SW_n",
+        "TP_INT",
+        "TP_RST",
+        "TP_SCL",
+        "TP_SDA",
+        "TX_GATE_OK"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "18",
+      "file": "sheet_18_testpoints.md",
+      "kicad_file": "sheet_18_testpoints.kicad_sch",
+      "title": "Sheet 18 — Testpoints / Bring-up",
+      "uuid": "3f029761-5f31-5ec7-b4f4-5e57822cf380",
+      "nets": [
+        "AUDIO_I2C",
+        "BAT_2S2P",
+        "DBG_UART_TX",
+        "HYPERRF_AUX_5V",
+        "MASKROM_n",
+        "PCIE_RST_n",
+        "PD_I2C",
+        "PG",
+        "PWR_EN",
+        "REFCLK",
+        "RF_KILL",
+        "RK_RESET_n",
+        "RP_BOOTSEL",
+        "RP_RUN_n",
+        "RP_UART",
+        "SENS_I2C",
+        "VSYS"
+      ],
+      "interboard_nets": [
+        "BAT_2S2P",
+        "HYPERRF_AUX_5V",
+        "RF_KILL"
+      ],
+      "hold_stub": false
+    }
+  ],
+  "net_index": {
+    "ANT_1": [
+      "17"
+    ],
+    "ANT_2": [
+      "17"
+    ],
+    "ANT_3": [
+      "17"
+    ],
+    "ANT_4": [
+      "17"
+    ],
+    "AUDIO_I2C": [
+      "14",
+      "18"
+    ],
+    "BAT_2S2P": [
+      "01",
+      "17",
+      "18"
+    ],
+    "BL_EN": [
+      "17"
+    ],
+    "BL_PWM": [
+      "17"
+    ],
+    "BT_UART": [
+      "11"
+    ],
+    "CC1": [
+      "07"
+    ],
+    "CMD": [
+      "07"
+    ],
+    "CMD_RECOVERY": [
+      "06",
+      "13",
+      "16"
+    ],
+    "DBG_UART_TX": [
+      "16",
+      "18"
+    ],
+    "DDC": [
+      "09"
+    ],
+    "DP_AUX_P": [
+      "07"
+    ],
+    "DP_LANE0..3_P": [
+      "07"
+    ],
+    "DQS": [
+      "04"
+    ],
+    "DSI0": [
+      "17"
+    ],
+    "DSI0_CLK_P": [
+      "03",
+      "17"
+    ],
+    "DSI0_D0..3_P": [
+      "03"
+    ],
+    "DSI0_D0..D3_P": [
+      "17"
+    ],
+    "ETH*_RST_n": [
+      "10"
+    ],
+    "ETH0_INT_n": [
+      "10"
+    ],
+    "ETH0_LED": [
+      "10"
+    ],
+    "ETH0_MDI0..3_P": [
+      "10"
+    ],
+    "ETH0_RST_n": [
+      "10"
+    ],
+    "FAN_PWM": [
+      "13"
+    ],
+    "GND": [
+      "01"
+    ],
+    "GPIO": [
+      "12"
+    ],
+    "HAPTIC": [
+      "13"
+    ],
+    "HDMI_CEC": [
+      "09"
+    ],
+    "HDMI_CLK_P": [
+      "09"
+    ],
+    "HDMI_DDC_SCL": [
+      "09"
+    ],
+    "HDMI_HPD": [
+      "09"
+    ],
+    "HDMI_TX0..2_P": [
+      "09"
+    ],
+    "HP_DET": [
+      "14"
+    ],
+    "HP_L": [
+      "14"
+    ],
+    "HYPERRF_AUX_5V": [
+      "01",
+      "12",
+      "17",
+      "18"
+    ],
+    "I2C": [
+      "12"
+    ],
+    "I2C<n": [
+      "03"
+    ],
+    "I2S": [
+      "03",
+      "14"
+    ],
+    "I2S_BCLK": [
+      "14"
+    ],
+    "IMU_INT1": [
+      "15"
+    ],
+    "JTAG": [
+      "16"
+    ],
+    "J_ANT": [
+      "17"
+    ],
+    "J_BAT": [
+      "17"
+    ],
+    "J_DSI": [
+      "17"
+    ],
+    "J_M2": [
+      "17"
+    ],
+    "J_PWR": [
+      "17"
+    ],
+    "J_RFCORE": [
+      "17"
+    ],
+    "J_UI": [
+      "17"
+    ],
+    "KEY": [
+      "17"
+    ],
+    "LCD_RST_n": [
+      "17"
+    ],
+    "LED": [
+      "12",
+      "17"
+    ],
+    "MASKROM_n": [
+      "06",
+      "16",
+      "18"
+    ],
+    "MDC": [
+      "10"
+    ],
+    "MDIO": [
+      "10"
+    ],
+    "NPOR": [
+      "02",
+      "03"
+    ],
+    "PCIE": [
+      "11"
+    ],
+    "PCIE_*_P": [
+      "03"
+    ],
+    "PCIE_CLKREQ_n": [
+      "12"
+    ],
+    "PCIE_PERST_n": [
+      "12"
+    ],
+    "PCIE_REFCLK": [
+      "12"
+    ],
+    "PCIE_REFCLK_P": [
+      "12"
+    ],
+    "PCIE_RST_n": [
+      "18"
+    ],
+    "PCIE_RX_P": [
+      "12"
+    ],
+    "PCIE_TX_P": [
+      "12"
+    ],
+    "PCIE_WAKE_n": [
+      "12"
+    ],
+    "PCM": [
+      "11"
+    ],
+    "PDM_CLK": [
+      "14"
+    ],
+    "PD_I2C": [
+      "07",
+      "18"
+    ],
+    "PD_INT_n": [
+      "07"
+    ],
+    "PG": [
+      "01",
+      "18"
+    ],
+    "PMIC": [
+      "02"
+    ],
+    "PMIC_INT": [
+      "02",
+      "03"
+    ],
+    "PMIC_SDA": [
+      "02"
+    ],
+    "PMIC_SLEEP": [
+      "02",
+      "03"
+    ],
+    "PMIC_SPI": [
+      "02"
+    ],
+    "PWR_BTN_n": [
+      "13"
+    ],
+    "PWR_EN": [
+      "01",
+      "18"
+    ],
+    "RECOVERY_BTN_n": [
+      "06"
+    ],
+    "REFCLK": [
+      "12",
+      "18"
+    ],
+    "REF_CLK": [
+      "05"
+    ],
+    "RESET_*n": [
+      "01"
+    ],
+    "RESET_n": [
+      "02",
+      "03",
+      "05"
+    ],
+    "RFC_I2C": [
+      "17"
+    ],
+    "RFC_IRQ": [
+      "17"
+    ],
+    "RFC_SPI": [
+      "17"
+    ],
+    "RFC_UART": [
+      "17"
+    ],
+    "RF_KILL": [
+      "01",
+      "13",
+      "17",
+      "18"
+    ],
+    "RF_KILL_SW_n": [
+      "17"
+    ],
+    "RGMII": [
+      "03"
+    ],
+    "RGMII0_RXC": [
+      "10"
+    ],
+    "RGMII0_RXD0..3": [
+      "10"
+    ],
+    "RGMII0_RX_CTL": [
+      "10"
+    ],
+    "RGMII0_TXC": [
+      "10"
+    ],
+    "RGMII0_TXD0..3": [
+      "10"
+    ],
+    "RGMII0_TX_CTL": [
+      "10"
+    ],
+    "RK_RESET_n": [
+      "16",
+      "18"
+    ],
+    "RP_BOOTSEL": [
+      "13",
+      "16",
+      "18"
+    ],
+    "RP_I2C_SCL": [
+      "13"
+    ],
+    "RP_IRQ_n": [
+      "13"
+    ],
+    "RP_RUN_n": [
+      "13",
+      "16",
+      "18"
+    ],
+    "RP_SPI_SCK": [
+      "13"
+    ],
+    "RP_SWD_IO": [
+      "16"
+    ],
+    "RP_UART": [
+      "18"
+    ],
+    "RP_UART_TX": [
+      "13"
+    ],
+    "RP_USB_D_P": [
+      "16"
+    ],
+    "RTC_32K_IN": [
+      "03"
+    ],
+    "SBU1": [
+      "07"
+    ],
+    "SDIO": [
+      "03",
+      "11"
+    ],
+    "SENS_3V3": [
+      "15"
+    ],
+    "SENS_I2C": [
+      "15",
+      "18"
+    ],
+    "SENS_I2C_SCL": [
+      "15"
+    ],
+    "SOFTKEY": [
+      "13"
+    ],
+    "SPI_NOR": [
+      "06"
+    ],
+    "SPI_NOR_HOLDn": [
+      "06"
+    ],
+    "SPI_NOR_SCK": [
+      "06"
+    ],
+    "SPI_NOR_WPn": [
+      "06"
+    ],
+    "SPK_P": [
+      "14"
+    ],
+    "SWD": [
+      "16"
+    ],
+    "SYS_PWR_EN": [
+      "13"
+    ],
+    "TOUCHRING": [
+      "13"
+    ],
+    "TOUCH_WAKE": [
+      "13"
+    ],
+    "TP_INT": [
+      "17"
+    ],
+    "TP_RST": [
+      "17"
+    ],
+    "TP_SCL": [
+      "17"
+    ],
+    "TP_SDA": [
+      "17"
+    ],
+    "TX_GATE_OK": [
+      "17"
+    ],
+    "UFS_RX_P": [
+      "05"
+    ],
+    "UFS_TX_P": [
+      "05"
+    ],
+    "USB2_D_P": [
+      "07"
+    ],
+    "USB2_M2_D_P": [
+      "12"
+    ],
+    "USB3_*_P": [
+      "03"
+    ],
+    "USB3_M2_RX_P": [
+      "12"
+    ],
+    "USB3_M2_TX_P": [
+      "12"
+    ],
+    "USB3_RX_P": [
+      "07"
+    ],
+    "USB3_TX_P": [
+      "07"
+    ],
+    "USBA_D_P": [
+      "08"
+    ],
+    "USBA_EN": [
+      "08"
+    ],
+    "USBA_OC_n": [
+      "08"
+    ],
+    "USBA_SS_RX_P": [
+      "08"
+    ],
+    "USBA_SS_TX_P": [
+      "08"
+    ],
+    "USBA_VBUS": [
+      "08"
+    ],
+    "VBUS_C": [
+      "01",
+      "07",
+      "17"
+    ],
+    "VCC": [
+      "05"
+    ],
+    "VCCIO": [
+      "03"
+    ],
+    "VCCQ": [
+      "05"
+    ],
+    "VCCQ2": [
+      "05"
+    ],
+    "VCC_1V8": [
+      "02",
+      "03"
+    ],
+    "VCC_3V3": [
+      "02",
+      "03"
+    ],
+    "VDDQ": [
+      "04"
+    ],
+    "VDD_CPU_B": [
+      "02",
+      "03"
+    ],
+    "VDD_CPU_L": [
+      "02",
+      "03"
+    ],
+    "VDD_DDR": [
+      "02",
+      "03",
+      "04"
+    ],
+    "VDD_GPU": [
+      "02",
+      "03"
+    ],
+    "VDD_LOGIC": [
+      "02",
+      "03"
+    ],
+    "VDD_NPU": [
+      "02",
+      "03"
+    ],
+    "VSYS": [
+      "01",
+      "02",
+      "18"
+    ],
+    "WIFI_ANT_2G4": [
+      "11"
+    ],
+    "WIFI_ANT_5G6G": [
+      "11"
+    ],
+    "WIFI_CLK_32K": [
+      "11"
+    ],
+    "WIFI_RST_n": [
+      "11"
+    ],
+    "WIFI_USB_D_P": [
+      "11"
+    ],
+    "WIFI_WAKE": [
+      "11"
+    ],
+    "WL_INT": [
+      "11"
+    ],
+    "XIN_24M": [
+      "03"
+    ],
+    "XOUT_24M": [
+      "03"
+    ]
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "board": "m2-bridge",
+  "root_uuid": "2b12aa56-1804-5e18-a2fc-1606bbf12418",
+  "sheet_count": 2,
+  "generator": "tools/gen_kicad_project.py",
+  "source": "hardware/m2-bridge/schematic/",
+  "sheets": [
+    {
+      "num": "01",
+      "file": "sheet_01_pcie_usb3.md",
+      "kicad_file": "sheet_01_pcie_usb3.kicad_sch",
+      "title": "M.2-Bridge Sheet 01 — High-Speed (PCIe 2.1 ×1 / USB3)",
+      "uuid": "0117343f-4ba7-5ee1-ad00-a4c789dc0ed1",
+      "nets": [
+        "J_M2",
+        "PCIE_CLKREQ_n",
+        "PCIE_REFCLK_P",
+        "PCIE_RX_P",
+        "PCIE_TX_P",
+        "USB2_DP",
+        "USB3_M2_RX_P",
+        "USB3_M2_TX_P"
+      ],
+      "interboard_nets": [
+        "PCIE_CLKREQ_n",
+        "PCIE_REFCLK_P",
+        "PCIE_RX_P",
+        "PCIE_TX_P",
+        "USB3_M2_RX_P",
+        "USB3_M2_TX_P"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "02",
+      "file": "sheet_02_sideband_power.md",
+      "kicad_file": "sheet_02_sideband_power.kicad_sch",
+      "title": "M.2-Bridge Sheet 02 — Sideband / Power / Testpoints",
+      "uuid": "04a0c0f6-94ae-50ed-b537-e5e503cc5adb",
+      "nets": [
+        "GND",
+        "HYPERRF_AUX_5V",
+        "J_RFCORE",
+        "J_UI",
+        "M2_CONFIG",
+        "PCIE_CLKREQ_n",
+        "PCIE_PERST_n",
+        "PCIE_REFCLK",
+        "PCIE_WAKE_n"
+      ],
+      "interboard_nets": [
+        "HYPERRF_AUX_5V",
+        "PCIE_CLKREQ_n",
+        "PCIE_PERST_n",
+        "PCIE_REFCLK",
+        "PCIE_WAKE_n"
+      ],
+      "hold_stub": false
+    }
+  ],
+  "net_index": {
+    "GND": [
+      "02"
+    ],
+    "HYPERRF_AUX_5V": [
+      "02"
+    ],
+    "J_M2": [
+      "01"
+    ],
+    "J_RFCORE": [
+      "02"
+    ],
+    "J_UI": [
+      "02"
+    ],
+    "M2_CONFIG": [
+      "02"
+    ],
+    "PCIE_CLKREQ_n": [
+      "01",
+      "02"
+    ],
+    "PCIE_PERST_n": [
+      "02"
+    ],
+    "PCIE_REFCLK": [
+      "02"
+    ],
+    "PCIE_REFCLK_P": [
+      "01"
+    ],
+    "PCIE_RX_P": [
+      "01"
+    ],
+    "PCIE_TX_P": [
+      "01"
+    ],
+    "PCIE_WAKE_n": [
+      "02"
+    ],
+    "USB2_DP": [
+      "01"
+    ],
+    "USB3_M2_RX_P": [
+      "01"
+    ],
+    "USB3_M2_TX_P": [
+      "01"
+    ]
+  }
+}

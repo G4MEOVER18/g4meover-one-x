@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "filename": "ui-carrier.kicad_pro",
+    "version": 1
+  },
+  "board": {},
+  "libraries": {
+    "pinned_footprint_libs": [],
+    "pinned_symbol_libs": []
+  },
+  "schematic": {},
+  "sheets": [
+    [
+      "3ee3a617-38f6-50bb-a483-57b05112e8ff",
+      "01:UI-Carrier Sheet 01 — Display / MIPI-DSI"
+    ],
+    [
+      "acfbad8a-5d5e-581e-a3c6-16aef1cb67ef",
+      "02:UI-Carrier Sheet 02 — Kapazitiver Touch"
+    ],
+    [
+      "a55f7b34-1b99-5c4c-a804-8c771f0f3c07",
+      "03:UI-Carrier Sheet 03 — Eingabe: Touch-Ring / D-Pad / Softkeys"
+    ],
+    [
+      "6d5e291d-7c8d-5cbe-8613-19c232d2313a",
+      "04:UI-Carrier Sheet 04 — Haptik / Status-LED / Connector"
+    ]
+  ],
+  "text_variables": {}
+}

@@ -1,0 +1,322 @@
+{
+  "board": "hyperrf",
+  "root_uuid": "5e6e171b-79ac-52f7-b3cd-ace491916737",
+  "sheet_count": 8,
+  "generator": "tools/gen_kicad_project.py",
+  "source": "hardware/hyperrf/schematic/",
+  "sheets": [
+    {
+      "num": "01",
+      "file": "sheet_01_power.md",
+      "kicad_file": "sheet_01_power.kicad_sch",
+      "title": "HyperRF Sheet 01 — Power",
+      "uuid": "bcebf271-5dd9-5441-ab4e-6b9e219e403b",
+      "nets": [
+        "GND",
+        "HRF_1V2_RX",
+        "HRF_1V2_TX",
+        "HRF_1V8_ANA",
+        "HRF_1V8_DIG",
+        "HRF_3V3",
+        "HRF_FPGA",
+        "HYPERRF_AUX_5V"
+      ],
+      "interboard_nets": [
+        "HYPERRF_AUX_5V"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "02",
+      "file": "sheet_02_clock_reference.md",
+      "kicad_file": "sheet_02_clock_reference.kicad_sch",
+      "title": "HyperRF Sheet 02 — Takt / Referenz",
+      "uuid": "e704b30a-b6ae-58c5-b2d1-4d559202b61b",
+      "nets": [
+        "FPGA_TS_CLK",
+        "HRF_1V8_ANA",
+        "LO_COH",
+        "PPS_IN",
+        "REF_10M",
+        "REF_CLK_A",
+        "REF_CLK_B"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "03",
+      "file": "sheet_03_lms7002m_a.md",
+      "kicad_file": "sheet_03_lms7002m_a.kicad_sch",
+      "title": "HyperRF Sheet 03 — LMS7002M A (SDR-RFIC A)",
+      "uuid": "3dad0340-3ec1-5e99-a17a-0aeffe60bffc",
+      "nets": [
+        "HRF_1V2_RX",
+        "HRF_1V2_TX",
+        "HRF_1V8_ANA",
+        "HRF_1V8_DIG",
+        "LMSA_ANT",
+        "LMSA_LML",
+        "LMSA_RESET_n",
+        "LMSA_RX1..4_P",
+        "LMSA_SPI",
+        "LMSA_TX1..4_P",
+        "LO_COH",
+        "REF_CLK_A"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "04",
+      "file": "sheet_04_lms7002m_b.md",
+      "kicad_file": "sheet_04_lms7002m_b.kicad_sch",
+      "title": "HyperRF Sheet 04 — LMS7002M B (SDR-RFIC B)",
+      "uuid": "85775462-c8fd-579b-a6a0-4b0e622d2a81",
+      "nets": [
+        "LMSB",
+        "LMSB_ANT",
+        "LMSB_LML",
+        "LMSB_RESET_n",
+        "LMSB_RX1..4_P",
+        "LMSB_SPI",
+        "LMSB_TX1..4_P",
+        "LO_COH",
+        "REF_CLK_B"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "05",
+      "file": "sheet_05_highband_conversion.md",
+      "kicad_file": "sheet_05_highband_conversion.kicad_sch",
+      "title": "HyperRF Sheet 05 — High-Band-Conversion (3,8 → 6 GHz)",
+      "uuid": "3030f00d-aa17-5dd2-850d-5f82bff72d0b",
+      "nets": [
+        "HB_EN",
+        "HB_LO",
+        "HB_RX_IN",
+        "HB_TX_OUT"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "06",
+      "file": "sheet_06_module_bays.md",
+      "kicad_file": "sheet_06_module_bays.kicad_sch",
+      "title": "HyperRF Sheet 06 — Modul-Bays (5G / NTN / LoRa-Sat / GNSS)",
+      "uuid": "01c47d3b-5717-5f06-a501-1795811bbbef",
+      "nets": [
+        "HRF_3V3",
+        "PPS",
+        "PPS_IN"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "07",
+      "file": "sheet_07_uwb_radar.md",
+      "kicad_file": "sheet_07_uwb_radar.kicad_sch",
+      "title": "HyperRF Sheet 07 — UWB / 60-GHz-Radar",
+      "uuid": "a3bab4b2-6308-5a1c-9b32-f8e4bf797c91",
+      "nets": [
+        "RADAR_ANT",
+        "RADAR_EN",
+        "RADAR_HOST",
+        "UWB_ANT",
+        "UWB_IRQ",
+        "UWB_RST_n",
+        "UWB_SPI"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "08",
+      "file": "sheet_08_fpga.md",
+      "kicad_file": "sheet_08_fpga.kicad_sch",
+      "title": "HyperRF Sheet 08 — FPGA (⛔ Platzhalter — HOLD → G04)",
+      "uuid": "5f88a5cb-3783-5ba4-9520-7ecec5a88e2b",
+      "nets": [
+        "FPGA_CFG",
+        "FPGA_TS_CLK",
+        "HRF_FPGA",
+        "LMSA_LML",
+        "LMSB_LML",
+        "PCIE_CLKREQ_n",
+        "PCIE_PERST_n",
+        "PCIE_REFCLK_P",
+        "PCIE_RX_P",
+        "PCIE_TX_P",
+        "PCIE_WAKE_n"
+      ],
+      "interboard_nets": [
+        "PCIE_CLKREQ_n",
+        "PCIE_PERST_n",
+        "PCIE_REFCLK_P",
+        "PCIE_RX_P",
+        "PCIE_TX_P",
+        "PCIE_WAKE_n"
+      ],
+      "hold_stub": true
+    }
+  ],
+  "net_index": {
+    "FPGA_CFG": [
+      "08"
+    ],
+    "FPGA_TS_CLK": [
+      "02",
+      "08"
+    ],
+    "GND": [
+      "01"
+    ],
+    "HB_EN": [
+      "05"
+    ],
+    "HB_LO": [
+      "05"
+    ],
+    "HB_RX_IN": [
+      "05"
+    ],
+    "HB_TX_OUT": [
+      "05"
+    ],
+    "HRF_1V2_RX": [
+      "01",
+      "03"
+    ],
+    "HRF_1V2_TX": [
+      "01",
+      "03"
+    ],
+    "HRF_1V8_ANA": [
+      "01",
+      "02",
+      "03"
+    ],
+    "HRF_1V8_DIG": [
+      "01",
+      "03"
+    ],
+    "HRF_3V3": [
+      "01",
+      "06"
+    ],
+    "HRF_FPGA": [
+      "01",
+      "08"
+    ],
+    "HYPERRF_AUX_5V": [
+      "01"
+    ],
+    "LMSA_ANT": [
+      "03"
+    ],
+    "LMSA_LML": [
+      "03",
+      "08"
+    ],
+    "LMSA_RESET_n": [
+      "03"
+    ],
+    "LMSA_RX1..4_P": [
+      "03"
+    ],
+    "LMSA_SPI": [
+      "03"
+    ],
+    "LMSA_TX1..4_P": [
+      "03"
+    ],
+    "LMSB": [
+      "04"
+    ],
+    "LMSB_ANT": [
+      "04"
+    ],
+    "LMSB_LML": [
+      "04",
+      "08"
+    ],
+    "LMSB_RESET_n": [
+      "04"
+    ],
+    "LMSB_RX1..4_P": [
+      "04"
+    ],
+    "LMSB_SPI": [
+      "04"
+    ],
+    "LMSB_TX1..4_P": [
+      "04"
+    ],
+    "LO_COH": [
+      "02",
+      "03",
+      "04"
+    ],
+    "PCIE_CLKREQ_n": [
+      "08"
+    ],
+    "PCIE_PERST_n": [
+      "08"
+    ],
+    "PCIE_REFCLK_P": [
+      "08"
+    ],
+    "PCIE_RX_P": [
+      "08"
+    ],
+    "PCIE_TX_P": [
+      "08"
+    ],
+    "PCIE_WAKE_n": [
+      "08"
+    ],
+    "PPS": [
+      "06"
+    ],
+    "PPS_IN": [
+      "02",
+      "06"
+    ],
+    "RADAR_ANT": [
+      "07"
+    ],
+    "RADAR_EN": [
+      "07"
+    ],
+    "RADAR_HOST": [
+      "07"
+    ],
+    "REF_10M": [
+      "02"
+    ],
+    "REF_CLK_A": [
+      "02",
+      "03"
+    ],
+    "REF_CLK_B": [
+      "02",
+      "04"
+    ],
+    "UWB_ANT": [
+      "07"
+    ],
+    "UWB_IRQ": [
+      "07"
+    ],
+    "UWB_RST_n": [
+      "07"
+    ],
+    "UWB_SPI": [
+      "07"
+    ]
+  }
+}

@@ -1,0 +1,330 @@
+{
+  "board": "rf-core",
+  "root_uuid": "dc1d8bb0-680a-5d14-bfdd-dd7737ee8729",
+  "sheet_count": 7,
+  "generator": "tools/gen_kicad_project.py",
+  "source": "hardware/rf-core/schematic/",
+  "sheets": [
+    {
+      "num": "01",
+      "file": "sheet_01_supervisor_rfkill.md",
+      "kicad_file": "sheet_01_supervisor_rfkill.kicad_sch",
+      "title": "RF-Core Sheet 01 — Supervisor / RF-Kill (sicherheitskritisch)",
+      "uuid": "e26bc7c1-4641-573b-9746-32dbd7107759",
+      "nets": [
+        "CMD_RFKILL_SET",
+        "EVT_HEARTBEAT.flags",
+        "EVT_RFKILL",
+        "PA_EN",
+        "PA_EN_<radio",
+        "RF_KILL",
+        "RF_KILL_SW_n",
+        "TX_GATE_OK"
+      ],
+      "interboard_nets": [
+        "RF_KILL",
+        "RF_KILL_SW_n",
+        "TX_GATE_OK"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "02",
+      "file": "sheet_02_subghz.md",
+      "kicad_file": "sheet_02_subghz.kicad_sch",
+      "title": "RF-Core Sheet 02 — Sub-GHz (CC1101 + SX1262)",
+      "uuid": "b99d648f-9090-5013-832f-038fff8503fb",
+      "nets": [
+        "ANT_SUBGHZ",
+        "CC1101_CSn",
+        "CC1101_GDO0",
+        "PA_EN",
+        "PA_EN_CC1101",
+        "PA_EN_SX1262",
+        "RFC_SPI",
+        "RFC_SPI_SCK",
+        "SX1262_CSn",
+        "SX1262_DIO1",
+        "SX1262_RESET"
+      ],
+      "interboard_nets": [
+        "RFC_SPI",
+        "RFC_SPI_SCK"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "03",
+      "file": "sheet_03_24ghz_zwave.md",
+      "kicad_file": "sheet_03_24ghz_zwave.kicad_sch",
+      "title": "RF-Core Sheet 03 — 2,4 GHz (CC2652P7) + Z-Wave (EFR32ZG23)",
+      "uuid": "26acf93e-ef99-5afe-bbe2-ceaf840441d6",
+      "nets": [
+        "ANT_2G4",
+        "ANT_ZWAVE",
+        "BOOT",
+        "CC2652_SPI",
+        "CC2652_UART",
+        "PA_EN",
+        "PA_EN_CC2652",
+        "PA_EN_ZWAVE",
+        "RESETn",
+        "ZWAVE_RESETn",
+        "ZWAVE_UART"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "04",
+      "file": "sheet_04_nfc_lfrfid.md",
+      "kicad_file": "sheet_04_nfc_lfrfid.kicad_sch",
+      "title": "RF-Core Sheet 04 — NFC/HF (PN7160) + 125 kHz LF-RFID",
+      "uuid": "117b1d75-8d1a-5361-bc55-c1f65cfe9f52",
+      "nets": [
+        "LF_CLK",
+        "LF_COIL_P",
+        "LF_DATA",
+        "NFC_I2C",
+        "NFC_IRQ",
+        "NFC_RX",
+        "NFC_TX1",
+        "NFC_VEN",
+        "PA_EN_LF",
+        "PA_EN_NFC"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "05",
+      "file": "sheet_05_uhf_rain.md",
+      "kicad_file": "sheet_05_uhf_rain.kicad_sch",
+      "title": "RF-Core Sheet 05 — UHF RAIN RFID (E710)",
+      "uuid": "52a293c3-fe4d-57f7-8b3b-ce98bbf15827",
+      "nets": [
+        "ANT_UHF",
+        "E710_HOST",
+        "E710_RX_I",
+        "E710_TX",
+        "UHF_PA_EN"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "06",
+      "file": "sheet_06_ir_1wire.md",
+      "kicad_file": "sheet_06_ir_1wire.kicad_sch",
+      "title": "RF-Core Sheet 06 — IR / 1-Wire",
+      "uuid": "a52d55c7-c74d-56f4-9f88-453a141268a9",
+      "nets": [
+        "IR_RX",
+        "IR_TX",
+        "OW_DATA",
+        "OW_PWR",
+        "PA_EN_IR"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "07",
+      "file": "sheet_07_power_host_antennas.md",
+      "kicad_file": "sheet_07_power_host_antennas.kicad_sch",
+      "title": "RF-Core Sheet 07 — Power / Host-Link / Antennen / Testpoints",
+      "uuid": "6489c131-a4e0-59b2-8fcc-406ad22c986e",
+      "nets": [
+        "ANT_2G4",
+        "ANT_SUBGHZ",
+        "ANT_UHF",
+        "ANT_ZWAVE",
+        "J_RFCORE",
+        "PA_EN",
+        "RFC_I2C",
+        "RFC_IRQ",
+        "RFC_SPI",
+        "RFC_UART",
+        "RF_KILL",
+        "TX_GATE_OK"
+      ],
+      "interboard_nets": [
+        "RFC_I2C",
+        "RFC_IRQ",
+        "RFC_SPI",
+        "RFC_UART",
+        "RF_KILL",
+        "TX_GATE_OK"
+      ],
+      "hold_stub": false
+    }
+  ],
+  "net_index": {
+    "ANT_2G4": [
+      "03",
+      "07"
+    ],
+    "ANT_SUBGHZ": [
+      "02",
+      "07"
+    ],
+    "ANT_UHF": [
+      "05",
+      "07"
+    ],
+    "ANT_ZWAVE": [
+      "03",
+      "07"
+    ],
+    "BOOT": [
+      "03"
+    ],
+    "CC1101_CSn": [
+      "02"
+    ],
+    "CC1101_GDO0": [
+      "02"
+    ],
+    "CC2652_SPI": [
+      "03"
+    ],
+    "CC2652_UART": [
+      "03"
+    ],
+    "CMD_RFKILL_SET": [
+      "01"
+    ],
+    "E710_HOST": [
+      "05"
+    ],
+    "E710_RX_I": [
+      "05"
+    ],
+    "E710_TX": [
+      "05"
+    ],
+    "EVT_HEARTBEAT.flags": [
+      "01"
+    ],
+    "EVT_RFKILL": [
+      "01"
+    ],
+    "IR_RX": [
+      "06"
+    ],
+    "IR_TX": [
+      "06"
+    ],
+    "J_RFCORE": [
+      "07"
+    ],
+    "LF_CLK": [
+      "04"
+    ],
+    "LF_COIL_P": [
+      "04"
+    ],
+    "LF_DATA": [
+      "04"
+    ],
+    "NFC_I2C": [
+      "04"
+    ],
+    "NFC_IRQ": [
+      "04"
+    ],
+    "NFC_RX": [
+      "04"
+    ],
+    "NFC_TX1": [
+      "04"
+    ],
+    "NFC_VEN": [
+      "04"
+    ],
+    "OW_DATA": [
+      "06"
+    ],
+    "OW_PWR": [
+      "06"
+    ],
+    "PA_EN": [
+      "01",
+      "02",
+      "03",
+      "07"
+    ],
+    "PA_EN_<radio": [
+      "01"
+    ],
+    "PA_EN_CC1101": [
+      "02"
+    ],
+    "PA_EN_CC2652": [
+      "03"
+    ],
+    "PA_EN_IR": [
+      "06"
+    ],
+    "PA_EN_LF": [
+      "04"
+    ],
+    "PA_EN_NFC": [
+      "04"
+    ],
+    "PA_EN_SX1262": [
+      "02"
+    ],
+    "PA_EN_ZWAVE": [
+      "03"
+    ],
+    "RESETn": [
+      "03"
+    ],
+    "RFC_I2C": [
+      "07"
+    ],
+    "RFC_IRQ": [
+      "07"
+    ],
+    "RFC_SPI": [
+      "02",
+      "07"
+    ],
+    "RFC_SPI_SCK": [
+      "02"
+    ],
+    "RFC_UART": [
+      "07"
+    ],
+    "RF_KILL": [
+      "01",
+      "07"
+    ],
+    "RF_KILL_SW_n": [
+      "01"
+    ],
+    "SX1262_CSn": [
+      "02"
+    ],
+    "SX1262_DIO1": [
+      "02"
+    ],
+    "SX1262_RESET": [
+      "02"
+    ],
+    "TX_GATE_OK": [
+      "01",
+      "07"
+    ],
+    "UHF_PA_EN": [
+      "05"
+    ],
+    "ZWAVE_RESETn": [
+      "03"
+    ],
+    "ZWAVE_UART": [
+      "03"
+    ]
+  }
+}

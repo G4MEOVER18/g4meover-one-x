@@ -1,0 +1,235 @@
+{
+  "board": "ui-carrier",
+  "root_uuid": "892ab209-16d5-585f-ab6b-5acb3bb567e5",
+  "sheet_count": 4,
+  "generator": "tools/gen_kicad_project.py",
+  "source": "hardware/ui-carrier/schematic/",
+  "sheets": [
+    {
+      "num": "01",
+      "file": "sheet_01_display_dsi.md",
+      "kicad_file": "sheet_01_display_dsi.kicad_sch",
+      "title": "UI-Carrier Sheet 01 — Display / MIPI-DSI",
+      "uuid": "3ee3a617-38f6-50bb-a483-57b05112e8ff",
+      "nets": [
+        "BL",
+        "BL_EN",
+        "BL_PWM",
+        "DSI0_CLK_P",
+        "DSI0_D0..D3_P",
+        "J_DSI",
+        "J_UI",
+        "LCD_RST_n",
+        "TP_INT",
+        "TP_RST",
+        "VBL",
+        "VLCD_3V3"
+      ],
+      "interboard_nets": [
+        "BL_EN",
+        "BL_PWM",
+        "DSI0_CLK_P",
+        "DSI0_D0..D3_P",
+        "LCD_RST_n",
+        "TP_INT",
+        "TP_RST",
+        "VLCD_3V3"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "02",
+      "file": "sheet_02_touch.md",
+      "kicad_file": "sheet_02_touch.kicad_sch",
+      "title": "UI-Carrier Sheet 02 — Kapazitiver Touch",
+      "uuid": "acfbad8a-5d5e-581e-a3c6-16aef1cb67ef",
+      "nets": [
+        "INT",
+        "RST",
+        "SCL",
+        "TP_INT",
+        "TP_RST",
+        "TP_SCL",
+        "TP_SDA",
+        "VDD_TP_3V3"
+      ],
+      "interboard_nets": [
+        "TP_INT",
+        "TP_RST",
+        "TP_SCL",
+        "TP_SDA",
+        "VDD_TP_3V3"
+      ],
+      "hold_stub": false
+    },
+    {
+      "num": "03",
+      "file": "sheet_03_input_ring_dpad_keys.md",
+      "kicad_file": "sheet_03_input_ring_dpad_keys.kicad_sch",
+      "title": "UI-Carrier Sheet 03 — Eingabe: Touch-Ring / D-Pad / Softkeys",
+      "uuid": "a55f7b34-1b99-5c4c-a804-8c771f0f3c07",
+      "nets": [
+        "KEY",
+        "KEY_SK1..SK5",
+        "KEY_UP",
+        "RING_<seg",
+        "RING_I2C"
+      ],
+      "interboard_nets": [],
+      "hold_stub": false
+    },
+    {
+      "num": "04",
+      "file": "sheet_04_haptic_status_connector.md",
+      "kicad_file": "sheet_04_haptic_status_connector.kicad_sch",
+      "title": "UI-Carrier Sheet 04 — Haptik / Status-LED / Connector",
+      "uuid": "6d5e291d-7c8d-5cbe-8613-19c232d2313a",
+      "nets": [
+        "BL",
+        "DSI0",
+        "HAPTIC",
+        "HAPTIC_EN",
+        "HAPTIC_PWM",
+        "J_M2",
+        "J_RFCORE",
+        "J_UI",
+        "KEY",
+        "LCD_RST_n",
+        "LED",
+        "LED_ACT",
+        "LED_PWR",
+        "LED_RFKILL",
+        "RING",
+        "TP_SCL",
+        "TX_GATE_OK",
+        "VHAPTIC",
+        "VLCD_3V3"
+      ],
+      "interboard_nets": [
+        "LCD_RST_n",
+        "TP_SCL",
+        "TX_GATE_OK",
+        "VLCD_3V3"
+      ],
+      "hold_stub": false
+    }
+  ],
+  "net_index": {
+    "BL": [
+      "01",
+      "04"
+    ],
+    "BL_EN": [
+      "01"
+    ],
+    "BL_PWM": [
+      "01"
+    ],
+    "DSI0": [
+      "04"
+    ],
+    "DSI0_CLK_P": [
+      "01"
+    ],
+    "DSI0_D0..D3_P": [
+      "01"
+    ],
+    "HAPTIC": [
+      "04"
+    ],
+    "HAPTIC_EN": [
+      "04"
+    ],
+    "HAPTIC_PWM": [
+      "04"
+    ],
+    "INT": [
+      "02"
+    ],
+    "J_DSI": [
+      "01"
+    ],
+    "J_M2": [
+      "04"
+    ],
+    "J_RFCORE": [
+      "04"
+    ],
+    "J_UI": [
+      "01",
+      "04"
+    ],
+    "KEY": [
+      "03",
+      "04"
+    ],
+    "KEY_SK1..SK5": [
+      "03"
+    ],
+    "KEY_UP": [
+      "03"
+    ],
+    "LCD_RST_n": [
+      "01",
+      "04"
+    ],
+    "LED": [
+      "04"
+    ],
+    "LED_ACT": [
+      "04"
+    ],
+    "LED_PWR": [
+      "04"
+    ],
+    "LED_RFKILL": [
+      "04"
+    ],
+    "RING": [
+      "04"
+    ],
+    "RING_<seg": [
+      "03"
+    ],
+    "RING_I2C": [
+      "03"
+    ],
+    "RST": [
+      "02"
+    ],
+    "SCL": [
+      "02"
+    ],
+    "TP_INT": [
+      "01",
+      "02"
+    ],
+    "TP_RST": [
+      "01",
+      "02"
+    ],
+    "TP_SCL": [
+      "02",
+      "04"
+    ],
+    "TP_SDA": [
+      "02"
+    ],
+    "TX_GATE_OK": [
+      "04"
+    ],
+    "VBL": [
+      "01"
+    ],
+    "VDD_TP_3V3": [
+      "02"
+    ],
+    "VHAPTIC": [
+      "04"
+    ],
+    "VLCD_3V3": [
+      "01",
+      "04"
+    ]
+  }
+}

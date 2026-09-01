@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "filename": "hyperrf.kicad_pro",
+    "version": 1
+  },
+  "board": {},
+  "libraries": {
+    "pinned_footprint_libs": [],
+    "pinned_symbol_libs": []
+  },
+  "schematic": {},
+  "sheets": [
+    [
+      "bcebf271-5dd9-5441-ab4e-6b9e219e403b",
+      "01:HyperRF Sheet 01 — Power"
+    ],
+    [
+      "e704b30a-b6ae-58c5-b2d1-4d559202b61b",
+      "02:HyperRF Sheet 02 — Takt / Referenz"
+    ],
+    [
+      "3dad0340-3ec1-5e99-a17a-0aeffe60bffc",
+      "03:HyperRF Sheet 03 — LMS7002M A (SDR-RFIC A)"
+    ],
+    [
+      "85775462-c8fd-579b-a6a0-4b0e622d2a81",
+      "04:HyperRF Sheet 04 — LMS7002M B (SDR-RFIC B)"
+    ],
+    [
+      "3030f00d-aa17-5dd2-850d-5f82bff72d0b",
+      "05:HyperRF Sheet 05 — High-Band-Conversion (3,8 → 6 GHz)"
+    ],
+    [
+      "01c47d3b-5717-5f06-a501-1795811bbbef",
+      "06:HyperRF Sheet 06 — Modul-Bays (5G / NTN / LoRa-Sat / GNSS)"
+    ],
+    [
+      "a3bab4b2-6308-5a1c-9b32-f8e4bf797c91",
+      "07:HyperRF Sheet 07 — UWB / 60-GHz-Radar"
+    ],
+    [
+      "5f88a5cb-3783-5ba4-9520-7ecec5a88e2b",
+      "08:HyperRF Sheet 08 — FPGA (⛔ Platzhalter — HOLD → G04)"
+    ]
+  ],
+  "text_variables": {}
+}

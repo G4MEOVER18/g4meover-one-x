@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "filename": "mainboard.kicad_pro",
+    "version": 1
+  },
+  "board": {},
+  "libraries": {
+    "pinned_footprint_libs": [],
+    "pinned_symbol_libs": []
+  },
+  "schematic": {},
+  "sheets": [
+    [
+      "cf9fa8dc-e346-5a06-a796-2b5d461e7836",
+      "01:Sheet 01 — Power-Tree / Entry"
+    ],
+    [
+      "37005048-d521-5037-bb41-558f9d83efbf",
+      "02:Sheet 02 — RK806S PMIC"
+    ],
+    [
+      "d8d7d92c-a79a-50fe-bb8d-9fa951f1b513",
+      "03:Sheet 03 — RK3576 Core"
+    ],
+    [
+      "79cf390b-c211-5435-95f7-4dfef76e1932",
+      "04:Sheet 04 — LPDDR5 ⛔ BLOCKIERT (Gate G02)"
+    ],
+    [
+      "651b1a0f-1ba4-5569-adc6-ccbbd0d7a7e3",
+      "05:Sheet 05 — UFS ⛔ BLOCKIERT (Gate G03)"
+    ],
+    [
+      "41b18ecd-7e7a-5c26-b4e1-ce884ee58df4",
+      "06:Sheet 06 — Recovery / Boot (SPI-NOR)"
+    ],
+    [
+      "08017d17-6876-52d9-a3ee-f1c5b6e96aa8",
+      "07:Sheet 07 — USB-C (PD / USB3 / DP-Alt)"
+    ],
+    [
+      "f8ae569b-143c-5a9b-b72f-61c9962e0b9b",
+      "08:Sheet 08 — USB-Host (USB-A)"
+    ],
+    [
+      "077a7857-4bb6-5d64-b930-cc9f0f3d9d91",
+      "09:Sheet 09 — HDMI / DP-Out"
+    ],
+    [
+      "3175db75-5443-5fd1-b809-6e0dd7bb6cf4",
+      "10:Sheet 10 — Ethernet ×2"
+    ],
+    [
+      "5a7f5534-024a-5a55-9b82-254efe2c9396",
+      "11:Sheet 11 — Wi-Fi 6E / Bluetooth"
+    ],
+    [
+      "69791d9f-6933-58e4-81df-276dbdd8229d",
+      "12:Sheet 12 — M.2 / HyperRF-Link"
+    ],
+    [
+      "edeee546-2dcf-5485-96f3-4a7127c1714d",
+      "13:Sheet 13 — RP2350-Link (System-Manager-Anbindung)"
+    ],
+    [
+      "f64a66ab-b0d7-5a71-902d-76d9e514069a",
+      "14:Sheet 14 — Audio"
+    ],
+    [
+      "aeed64eb-dfb2-5ae5-b815-c2717f43db65",
+      "15:Sheet 15 — Sensoren"
+    ],
+    [
+      "9286bbea-2847-505d-90b4-a20c3f0b0a93",
+      "16:Sheet 16 — Debug / Recovery"
+    ],
+    [
+      "746861f6-add7-5476-9da9-586207ed181b",
+      "17:Sheet 17 — Connectors (Inter-Board)"
+    ],
+    [
+      "3f029761-5f31-5ec7-b4f4-5e57822cf380",
+      "18:Sheet 18 — Testpoints / Bring-up"
+    ]
+  ],
+  "text_variables": {}
+}

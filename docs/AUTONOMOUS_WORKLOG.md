@@ -12,6 +12,22 @@
 
 ---
 
+## 2026-09-01 — Session 15 (KiCad-Ableitung — deterministische Grundlage)
+
+**Ehrliche Einordnung zuerst:** In dieser Umgebung ist **kein KiCad** installiert (`kicad-cli` fehlt) → hand-geschriebene `.kicad_sch`-S-Expressions wären nicht gegen das Binärformat verifizierbar; echte Symbole bräuchten Vendor-Pinouts (nicht raten). Deshalb liefert dieser Schritt die **verifizierbare, reproduzierbare Grundlage** der KiCad-Zeichnung, nicht fabrizierte Schaltplan-Dateien.
+
+**Umgesetzt:**
+- **`tools/gen_kicad_project.py`** (neu) — deterministischer Generator (uuid5): liest je Board `schematic/*.md`, erzeugt `hardware/<board>/kicad/`: `<board>.kicad_pro` (JSON), `hierarchy.json` (Manifest: Sheets, Netze, Inter-Board-Labels, Netz-Index), `KICAD_BUILD_PLAN.md` (Bauplan mit Global-Labels je Sheet). Selbstprüfung (JSON-Parse + Quell-Sheet-Existenz).
+- **`hardware/kicad/README.md`** (neu) — erklärt Ableitung, Verifikations-Caveat, Zeichnungs-Ablauf, Regenerierung.
+- Generiert für **alle 6 Boards**: mainboard(18)/rf-core(7)/ui-carrier(4)/m2-bridge(2)/antenna-rail(1)/hyperrf(8). Inter-Board-Labels aus INTERFACE_NETS abgeleitet; HOLD-Stubs korrekt erkannt (Mainboard 04/05, HyperRF 08).
+- **Zwei Klassifizierungs-Bugs im Generator gefixt** (bevor committet): (1) Inter-Board-Fehltreffer `ANT_2G4`↔`ANT_2` (loses startswith → präzises `is_interboard()`), (2) Stub-Übererkennung (Prosa-„HOLD"/„Platzhalter" → nur noch Titel-Marker ⛔/Platzhalter/„bewusst NICHT ausgearbeitet").
+
+**Ergebnis:** Selbstprüfung ✅ für alle 6 Boards; Spec-Validator + `schematic_netcheck.py` weiter grün (keine Regression). Der `.kicad_sch`-Zeichenschritt (Symbole/Vendor-Pinouts/wiring) ist explizit als nächster, KiCad-gebundener Schritt markiert.
+
+**Nächster Schritt (Session 16+):** (a) KiCad-Zeichnung real starten (Mainboard/RF-Core, sobald KiCad/Vendor-Libs verfügbar) → G07 ERC, (b) `gen_kicad_project.py` optional um `.kicad_sch`-Netz-Scaffolds erweitern, **sobald** ein KiCad-Öffnen-Test möglich ist, (c) HOLDs mit Vendor-Daten schließen.
+
+---
+
 ## 2026-09-01 — Session 14 (Cross-Sheet-Netznamen-Konsistenz + Checker-Tool)
 
 **Motivation:** Mainboard-Sheet 17 fordert „exakt gespiegelte Netznamen zum Ziel-Board" — an mehreren Interfaces war das verletzt (uneinheitliche Schreibweisen würden KiCad-ERC bei G07 teuer machen). **22 Mirror-Lücken** gefunden und geschlossen.

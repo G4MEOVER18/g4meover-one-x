@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "filename": "antenna-rail.kicad_pro",
+    "version": 1
+  },
+  "board": {},
+  "libraries": {
+    "pinned_footprint_libs": [],
+    "pinned_symbol_libs": []
+  },
+  "schematic": {},
+  "sheets": [
+    [
+      "c62772d0-7c95-5a9c-a5de-98729ba5e15f",
+      "01:Antenna-Rail Sheet 01 — SMA-Feeds / Matching / ESD"
+    ]
+  ],
+  "text_variables": {}
+}

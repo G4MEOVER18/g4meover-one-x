@@ -1,0 +1,51 @@
+{
+  "board": "antenna-rail",
+  "root_uuid": "dd085160-008d-5a06-a5bf-11c24b5deae0",
+  "sheet_count": 1,
+  "generator": "tools/gen_kicad_project.py",
+  "source": "hardware/antenna-rail/schematic/",
+  "sheets": [
+    {
+      "num": "01",
+      "file": "sheet_01_sma_feeds.md",
+      "kicad_file": "sheet_01_sma_feeds.kicad_sch",
+      "title": "Antenna-Rail Sheet 01 — SMA-Feeds / Matching / ESD",
+      "uuid": "c62772d0-7c95-5a9c-a5de-98729ba5e15f",
+      "nets": [
+        "ANT_1",
+        "ANT_2",
+        "ANT_3",
+        "ANT_4",
+        "ANT_n",
+        "J_ANT"
+      ],
+      "interboard_nets": [
+        "ANT_1",
+        "ANT_2",
+        "ANT_3",
+        "ANT_4"
+      ],
+      "hold_stub": false
+    }
+  ],
+  "net_index": {
+    "ANT_1": [
+      "01"
+    ],
+    "ANT_2": [
+      "01"
+    ],
+    "ANT_3": [
+      "01"
+    ],
+    "ANT_4": [
+      "01"
+    ],
+    "ANT_n": [
+      "01"
+    ],
+    "J_ANT": [
+      "01"
+    ]
+  }
+}

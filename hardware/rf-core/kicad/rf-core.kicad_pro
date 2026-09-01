@@ -1,0 +1,43 @@
+{
+  "meta": {
+    "filename": "rf-core.kicad_pro",
+    "version": 1
+  },
+  "board": {},
+  "libraries": {
+    "pinned_footprint_libs": [],
+    "pinned_symbol_libs": []
+  },
+  "schematic": {},
+  "sheets": [
+    [
+      "e26bc7c1-4641-573b-9746-32dbd7107759",
+      "01:RF-Core Sheet 01 — Supervisor / RF-Kill (sicherheitskritisch)"
+    ],
+    [
+      "b99d648f-9090-5013-832f-038fff8503fb",
+      "02:RF-Core Sheet 02 — Sub-GHz (CC1101 + SX1262)"
+    ],
+    [
+      "26acf93e-ef99-5afe-bbe2-ceaf840441d6",
+      "03:RF-Core Sheet 03 — 2,4 GHz (CC2652P7) + Z-Wave (EFR32ZG23)"
+    ],
+    [
+      "117b1d75-8d1a-5361-bc55-c1f65cfe9f52",
+      "04:RF-Core Sheet 04 — NFC/HF (PN7160) + 125 kHz LF-RFID"
+    ],
+    [
+      "52a293c3-fe4d-57f7-8b3b-ce98bbf15827",
+      "05:RF-Core Sheet 05 — UHF RAIN RFID (E710)"
+    ],
+    [
+      "a52d55c7-c74d-56f4-9f88-453a141268a9",
+      "06:RF-Core Sheet 06 — IR / 1-Wire"
+    ],
+    [
+      "6489c131-a4e0-59b2-8fcc-406ad22c986e",
+      "07:RF-Core Sheet 07 — Power / Host-Link / Antennen / Testpoints"
+    ]
+  ],
+  "text_variables": {}
+}
