@@ -31,26 +31,25 @@ Jede Achse 0–5 nach Rubrik, dann × Gewicht. Achsen entsprechen den Soft-Anfor
 | 0 | nicht gegeben |
 | `TBD` | Datenlage fehlt → zählt in `score.py` als „unvollständig" |
 
-### Default-Gewichtung (⚠️ Owner-Entscheidungspunkt)
+### Gewichtung — Owner-Entscheidung „Maximal hackbar" (2026-09-01)
 
-> Diese Gewichte drücken eine **Produkt-/Design-Haltung** aus, keine technische Naturkonstante. Sie sind bewusst überschreibbar. Der hier gesetzte Default priorisiert das, was ein **Open-Source-Funk-Handheld** braucht: freie/reproduzierbare Toolchain, kohärente SDR-Fähigkeit und ein reifes Ökosystem (geringes Bring-up-Risiko). Power/Thermik ist bereits als **Knockout (K4)** hart abgesichert und taucht deshalb im Score nur indirekt (S3) auf.
+> **Vom Owner gewählt:** Haltung **„Maximal hackbar"** — die **Toolchain-Offenheit (S4) dominiert (30)**. Oberstes Ziel des Open-Source-Geräts: ein vollständig freier, reproduzierbarer Gateware-Build ohne Vendor-Lizenz-Falle. Kohärenz (S2) + Ökosystem (S8) bleiben stark; Power/Thermik ist bereits als **Knockout (K4)** hart abgesichert und taucht im Score nur indirekt (S3) auf.
 
 | Achse | Bedeutung | Gewicht | Begründung |
 |---|---|---:|---|
-| S4 | Toolchain-Offenheit | **18** | Open-Source-Gerät: freier/reproduzierbarer Build wiegt schwer (Hackbarkeit, keine Lizenz-Falle) |
-| S2 | Kohärenz-Support (2× LMS7002M) | **15** | Kern-Alleinstellungsmerkmal des HyperRF (kohärentes 4RX/4TX) |
-| S8 | Ökosystem / Referenzdesigns | **13** | LimeSDR-nahe Gateware + reife PCIe-EP-IP senken das Bring-up-Risiko am stärksten |
-| S3 | Package / Thermik / HDI | **12** | muss auf 12-Layer-HDI + Wärmeableitung realisierbar sein |
-| S5 | DSP-Headroom | **12** | Reserve für 5G/NTN/Radar-Vorverarbeitung (TARGET-Roadmap) |
-| S1 | Timing / PLL-Ressourcen | **10** | Timestamping (10 MHz + PPS) wichtig, aber breit verfügbar |
-| S6 | I/O-Headroom | **10** | Reserve für Filterbank/Converters/Clock — meist ausreichend |
-| S7 | Kosten (EVT-/Kleinserie) | **10** | relevant fürs Vermarkten, aber nachrangig zur Fähigkeit in EVT |
+| S4 | Toolchain-Offenheit | **30** | **dominant (Owner-Wahl):** freier/reproduzierbarer Build als oberstes Ziel — favorisiert Yosys/nextpnr-taugliche Familien (z. B. ECP5-Klasse), keine Closed-Tool-Falle |
+| S2 | Kohärenz-Support (2× LMS7002M) | **14** | Kern-Alleinstellungsmerkmal des HyperRF (kohärentes 4RX/4TX) |
+| S8 | Ökosystem / Referenzdesigns | **12** | LimeSDR-nahe Gateware + reife PCIe-EP-IP senken das Bring-up-Risiko |
+| S5 | DSP-Headroom | **10** | Reserve für 5G/NTN/Radar-Vorverarbeitung (TARGET-Roadmap) |
+| S3 | Package / Thermik / HDI | **10** | muss auf 12-Layer-HDI + Wärmeableitung realisierbar sein |
+| S1 | Timing / PLL-Ressourcen | **8** | Timestamping (10 MHz + PPS) wichtig, aber breit verfügbar |
+| S6 | I/O-Headroom | **8** | Reserve für Filterbank/Converters/Clock — meist ausreichend |
+| S7 | Kosten (EVT-/Kleinserie) | **8** | relevant fürs Vermarkten, aber nachrangig zur Hackbarkeit |
 | | **Summe** | **100** | |
 
-**Alternative Haltungen (falls Owner anders gewichtet):**
-- *„Rohleistung zuerst"* → S5 (DSP) + S6 (I/O) hoch, S4/S7 runter.
-- *„Kostendisziplin fürs Vermarkten"* → S7 hoch, S5 runter.
-- *„Maximal offen/hackbar"* → S4 dominant (z. B. 30), Rest verteilt.
+**Spannungsfeld dieser Haltung (bewusst dokumentiert):** Die offensten Toolflows (Yosys/nextpnr) decken heute v. a. kleinere Familien ab, die bei **K1 (PCIe-Hard-IP)** und **K3 (DSP/BRAM für 4-Kanal-Channelization)** eng werden können. Beim Füllen der Matrix ist deshalb pro Kandidat zu prüfen, ob „maximal offen" die Hard-Knockouts überhaupt besteht — die K-Filter haben Vorrang vor dem S4-Gewicht.
+
+**Frühere Alternativ-Haltungen (verworfen, dokumentiert):** „Offen & kohärent" (S4=18), „Rohleistung zuerst" (S5/S6 hoch), „Kostendisziplin" (S7 hoch). Zum Wechseln: `weight`-Spalte in `CANDIDATE_MATRIX.csv` anpassen (Summe = 100, `score.py` prüft).
 
 Zum Ändern: die `weight`-Spalte in `CANDIDATE_MATRIX.csv` anpassen (Summe muss 100 bleiben — `score.py` prüft das).
 

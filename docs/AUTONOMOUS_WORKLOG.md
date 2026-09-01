@@ -25,7 +25,7 @@
 
 **Statusdisziplin:** `hyperrf.fpga` bleibt **HOLD**; kein Gate geschlossen. Das Framework produziert die Entscheidung erst, wenn reale Werte eingetragen sind (Vendor-Docs / Verfügbarkeit / Power-Messung). Validator Exit 0.
 
-**Owner-Entscheidungspunkt:** Die **Gewichtung** der 8 Score-Achsen ist eine Design-/Produktjudgement-Frage (Power/Thermik vs. DSP-Rohleistung vs. Open-Tooling/Hackbarkeit für ein Open-Source-Gerät). Default in `SCORING_MODEL.md` gesetzt + begründet, aber bewusst überschreibbar.
+**Owner-Entscheidung getroffen (2026-09-01):** Gewichtungs-Haltung **„Maximal hackbar"** gewählt → **S4 Toolchain-Offenheit dominant = 30** (Rest: S2=14, S8=12, S5=10, S3=10, S1=8, S6=8, S7=8; Summe 100). In `CANDIDATE_MATRIX.csv` + `SCORING_MODEL.md` eingetragen. Bewusst dokumentiertes Spannungsfeld: offenste Toolflows (Yosys/nextpnr) decken v. a. kleinere Familien ab, die bei K1 (PCIe-Hard-IP)/K3 (DSP/BRAM) eng werden können — die Knockout-Filter haben Vorrang vor dem S4-Gewicht.
 
 **Nächster Schritt (Session 12+):** (a) Owner-Gewichtung bestätigen/anpassen → Kandidaten-Zellen mit Datenblattwerten füllen (sobald Vendor-Verfügbarkeit bekannt), (b) restliche Board-Schaltpläne als Design-Spec: UI-Carrier / M.2-Bridge / Antenna-Rail (nicht HOLD-blockiert), (c) KiCad-Zeichnung aus Mainboard-/RF-Core-Specs beginnen (Gate G07).
 
