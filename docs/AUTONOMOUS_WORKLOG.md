@@ -12,6 +12,18 @@
 
 ---
 
+## 2026-09-01 — Session 13 (HyperRF-Schaltplan — nach FPGA-Abhängigkeit partitioniert)
+
+**Umgesetzt (`hardware/hyperrf/schematic/`):** README + 8 Sheets. Kern-Methode: das **HOLD-blockierte** Board (FPGA-MPN, G04) nach **Abhängigkeit partitioniert** — alles FPGA-Unabhängige ausgearbeitet, der FPGA selbst als ehrliches Platzhalter-Sheet (wie Mainboard 04/05).
+- **Ausgearbeitet (nicht G04-abhängig):** 01 Power (`HYPERRF_AUX_5V` 5A → rauscharme Point-of-Load-Rails; FPGA-Rails HOLD) · 02 Takt/Referenz (10 MHz-Ref, **kohärente** LO/Sampling-Verteilung A↔B skew-gematcht, GNSS-PPS) · 03/04 LMS7002M A/B (4RX/4TX-Analog-Frontend, Balun/Matching→G09, LML-Digital-IF mit FPGA-Seite HOLD) · 05 High-Band-Conversion (3,8→6 GHz **TARGET** via Translation/Filter — kein 6-GHz-Nativ-Claim) · 06 Modul-Bays (5G RM530N-Klasse / NTN BG95-Klasse / LoRa-Sat LR1121-Klasse / GNSS NEO-F10N **L1/L5**) · 07 UWB (DW3000-Suffix **HOLD→G05**, kein SR150) + 60-GHz-Radar-Kachel (IWRL6432W-Klasse, separates metallfreies RF-Fenster, **kein** 60-GHz-SDR).
+- **Platzhalter:** 08 FPGA — **⛔ HOLD→G04**, Rolle FIXED (PCIe-2.1-x1-EP + DSP/Channelization + LMS-LVDS + Timestamping), aber kein MPN/Pinout/Rails geraten; verlinkt auf `../fpga-selection/`.
+
+**Damit Schaltplan-Design-Spec für ALLE 6 Boards angelegt** (Mainboard 18 · RF-Core 7 · UI-Carrier 4 · M.2-Bridge 2 · Antenna-Rail 1 · HyperRF 8). Forbidden-Claims durchgehend respektiert (kein 60-GHz-SDR, kein 6-GHz-nativ, kein Zynq-US+, kein SR150, GNSS nur L1/L5). Validator Exit 0.
+
+**Nächster Schritt (Session 14+):** (a) KiCad-Zeichnung aus den fertigen Design-Specs beginnen (Mainboard/RF-Core zuerst → G07 ERC), (b) HOLDs mit Vendor-Daten schließen (G02/G03/G04/G05/G06), (c) Cross-Sheet-Konsistenz-Check (Netznamen board-übergreifend gespiegelt).
+
+---
+
 ## 2026-09-01 — Session 12 (Board-Schaltpläne: UI-Carrier / M.2-Bridge / Antenna-Rail)
 
 **Umgesetzt:** die drei **nicht-HOLD-blockierten** Board-Schaltpläne als Design-Spec (gleiche Methodik wie Mainboard/RF-Core) — damit ist der Schaltplan-Satz für **5 von 6 Boards** komplett (nur HyperRF bleibt FPGA-/HOLD-blockiert bis G04).
