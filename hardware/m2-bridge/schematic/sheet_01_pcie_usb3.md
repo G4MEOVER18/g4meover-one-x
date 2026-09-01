@@ -6,11 +6,11 @@ Die High-Speed-Diff-Paare über den M.2-B-Key-Connector. Host = RK3576 (Mainboar
 
 | Netz | Rolle | Impedanz-Ziel |
 |---|---|---|
-| `PETx0_P/N` | PCIe TX (Host→EP), AC-gekoppelt | 85 Ω diff |
-| `PERx0_P/N` | PCIe RX (EP→Host) | 85 Ω diff |
-| `PE_REFCLK_P/N` | 100 MHz PCIe-Referenztakt | 85–100 Ω diff |
-| `USB3_SSTX_P/N` | USB3 SuperSpeed TX, AC-gekoppelt | 90 Ω diff |
-| `USB3_SSRX_P/N` | USB3 SuperSpeed RX | 90 Ω diff |
+| `PCIE_TX_P/N` | PCIe TX (Host→EP), AC-gekoppelt | 85 Ω diff |
+| `PCIE_RX_P/N` | PCIe RX (EP→Host) | 85 Ω diff |
+| `PCIE_REFCLK_P/N` | 100 MHz PCIe-Referenztakt | 85–100 Ω diff |
+| `USB3_M2_TX_P/N` | USB3 SuperSpeed TX, AC-gekoppelt | 90 Ω diff |
+| `USB3_M2_RX_P/N` | USB3 SuperSpeed RX | 90 Ω diff |
 | `USB2_DP/DM` | USB2 (Fallback/Sideband, wo geroutet) | 90 Ω diff |
 
 ## AC-Kopplung

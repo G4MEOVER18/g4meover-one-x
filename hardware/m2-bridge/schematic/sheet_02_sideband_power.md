@@ -24,7 +24,7 @@ Reset-/CLKREQ-/WAKE-Verhalten koppelt an den FPGA-EP (G04) und die RK3576-PCIe-C
 - Entkopplung an `+3V3` nahe EP.
 
 ## Testpoints (→ Sinn wie Mainboard Sheet 18)
-`PCIE_PERST_n`, `PCIE_CLKREQ_n`, `PE_REFCLK`, `+3V3`, `HYPERRF_AUX_5V` — für gestaffelten Bring-up messbar.
+`PCIE_PERST_n`, `PCIE_CLKREQ_n`, `PCIE_REFCLK`, `+3V3`, `HYPERRF_AUX_5V` — für gestaffelten Bring-up messbar.
 
 ## Kritische Design-Notizen
 - **Power-vor-Reset-Sequenz:** `+3V3`/`HYPERRF_AUX_5V` stabil, dann `PCIE_PERST_n` freigeben (EP-Enumeration).

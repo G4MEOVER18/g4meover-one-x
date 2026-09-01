@@ -37,7 +37,7 @@ Legende: 🟡 Entwurf · ⬜ offen · ⛔ blockiert (HOLD, nicht routen/finalisi
 
 - **Power-Rails (GROSS):** aus [`../../../spec/POWER_TREE.csv`](../../../spec/POWER_TREE.csv) —
   `VBUS_C`, `VSYS`, `+5V_SYS`, `+3V3_SYS`, `+3V3_AON`, `BAT_2S2P`, plus RK806S-Rails (`VDD_*`, HOLD-Rail-Map).
-- **Differentielle Paare:** Suffix `_P`/`_N` (z.B. `PCIE_TX_P/N`, `USB3_RX_P/N`, `DSI_D0_P/N`, `RGMII0_TXD…`).
+- **Differentielle Paare:** Suffix `_P`/`_N` (z.B. `PCIE_TX_P/N`, `USB3_RX_P/N`, `DSI0_D0_P/N`, `RGMII0_TXD…`).
 - **Busse:** `I2C<n>_SCL/SDA`, `SPI<n>_{SCK,MOSI,MISO,CSn}`, `UART<n>_{TX,RX}`.
 - **Steuer-/Kill:** `RF_KILL` (HW-erzwungen), `PWR_EN_*`, `PG_*` (Power-Good), `RESET_*n`.
 - **Masse:** `GND` (digital/analog Split nur wo begründet, dann `AGND`/`RGND` mit definiertem Stitch).

@@ -17,7 +17,7 @@
 3. Erst dann wird dieses Sheet als vollwertiges Schaltplan-Sheet gezeichnet.
 
 ## Platzhalter-Netze (Namen stehen, Zuordnung HOLD)
-`HRF_FPGA_*` (Rails) · `LMSA_LML_*` / `LMSB_LML_*` (Digital-IF) · `PETx0/PERx0/PE_REFCLK` (PCIe-EP) · `FPGA_TS_CLK` (Timestamping) · `FPGA_CFG_*` (Konfig/Boot).
+`HRF_FPGA_*` (Rails) · `LMSA_LML_*` / `LMSB_LML_*` (Digital-IF) · PCIe-EP kanonisch `PCIE_TX_P/N`, `PCIE_RX_P/N`, `PCIE_REFCLK_P/N`, `PCIE_PERST_n`, `PCIE_CLKREQ_n`, `PCIE_WAKE_n` (siehe [`../../INTERFACE_NETS.md`](../../INTERFACE_NETS.md)) · `FPGA_TS_CLK` (Timestamping) · `FPGA_CFG_*` (Konfig/Boot).
 
 ## Status
 **⛔ HOLD → G04.** Kein MPN, kein Pinout, keine Rails geraten.

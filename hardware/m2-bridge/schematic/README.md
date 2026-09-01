@@ -19,7 +19,7 @@ Trennt das High-Speed-Interface physisch als steckbare/kurze Brücke, damit Hype
 | 02 | Sideband / Power / Testpoints | PERST/CLKREQ/WAKE, Rails, `HYPERRF_AUX_5V`-Durchführung, TPs | FIXED / TBD 📄 |
 
 ## Netz-Konventionen
-Wie Mainboard. `PERx_P/N` (PCIe RX), `PETx_P/N` (PCIe TX), `PE_REFCLK_P/N`, `USB3_SSRX/SSTX_P/N`, `PCIE_PERST_n`, `PCIE_CLKREQ_n`, `PCIE_WAKE_n`.
+Kanonisch (siehe [`../../INTERFACE_NETS.md`](../../INTERFACE_NETS.md)): `PCIE_TX_P/N`, `PCIE_RX_P/N`, `PCIE_REFCLK_P/N`, `PCIE_PERST_n`, `PCIE_CLKREQ_n`, `PCIE_WAKE_n`, `USB3_M2_TX_P/N`, `USB3_M2_RX_P/N`, `USB2_M2_D_P/N`.
 
 ## Statusdisziplin
 Signale FIXED; **M.2-Steckertyp/-höhe** und **AC-Kondensatorwerte/Längen** = TBD 📄 (Layout/SI-Review, Gate G08). Kein Gen3, kein ×4.

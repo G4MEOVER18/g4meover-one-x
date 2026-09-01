@@ -36,7 +36,7 @@ Der Applikations-SoC (U100, Rockchip RK3576) mit Versorgung, Entkopplung, Takt, 
 
 | Schnittstelle | Ziel-Sheet | Bus | Status (Interface-Matrix) |
 |---|---|---|---|
-| MIPI-DSI 4-lane | (UI-Carrier) | `DSI_D0..3_P/N`, `DSI_CLK_P/N` | FIXED |
+| MIPI-DSI 4-lane | (UI-Carrier) | `DSI0_D0..3_P/N`, `DSI0_CLK_P/N` | FIXED |
 | LPDDR5 | Sheet 04 | dual-channel | **HOLD (G02)** |
 | UFS | Sheet 05 | M-PHY | **HOLD (G03)** |
 | PCIe 2.1 ×1 | Sheet 12 | `PCIE_*_P/N` | FIXED |

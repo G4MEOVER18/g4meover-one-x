@@ -12,6 +12,21 @@
 
 ---
 
+## 2026-09-01 — Session 14 (Cross-Sheet-Netznamen-Konsistenz + Checker-Tool)
+
+**Motivation:** Mainboard-Sheet 17 fordert „exakt gespiegelte Netznamen zum Ziel-Board" — an mehreren Interfaces war das verletzt (uneinheitliche Schreibweisen würden KiCad-ERC bei G07 teuer machen). **22 Mirror-Lücken** gefunden und geschlossen.
+
+**Umgesetzt:**
+- **`hardware/INTERFACE_NETS.md`** (neu) — kanonisches Inter-Board-Netz-Dictionary (Single Source): PCIe/USB3/DSI/RF-Core-Bus/Antennen/Power je Connector mit **einem** kanonischen Namen; board-lokale Netze explizit ausgenommen.
+- **`tools/schematic_netcheck.py`** (neu) — wiederverwendbarer Checker: prüft, ob jeder kanonische Netz-Stamm an **allen** beteiligten Boards vorkommt; Exit 1 bei Lücke (KiCad/CI-tauglich), konsolen-robust (UTF-8/ASCII).
+- **Normalisierungen in den Sheets:** PCIe `PETx0/PERx0/PE_REFCLK/PERST/PCIE_RST_n/CLKREQ_n/WAKE_n` → `PCIE_TX/RX/REFCLK_P/N` + `PCIE_PERST_n/CLKREQ_n/WAKE_n` (Mainboard 12, M.2-Bridge, HyperRF 08); USB3 `USB3_SSTX/SSRX` → `USB3_M2_TX/RX` (M.2-Bridge); DSI `DSI_*` → `DSI0_*` (Mainboard README+03); Mainboard-Sheet 17 nennt jetzt die J_UI/J_DSI/J_RFCORE/J_ANT-Signale **beim kanonischen Namen** (`DSI0_*`, `TP_*`, `RFC_*`, `RF_KILL`/`TX_GATE_OK`, `ANT_1..4`).
+
+**Ergebnis:** `schematic_netcheck.py` → **konsistent (25/25 Netz-Stämme über 6 Interfaces)**. Spec-Validator weiter Exit 0 (keine Regression). Keine Signal-Semantik geändert, nur Namen vereinheitlicht; alle HOLD/TBD/Forbidden-Disziplin unberührt.
+
+**Nächster Schritt (Session 15+):** (a) KiCad-Zeichnung aus den nun namens-konsistenten Specs beginnen (Mainboard/RF-Core → G07 ERC), (b) `schematic_netcheck.py` bei Bedarf um weitere Interfaces (J_BAT/J_PWR-Detailnetze) erweitern, (c) HOLDs mit Vendor-Daten schließen.
+
+---
+
 ## 2026-09-01 — Session 13 (HyperRF-Schaltplan — nach FPGA-Abhängigkeit partitioniert)
 
 **Umgesetzt (`hardware/hyperrf/schematic/`):** README + 8 Sheets. Kern-Methode: das **HOLD-blockierte** Board (FPGA-MPN, G04) nach **Abhängigkeit partitioniert** — alles FPGA-Unabhängige ausgearbeitet, der FPGA selbst als ehrliches Platzhalter-Sheet (wie Mainboard 04/05).
