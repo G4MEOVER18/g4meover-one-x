@@ -12,6 +12,19 @@
 
 ---
 
+## 2026-09-01 — Session 17 (Pre-Commit-Hook + read-only-Modus der Checker)
+
+**Umgesetzt:** `check_all.py` als **Git-Pre-Commit-Hook** verdrahtet — das grüne Tor greift jetzt automatisch bei jedem Commit.
+- **Seiteneffektfreiheit zuerst:** `spec_validator.py` und `gen_kicad_project.py` um `--check` (read-only) erweitert — im Check-Modus werden **keine** abgeleiteten Dateien geschrieben (spec/DERIVED_*, kicad/*). `check_all.py` ruft nun beide mit `--check`; Lauf verändert den Arbeitsbaum nicht (per Git-Status verifiziert).
+- **`.githooks/pre-commit`** (repo-verfolgt, POSIX-sh) + **`.githooks/README.md`** + **`tools/install_hooks.py`** (setzt `core.hooksPath` idempotent, markiert Hook ausführbar).
+- **Live getestet:** Negativtest (verbotener Claim „6-layer mainboard" in Testdatei) → Hook **blockiert** Commit (2/3, spec_validator FAIL), kein Fehl-Commit entstanden; Testdatei entfernt. Positivtest = dieser Commit selbst (Hook 3/3 → durchgelassen).
+
+**Nutzen:** Kein Stand mit verbotenem Claim, Netznamen-Mirror-Lücke oder kaputter KiCad-Ableitung kann mehr versehentlich committet werden. Umgehen nur bewusst via `git commit --no-verify`. Hooks sind lokal pro Clone → jeder (auch die 6h-Cloud-Routine) aktiviert einmalig `install_hooks.py`.
+
+**Nächster Schritt (Session 18+):** (a) echte KiCad-Zeichnung (KiCad + Vendor-Libs) → G07; (b) HOLDs mit Vendor-Rückmeldungen schließen (G02/G03/G04/G05/G06); (c) Hook optional in GitHub-Actions-CI spiegeln (serverseitig, unabhängig von lokaler Aktivierung).
+
+---
+
 ## 2026-09-01 — Session 16 (Aggregierter Verifikations-Lauf — ein grünes Tor vor G07)
 
 **Umgesetzt:** `tools/check_all.py` (neu) — Umbrella-Runner, der die drei über die Sessions gebauten Checker nacheinander ausführt und ein kombiniertes PASS/FAIL liefert: (1) `spec_validator.py` (keine verbotenen Claims), (2) `schematic_netcheck.py` (Inter-Board-Netznamen beidseitig), (3) `gen_kicad_project.py` (KiCad-Ableitung reproduzierbar + selbstgeprüft). Exit 0 nur bei 3/3; CI-/Handoff-tauglich (konsolen-robust). **Lauf: 3/3 grün → Repo bereit für die KiCad-Phase (G07).**

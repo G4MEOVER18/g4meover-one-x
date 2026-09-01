@@ -145,9 +145,12 @@ def main() -> int:
     print(f"Status  : " + ", ".join(f"{k}={v}" for k, v in sorted(counts.items())))
 
     hits = scan_forbidden(forbidden)
-    write_derived(spec, rows)
-    print(f"Derived : spec/MASTER_SPEC_FLAT.csv, spec/DERIVED_STATUS.md geschrieben "
-          f"({len(rows)} Eintraege)")
+    if "--check" in sys.argv:
+        print("Derived : (--check: read-only, nicht geschrieben)")
+    else:
+        write_derived(spec, rows)
+        print(f"Derived : spec/MASTER_SPEC_FLAT.csv, spec/DERIVED_STATUS.md geschrieben "
+              f"({len(rows)} Eintraege)")
 
     if hits:
         print(f"\n[FAIL] {len(hits)} moegliche verbotene Behauptung(en):")

@@ -85,7 +85,7 @@ def sheet_num(path):
     return m.group(1) if m else "00"
 
 
-def gen_board(board):
+def gen_board(board, write=True):
     sdir = HW / board / "schematic"
     if not sdir.exists():
         return None
@@ -121,13 +121,7 @@ def gen_board(board):
         "net_index": {k: sorted(set(v)) for k, v in sorted(net_index.items())},
     }
 
-    kdir = HW / board / "kicad"
-    kdir.mkdir(exist_ok=True)
-
-    # 1) hierarchy.json
-    (kdir / "hierarchy.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
-
-    # 2) minimal .kicad_pro (JSON, KiCad ergaenzt den Rest beim Oeffnen)
+    # minimal .kicad_pro (JSON, KiCad ergaenzt den Rest beim Oeffnen)
     pro = {
         "meta": {"filename": f"{board}.kicad_pro", "version": 1},
         "board": {},
@@ -136,9 +130,8 @@ def gen_board(board):
         "sheets": [[s["uuid"], f"{s['num']}:{s['title']}"] for s in sheets],
         "text_variables": {},
     }
-    (kdir / f"{board}.kicad_pro").write_text(json.dumps(pro, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    # 3) Bauplan
+    # Bauplan
     lines = [
         f"# KiCad-Bauplan — {board}",
         "",
@@ -168,26 +161,30 @@ def gen_board(board):
         "- **Symbole/Pinouts** kommen aus Vendor-Symbol-Libs im KiCad-Schritt — hier nicht geraten.",
         "- Alle sheet-lokalen Netze siehe `hierarchy.json` → `sheets[].nets`.",
     ]
-    (kdir / "KICAD_BUILD_PLAN.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    return manifest
+    if write:
+        kdir = HW / board / "kicad"
+        kdir.mkdir(exist_ok=True)
+        (kdir / "hierarchy.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
+        (kdir / f"{board}.kicad_pro").write_text(json.dumps(pro, indent=2, ensure_ascii=False), encoding="utf-8")
+        (kdir / "KICAD_BUILD_PLAN.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    return manifest, pro
 
 
-def self_check(manifests):
+def self_check(results):
     print("\n== Selbstpruefung ==")
     ok = True
-    for m in manifests:
+    for m, pro in results:
         board = m["board"]
-        kdir = HW / board / "kicad"
-        # JSON re-parse
+        # JSON-Serialisierbarkeit in-memory pruefen (kein Datei-Read -> auch im --check-Modus gueltig)
         try:
-            json.loads((kdir / "hierarchy.json").read_text(encoding="utf-8"))
-            json.loads((kdir / f"{board}.kicad_pro").read_text(encoding="utf-8"))
+            json.dumps(m, ensure_ascii=False)
+            json.dumps(pro, ensure_ascii=False)
         except Exception as e:
-            print(f"  FAIL {board}: JSON kaputt: {e}")
+            print(f"  FAIL {board}: JSON nicht serialisierbar: {e}")
             ok = False
             continue
-        # jede Sheet-Quelle existiert
         for s in m["sheets"]:
             if not (HW / board / "schematic" / s["file"]).exists():
                 print(f"  FAIL {board}: Quelle fehlt: {s['file']}")
@@ -197,17 +194,21 @@ def self_check(manifests):
 
 
 def main():
-    print("== G4MEOVER ONE-X -- KiCad-Projekt-Ableitung ==")
-    manifests = []
+    check_only = "--check" in sys.argv
+    mode = " (--check: read-only, keine Dateien geschrieben)" if check_only else ""
+    print(f"== G4MEOVER ONE-X -- KiCad-Projekt-Ableitung{mode} ==")
+    results = []
     for b in BOARDS:
-        m = gen_board(b)
-        if m:
-            manifests.append(m)
+        r = gen_board(b, write=not check_only)
+        if r:
+            m, pro = r
+            results.append(r)
             ibn = sum(len(s["interboard_nets"]) for s in m["sheets"])
             holds = sum(1 for s in m["sheets"] if s["hold_stub"])
             print(f"  {b:13s}: {m['sheet_count']:2d} Sheets, {len(m['net_index']):3d} Netze, {ibn:2d} Inter-Board-Label-Refs, {holds} HOLD-Stub(s)")
-    ok = self_check(manifests)
-    print("\n" + ("Alle Manifeste/Projekte generiert und selbstgeprueft." if ok else "FEHLER in Selbstpruefung."))
+    ok = self_check(results)
+    tail = "geprueft (read-only)." if check_only else "generiert und selbstgeprueft."
+    print("\n" + (f"Alle Manifeste/Projekte {tail}" if ok else "FEHLER in Selbstpruefung."))
     return 0 if ok else 1
 
 

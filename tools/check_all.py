@@ -19,16 +19,17 @@ except (AttributeError, ValueError):
     pass
 
 TOOLS = Path(__file__).resolve().parent
+# Alle im read-only --check-Modus, damit der Lauf keine Dateien schreibt (Pre-Commit-tauglich).
 CHECKS = [
-    ("Master-Spec (verbotene Claims / Konsistenz)", "spec_validator.py"),
-    ("Netznamen-Konsistenz (Inter-Board-Mirror)", "schematic_netcheck.py"),
-    ("KiCad-Ableitung (reproduzierbar + Selbstpruefung)", "gen_kicad_project.py"),
+    ("Master-Spec (verbotene Claims / Konsistenz)", "spec_validator.py", ["--check"]),
+    ("Netznamen-Konsistenz (Inter-Board-Mirror)", "schematic_netcheck.py", []),
+    ("KiCad-Ableitung (reproduzierbar + Selbstpruefung)", "gen_kicad_project.py", ["--check"]),
 ]
 
 
-def run(script):
+def run(script, args):
     proc = subprocess.run(
-        [sys.executable, str(TOOLS / script)],
+        [sys.executable, str(TOOLS / script), *args],
         capture_output=True, text=True, encoding="utf-8", errors="replace",
     )
     return proc.returncode, (proc.stdout or "") + (proc.stderr or "")
@@ -44,8 +45,8 @@ def main():
     print(" G4MEOVER ONE-X -- Aggregierter Verifikations-Lauf")
     print("=" * 64)
     results = []
-    for label, script in CHECKS:
-        rc, out = run(script)
+    for label, script, args in CHECKS:
+        rc, out = run(script, args)
         ok = rc == 0
         results.append((label, script, ok))
         badge = "PASS" if ok else "FAIL"
