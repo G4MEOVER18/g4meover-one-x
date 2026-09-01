@@ -12,6 +12,38 @@
 
 ---
 
+## 2026-09-01 — Session 11 (Phase 8 / Gate G04 — HyperRF-FPGA Scored Candidate Matrix)
+
+**Kontext-Fix zuerst:** Session 10 (RF-Core-Schaltplan) war committet (`a54e006`), aber **nicht** im Worklog dokumentiert — siehe Nachtrag unten (Session 10). Kein Code-Verlust, nur Protokoll nachgezogen.
+
+**Umgesetzt (`hardware/hyperrf/fpga-selection/` angelegt):** das **Entscheidungs-Gerüst für G04** — bewusst kein MPN geraten (Forbidden-Claim „Zynq UltraScale+ unless explicitly frozen"; Spec `hyperrf.fpga` = HOLD).
+- `README.md` — Zweck von G04, warum Scored-Matrix (nicht „aus altem Bild wählen"), Ablauf Knockout-Filter → gewichtete Bewertung → Freeze, Bezug zu Host-Limit (PCIe 2.1 x1) + RF-Kill-unabhängigkeit.
+- `REQUIREMENTS.md` — aus Master-Spec **abgeleitete** Hard-/Soft-Anforderungen: PCIe-2.1-x1-Endpoint (Hard-IP bevorzugt), digitale IQ-Anbindung 2× LMS7002M (LML-LVDS, Lane-Zahl = TBD je Modus), DSP/BRAM für 4-Kanal-Dezimation/Channelization, Timestamping (10 MHz + PPS), **Power-Deckel** (Handheld/Dual-Blower), Package/Thermik, Verfügbarkeit/Lifecycle, Toolchain-Offenheit (Open-Source-Projekt).
+- `SCORING_MODEL.md` — Knockout-Kriterien (K1–K5, sofortiges Aus) + 8 gewichtete Score-Achsen mit Rubrik 0–5 und **begründeter Default-Gewichtung** (Power/Thermik & Verfügbarkeit hoch für ein Batterie-Handheld; explizit als Owner-Entscheidungspunkt markiert, überschreibbar).
+- `CANDIDATE_MATRIX.csv` — Matrix-Skelett: Kriterien × Kandidaten-**Familien** (Artix-/ECP5-/PolarFire-/Agilex-Klasse als Platzhalter-Spalten), **alle** herstellerspezifischen Zellen `TBD` — zu füllen aus Datenblatt/Verfügbarkeit, nicht geraten.
+- `score.py` — liest die CSV, rechnet gewichtete Summe **nur** wenn Zellen belegt sind; bei `TBD` → Ausgabe „INSUFFICIENT DATA — HOLD" statt Scheinergebnis. Knockout-Spalten disqualifizieren hart.
+
+**Statusdisziplin:** `hyperrf.fpga` bleibt **HOLD**; kein Gate geschlossen. Das Framework produziert die Entscheidung erst, wenn reale Werte eingetragen sind (Vendor-Docs / Verfügbarkeit / Power-Messung). Validator Exit 0.
+
+**Owner-Entscheidungspunkt:** Die **Gewichtung** der 8 Score-Achsen ist eine Design-/Produktjudgement-Frage (Power/Thermik vs. DSP-Rohleistung vs. Open-Tooling/Hackbarkeit für ein Open-Source-Gerät). Default in `SCORING_MODEL.md` gesetzt + begründet, aber bewusst überschreibbar.
+
+**Nächster Schritt (Session 12+):** (a) Owner-Gewichtung bestätigen/anpassen → Kandidaten-Zellen mit Datenblattwerten füllen (sobald Vendor-Verfügbarkeit bekannt), (b) restliche Board-Schaltpläne als Design-Spec: UI-Carrier / M.2-Bridge / Antenna-Rail (nicht HOLD-blockiert), (c) KiCad-Zeichnung aus Mainboard-/RF-Core-Specs beginnen (Gate G07).
+
+---
+
+## 2026-08-28 — Session 10 (RF-Core-Schaltplan — 7 Sheets, Sicherheit zuerst) [Nachtrag]
+
+> Nachträglich protokolliert in Session 11 — der Code war bereits committet (`a54e006`), der Worklog-Eintrag fehlte.
+
+**Umgesetzt (`hardware/rf-core/schematic/` angelegt):** kompletter RF-Core-Schaltplan-Design-Spec-Satz (Board 92×66 mm), gleiche Methodik wie Mainboard.
+- `README.md` — Sheet-Index (7), Host-Anbindung über `J_RFCORE`, Netz-Konventionen, **Sicherheits-Grundsatz: Sheet 01 zuerst** (RF-Kill gatet alle PA/TX-Enables).
+- `sheet_01_supervisor_rfkill.md` — **sicherheitskritisch**: hardware-erzwungener TX-Disable-Pfad, Default nach Reset = Kill aktiv, softwareunabhängig (fail-safe), Autorität = RP2350; jedes Radio muss seinen PA/TX-Enable explizit über `PA_EN_<radio>` führen (ERC-Review-Punkt).
+- `sheet_02_subghz.md` (CC1101 U500 + SX1262 U501) · `sheet_03_24ghz_zwave.md` (CC2652P7 U502 + EFR32ZG23 U503) · `sheet_04_nfc_lfrfid.md` (PN7160 U504 + LF-AFE U505) · `sheet_05_uhf_rain.md` (Impinj E710 U506) · `sheet_06_ir_1wire.md` (IR-TX/RX + 1-Wire) · `sheet_07_power_host_antennas.md` (Rails, SPI/UART, Antennen-Feeds, Testpoints).
+
+**Statusdisziplin:** Kern-Radios FIXED; Z-Wave/LF-AFE/UHF/IR TARGET, regionale RF-Matching-Werte auf realer HW (G09), nie nur Simulation. Validator Exit 0.
+
+---
+
 ## 2026-08-28 — Session 9 (Mainboard-Schaltplan — alle 18 Sheets als Design-Spec)
 
 **Umgesetzt:** Der komplette Schaltplan-Design-Spec-Satz für das Mainboard (`hardware/mainboard/schematic/`) — 16 Entwurfs-Sheets + 2 ehrliche Platzhalter:

@@ -1,0 +1,14 @@
+axis_id,description,type,weight,candidate_1,candidate_2,candidate_3,candidate_4
+K1,PCIe 2.1 x1 endpoint (hard-IP preferred; no Gen3 x4),knockout,,TBD,TBD,TBD,TBD
+K2,Digital IQ interface for 2x LMS7002M (LVDS/LML) + clocking,knockout,,TBD,TBD,TBD,TBD
+K3,DSP slices + BRAM for 4-channel decimation/channelization,knockout,,TBD,TBD,TBD,TBD
+K4,Total power within handheld thermal/battery ceiling (G10),knockout,,TBD,TBD,TBD,TBD
+K5,Actively procurable (no NRND/EOL) at EVT/small-series qty,knockout,,TBD,TBD,TBD,TBD
+S1,Timing/PLL resources (10MHz ref + GNSS PPS + timestamping),score,10,TBD,TBD,TBD,TBD
+S2,Coherent-capable clocking for 2x LMS7002M,score,15,TBD,TBD,TBD,TBD
+S3,Package/thermal feasibility on 12-layer HDI,score,12,TBD,TBD,TBD,TBD
+S4,Toolchain openness (open-source flow or free vendor tools),score,18,TBD,TBD,TBD,TBD
+S5,DSP headroom beyond K3 (5G/NTN/radar preprocessing),score,12,TBD,TBD,TBD,TBD
+S6,I/O headroom (filterbank/converters/radar-tile/clock),score,10,TBD,TBD,TBD,TBD
+S7,Cost at EVT/small-series quantity,score,10,TBD,TBD,TBD,TBD
+S8,Ecosystem/reference designs (LimeSDR-near gateware; PCIe-EP IP),score,13,TBD,TBD,TBD,TBD
