@@ -20,7 +20,7 @@ Kein CAD, KiCad, BOM, Mail, Diagramm, Doku, Code oder Grafik darf ihr widersprec
 2. Auswirkung erklären,
 3. Master-Spec zuerst aktualisieren,
 4. abgeleitete Artefakte nachziehen,
-5. `python tools/spec_validator.py` laufen lassen,
+5. `python tools/check_all.py` laufen lassen (Umbrella: spec_validator + schematic_netcheck + KiCad-Ableitung; muss 3/3 grün sein),
 6. Revision dokumentieren.
 
 **Nie still das Design ändern. Fehlende Herstellerdaten nie erfinden — HOLD setzen.**
@@ -34,7 +34,7 @@ Ein HOLD muss in Code, Docs, Schaltplänen, BOMs, Grafiken und Providerdaten sic
 
 1. Master-Spec lesen. 2. Betroffene FIXED/TARGET/HOLD prüfen. 3. Unklares nicht raten.
 4. Eine kohärente Änderung. 5. Bei Architekturänderung Source of Truth zuerst.
-6. Abgeleitetes nachziehen. 7. Validator laufen lassen. 8. Berichten: was, warum, betroffene Dateien, neue Risiken, verbleibende HOLDs.
+6. Abgeleitetes nachziehen. 7. `tools/check_all.py` (3/3 grün). 8. Berichten: was, warum, betroffene Dateien, neue Risiken, verbleibende HOLDs.
 
 Kleine, prüfbare Schritte statt riesiger unverifizierter Rewrites.
 

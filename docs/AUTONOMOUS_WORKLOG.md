@@ -12,6 +12,18 @@
 
 ---
 
+## 2026-09-01 — Session 16 (Aggregierter Verifikations-Lauf — ein grünes Tor vor G07)
+
+**Umgesetzt:** `tools/check_all.py` (neu) — Umbrella-Runner, der die drei über die Sessions gebauten Checker nacheinander ausführt und ein kombiniertes PASS/FAIL liefert: (1) `spec_validator.py` (keine verbotenen Claims), (2) `schematic_netcheck.py` (Inter-Board-Netznamen beidseitig), (3) `gen_kicad_project.py` (KiCad-Ableitung reproduzierbar + selbstgeprüft). Exit 0 nur bei 3/3; CI-/Handoff-tauglich (konsolen-robust). **Lauf: 3/3 grün → Repo bereit für die KiCad-Phase (G07).**
+- CLAUDE.md-Arbeitszyklus aktualisiert: Schritt 5/7 verweisen jetzt auf `check_all.py` (statt nur `spec_validator.py`), damit künftige autonome Sessions alle drei Checks fahren.
+- Determinismus verifiziert: erneuter `gen_kicad_project.py`-Lauf erzeugt byte-identische Ausgaben (kein Git-Diff).
+
+**Hinweis:** Versehentlich in die Konsole gepastete Package-Referenzbilder (PGA/LGA/BGA) auf Owner-Ansage ignoriert; kein daraus abgeleitetes Artefakt eingecheckt.
+
+**Nächster Schritt (Session 17+):** (a) echte KiCad-Zeichnung starten (braucht KiCad + Vendor-Symbol-Libs) → G07 ERC; (b) `check_all.py` in eine CI/Pre-Commit-Hook hängen; (c) HOLDs mit Vendor-Rückmeldungen schließen (G02/G03/G04/G05/G06).
+
+---
+
 ## 2026-09-01 — Session 15 (KiCad-Ableitung — deterministische Grundlage)
 
 **Ehrliche Einordnung zuerst:** In dieser Umgebung ist **kein KiCad** installiert (`kicad-cli` fehlt) → hand-geschriebene `.kicad_sch`-S-Expressions wären nicht gegen das Binärformat verifizierbar; echte Symbole bräuchten Vendor-Pinouts (nicht raten). Deshalb liefert dieser Schritt die **verifizierbare, reproduzierbare Grundlage** der KiCad-Zeichnung, nicht fabrizierte Schaltplan-Dateien.
