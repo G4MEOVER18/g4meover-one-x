@@ -1,0 +1,11 @@
+# Generierte/abgeleitete Dateien: LF erzwingen -> plattformunabhaengiger Determinismus-Check (CI).
+# Ohne das schreibt Windows CRLF und der CI-Diff-Check (ubuntu, LF) schlaegt fehl.
+spec/MASTER_SPEC_FLAT.csv   text eol=lf
+spec/DERIVED_STATUS.md      text eol=lf
+hardware/**/kicad/hierarchy.json   text eol=lf
+hardware/**/kicad/*.kicad_pro      text eol=lf
+hardware/**/kicad/KICAD_BUILD_PLAN.md text eol=lf
+
+# Tools deterministisch (LF), damit Hooks/CS ueberall gleich laufen.
+tools/*.py       text eol=lf
+.githooks/*      text eol=lf

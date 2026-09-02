@@ -105,7 +105,7 @@ def write_derived(spec: dict, rows: list[tuple[str, str, str]]) -> None:
     # 1) flache CSV
     flat_csv = SPEC.parent / "MASTER_SPEC_FLAT.csv"
     with flat_csv.open("w", newline="", encoding="utf-8") as f:
-        w = csv.writer(f)
+        w = csv.writer(f, lineterminator="\n")  # LF statt csv-Default CRLF -> plattformunabh. determ.
         w.writerow(["key", "value", "status"])
         w.writerows(rows)
 

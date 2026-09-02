@@ -20,7 +20,9 @@
 
 **Warum wichtig:** Der lokale Hook ist opt-in pro Clone; CI greift **immer** — auch wenn jemand `install_hooks.py` nicht ausführte oder `--no-verify` nutzte. Keine externen Deps nötig (alle Tools nur Python-stdlib) → CI = nur `actions/setup-python`.
 
-**Lokal simuliert:** beide Generatoren neu laufen lassen → kein Diff (committete derived-Dateien aktuell) → CI wird grün. `.githooks/README.md` um CI-Abschnitt ergänzt.
+**Lokal simuliert:** beide Generatoren neu laufen lassen → kein Diff (committete derived-Dateien aktuell). `.githooks/README.md` um CI-Abschnitt ergänzt.
+
+**CI-Fix (erster Lauf schlug fehl — genau wie beabsichtigt gefangen):** Der Determinismus-Check fand auf ubuntu einen Diff an `spec/MASTER_SPEC_FLAT.csv` (75/75 Zeilen = reine CRLF↔LF-Signatur). Ursache: Pythons `csv.writer` schreibt Default **CRLF**, das committete Blob ist LF → auf Windows lokal unsichtbar (autocrlf), auf CI sichtbar. Fix: `csv.writer(..., lineterminator="\n")` (LF, plattformunabhängig) + `.gitattributes` (generierte Dateien + tools/hooks `eol=lf`). Ein echter plattformabhängiger Bug, den nur die CI fing.
 
 **Nächster Schritt (Session 19+):** (a) echte KiCad-Zeichnung (KiCad + Vendor-Libs) → G07; (b) HOLDs mit Vendor-Rückmeldungen schließen (G02/G03/G04/G05/G06); (c) CI-Status-Badge in Flaggschiff-README.
 
