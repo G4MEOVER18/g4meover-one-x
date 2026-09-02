@@ -1,0 +1,37 @@
+name: verify
+
+# Serverseitiges grünes Tor — spiegelt den lokalen pre-commit-Hook (.githooks/pre-commit).
+# Greift unabhängig davon, ob jemand den lokalen Hook aktiviert hat.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  check_all:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Aggregierter Verifikations-Lauf (read-only)
+        run: python tools/check_all.py
+
+      - name: Abgeleitete Dateien aktuell? (Determinismus, kein Diff erlaubt)
+        run: |
+          python tools/spec_validator.py
+          python tools/gen_kicad_project.py
+          if ! git diff --quiet; then
+            echo "::error::Abgeleitete Dateien veraltet (spec/DERIVED_*, hardware/*/kicad/*). Bitte 'python tools/spec_validator.py' und 'python tools/gen_kicad_project.py' laufen lassen und committen."
+            git --no-pager diff --stat
+            exit 1
+          fi
+          echo "OK: alle abgeleiteten Dateien sind aktuell (kein Diff)."

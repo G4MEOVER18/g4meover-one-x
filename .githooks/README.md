@@ -17,3 +17,6 @@ Führt `python tools/check_all.py` aus — das aggregierte grüne Tor (read-only
 Bewusst umgehen (nur mit Grund): `git commit --no-verify`.
 
 > Hinweis: Hooks sind lokal pro Clone. Jeder, der am Repo arbeitet (auch die 6h-Cloud-Routine), aktiviert sie einmalig via `install_hooks.py`. Ohne Aktivierung bleibt das Verhalten unverändert.
+
+## Serverseitiger Spiegel (CI)
+Unabhängig vom lokalen Hook läuft `check_all.py` auch in **GitHub Actions** ([`.github/workflows/verify.yml`](../.github/workflows/verify.yml)) bei jedem Push/PR auf `main` — plus ein **Determinismus-Check**, der `spec_validator.py` + `gen_kicad_project.py` neu laufen lässt und bei einem Diff fehlschlägt (fängt veraltete abgeleitete Dateien). So greift das grüne Tor auch, wenn jemand den lokalen Hook nicht aktiviert hat.

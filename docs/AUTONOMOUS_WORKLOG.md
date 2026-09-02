@@ -12,6 +12,20 @@
 
 ---
 
+## 2026-09-02 — Session 18 (CI-Spiegel: GitHub Actions verify-Workflow)
+
+**Umgesetzt:** `.github/workflows/verify.yml` (neu) — serverseitiges grünes Tor, spiegelt den lokalen pre-commit-Hook, greift bei jedem Push/PR auf `main` (+ `workflow_dispatch`). Zwei Schritte:
+1. `python tools/check_all.py` — aggregierter Verifikations-Lauf (read-only).
+2. **Determinismus-Check** — regeneriert `spec_validator.py` + `gen_kicad_project.py` und schlägt bei einem `git diff` fehl → fängt **veraltete abgeleitete Dateien** (spec/DERIVED_*, hardware/*/kicad/* sind bewusst versioniert). Stärker als der lokale Hook (der nur read-only prüft).
+
+**Warum wichtig:** Der lokale Hook ist opt-in pro Clone; CI greift **immer** — auch wenn jemand `install_hooks.py` nicht ausführte oder `--no-verify` nutzte. Keine externen Deps nötig (alle Tools nur Python-stdlib) → CI = nur `actions/setup-python`.
+
+**Lokal simuliert:** beide Generatoren neu laufen lassen → kein Diff (committete derived-Dateien aktuell) → CI wird grün. `.githooks/README.md` um CI-Abschnitt ergänzt.
+
+**Nächster Schritt (Session 19+):** (a) echte KiCad-Zeichnung (KiCad + Vendor-Libs) → G07; (b) HOLDs mit Vendor-Rückmeldungen schließen (G02/G03/G04/G05/G06); (c) CI-Status-Badge in Flaggschiff-README.
+
+---
+
 ## 2026-09-01 — Session 17 (Pre-Commit-Hook + read-only-Modus der Checker)
 
 **Umgesetzt:** `check_all.py` als **Git-Pre-Commit-Hook** verdrahtet — das grüne Tor greift jetzt automatisch bei jedem Commit.
