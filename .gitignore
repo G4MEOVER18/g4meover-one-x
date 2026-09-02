@@ -26,3 +26,6 @@ desktop.ini
 
 # Generierte, aber reproduzierbare Ableitungen dürfen eingecheckt bleiben —
 # spec/DERIVED_STATUS.md und spec/MASTER_SPEC_FLAT.csv werden bewusst versioniert.
+
+# Interne Arbeitsanweisung — nicht öffentlich auf GitHub (bleibt lokal).
+CLAUDE.md
