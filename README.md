@@ -9,6 +9,8 @@ Ein Gerät für absolut alles — von 125 kHz LF-RFID bis 6 GHz SDR, von Zigbee 
 
 Revision **EVT6** · Status **Architektur synchronisiert / Engineering-Phase** · Lizenz **CERN-OHL-S 2.0 (HW) + MIT (SW/Docs)**
 
+[![verify](https://github.com/G4MEOVER18/g4meover-one-x/actions/workflows/verify.yml/badge.svg)](https://github.com/G4MEOVER18/g4meover-one-x/actions/workflows/verify.yml)
+
 </div>
 
 ---
@@ -134,19 +136,41 @@ python tools/spec_validator.py          # prüft Konsistenz & verbotene Claims, 
 
 ```
 g4meover-one-x/
-├── spec/            # Single Source of Truth (JSON) + BOM + Interface/Power-CSV
-├── docs/            # Konzept, Architektur, Roadmap, Vergleich, Grafiken
-├── tools/           # spec_validator.py (FIXED/TARGET/HOLD + forbidden-claim-Scan)
-├── hardware/        # mainboard · ui-carrier · rf-core · hyperrf · m2-bridge · antenna-rail
+├── spec/            # Single Source of Truth (JSON) + BOM + abgeleitete CSV/Status
+├── docs/            # Konzept, Architektur, Roadmap, Vergleich, Grafiken, Worklog
+├── tools/           # Verifikation: spec_validator · schematic_netcheck · gen_kicad_project
+│                    #  · check_all (Umbrella) · score.py (G04-Auswahl) · install_hooks
+├── hardware/        # 6 Boards, je schematic/ (40 Sheets Design-Spec) + kicad/ (Ableitung)
+│                    #  INTERFACE_NETS.md = kanonisches Inter-Board-Netz-Dictionary
 ├── firmware/rp2350/ # Always-On-Systemcontroller-Firmware (Architektur)
 ├── linux/           # Debian-/Linux-Plattform, Device-Tree, DRM-Bringup, ONE-X-UI
 ├── mechanical/      # CadQuery-Quelle, STEP/STL-Referenzen
 ├── validation/      # Geometrie-, Thermal-, Regressions-Checks
-├── manufacturing/   # DFM, Stackup, EVT-Build-Prozess
+├── manufacturing/   # DFM, Stackup, EVT-Build-Prozess, Handoff-Paket
 ├── branding/        # Marken-Tokens, Logo
 ├── presentation/    # Konzept-Präsentation
-└── reference_evt6/  # eingefrorene EVT6-Handoff-Referenz
+├── reference_evt6/  # eingefrorene EVT6-Handoff-Referenz
+├── .githooks/       # pre-commit → check_all (lokales grünes Tor)
+└── .github/         # GitHub-Actions-CI (serverseitiger Spiegel)
 ```
+
+---
+
+## Verifikation (grünes Tor)
+
+Die HOLD-Disziplin wird **maschinell** durchgesetzt, nicht per Vertrauen. Ein aggregierter Lauf muss grün sein, bevor Code committet wird — lokal per Git-Hook und serverseitig per CI:
+
+```
+python tools/check_all.py
+```
+
+| Prüfung | Werkzeug | garantiert |
+|---|---|---|
+| Verbotene Claims / Spec-Konsistenz | `spec_validator.py` | keine Behauptung widerspricht der Single Source of Truth |
+| Inter-Board-Netznamen | `schematic_netcheck.py` | Connector-Signale beidseitig identisch benannt ([`hardware/INTERFACE_NETS.md`](hardware/INTERFACE_NETS.md)) |
+| KiCad-Ableitung | `gen_kicad_project.py` | Projekt/Manifest/Bauplan je Board reproduzierbar aus den Design-Specs |
+
+Aktivierung des lokalen Pre-Commit-Hooks: `python tools/install_hooks.py`. Serverseitig läuft derselbe Check plus ein **Determinismus-Test** (regenerierte Ableitungen dürfen keinen Diff erzeugen) bei jedem Push/PR — siehe Badge oben.
 
 ---
 

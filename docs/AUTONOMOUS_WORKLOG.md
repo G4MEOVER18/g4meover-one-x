@@ -12,6 +12,19 @@
 
 ---
 
+## 2026-09-02 — Session 19 (README aktualisiert: CI-Badge + Verifikation + Struktur)
+
+**Umgesetzt:** Flaggschiff-`README.md` auf den realen Reifegrad gebracht (war seit Session 1 nicht nachgezogen).
+- **CI-Status-Badge** im Kopf (verlinkt auf den verify-Workflow).
+- **Repository-Struktur** aktualisiert: `tools/` nennt jetzt alle Verifikations-Werkzeuge; `hardware/` erklärt `schematic/` (40 Sheets) + `kicad/` + `INTERFACE_NETS.md`; `.githooks/` + `.github/` ergänzt.
+- **Neuer Abschnitt „Verifikation (grünes Tor)"** — `check_all.py`, Tabelle der drei Prüfungen, lokaler Hook + CI-Determinismus-Test. Macht die maschinell erzwungene HOLD-Disziplin öffentlich sichtbar.
+
+Reine Doku, keine Spec-/Signal-Änderung. check_all 3/3 grün.
+
+**Nächster Schritt (Session 20+):** (a) echte KiCad-Zeichnung (KiCad + Vendor-Libs) → G07; (b) HOLDs mit Vendor-Rückmeldungen schließen (G02/G03/G04/G05/G06); (c) weitere Inhalts-Vertiefung ohne Externa (z. B. Orphan-Netz-Audit).
+
+---
+
 ## 2026-09-02 — Session 18 (CI-Spiegel: GitHub Actions verify-Workflow)
 
 **Umgesetzt:** `.github/workflows/verify.yml` (neu) — serverseitiges grünes Tor, spiegelt den lokalen pre-commit-Hook, greift bei jedem Push/PR auf `main` (+ `workflow_dispatch`). Zwei Schritte:
