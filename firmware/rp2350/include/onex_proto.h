@@ -47,6 +47,18 @@ enum {
     ONEX_EVT_FAULT       = 0x86,  /* u8 code, u8 module */
     ONEX_EVT_RFKILL      = 0x87,  /* u8 state, u8 reason */
     ONEX_EVT_WAKE        = 0x88,  /* u8 source */
+    ONEX_EVT_NONCE       = 0x89,  /* u8 valid, u8 nonce[8] -- Antwort auf CMD_GET */
+};
+
+/*
+ * CMD_GET.what — welche Telemetrie der Host anfordert.
+ * Der Manager antwortet mit dem passenden EVT, nicht mit einem ACK-Payload.
+ */
+enum {
+    ONEX_GET_STATUS       = 0x01,  /* -> EVT_HEARTBEAT */
+    ONEX_GET_BATTERY      = 0x02,  /* -> EVT_BATTERY */
+    ONEX_GET_RFKILL       = 0x03,  /* -> EVT_RFKILL */
+    ONEX_GET_RFKILL_NONCE = 0x04,  /* -> EVT_NONCE (nur gueltig nach Nutzergeste) */
 };
 
 /* --- Beide Richtungen --- */

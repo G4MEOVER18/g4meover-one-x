@@ -27,6 +27,8 @@ Max. Framegröße = 2+1+1+1+1+255+2 = **263 Byte**.
 - **Kommandos (Host→Mgr):** erwarten `ACK`/`NACK` mit gespiegelter SEQ. Timeout/Retry im Host (empfohlen 3× / 20 ms).
 - **Events/Telemetrie (Mgr→Host):** fire-and-forget mit eigener SEQ; Host darf Lücken erkennen, muss aber nicht ACKen.
 - **Resync:** Empfänger sucht bei CRC-Fehler das nächste `0xA5 0x5A`.
+- **Wiederholungen wirken genau einmal.** Der Manager führt ein Kommando mit derselben `SEQ` **und** demselben `TYPE` wie das unmittelbar vorhergehende **nicht erneut aus**, sondern sendet die gespeicherte Antwort noch einmal. Der Host kann ein verlorenes Kommando nicht von einer verlorenen Antwort unterscheiden — ohne diese Regel würde ein wiederholtes `CMD_POWER` (reboot/shutdown) oder `CMD_RECOVERY` doppelt wirken.
+- **Keine Antwort auf CRC-Fehler.** Ist die Prüfsumme falsch, ist **kein** Header-Feld vertrauenswürdig — auch die `SEQ` nicht. Ein `NACK` mit geratener SEQ könnte beim Host ein ganz anderes, noch offenes Kommando als abgelehnt markieren. Der Manager schweigt daher und zählt den Fehler nur; der Host läuft in seinen Timeout und wiederholt. Bei **Versionsfehlern** wird dagegen geantwortet — dort ist die SEQ durch die Prüfsumme gedeckt (siehe §5).
 
 ## 3. Nachrichtentypen
 
@@ -43,6 +45,8 @@ Max. Framegröße = 2+1+1+1+1+255+2 = **263 Byte**.
 | `0x08` | `CMD_GET` | `u8 what` | Telemetrie anfordern (Mgr sendet passendes EVT) |
 | `0x09` | `CMD_TIME_SYNC` | `u64 unix_us` | Zeit setzen |
 
+**`CMD_GET.what`:** `0x01` STATUS → `EVT_HEARTBEAT` · `0x02` BATTERY → `EVT_BATTERY` · `0x03` RFKILL → `EVT_RFKILL` · `0x04` RFKILL_NONCE → `EVT_NONCE`. Der Manager antwortet mit dem passenden **Event** (plus `ACK` auf das Kommando selbst), nicht mit Daten im ACK-Payload.
+
 ### Manager → Host (Events / Telemetrie)
 | TYPE | Name | Payload | Bedeutung |
 |---|---|---|---|
@@ -54,6 +58,7 @@ Max. Framegröße = 2+1+1+1+1+255+2 = **263 Byte**.
 | `0x86` | `EVT_FAULT` | `u8 code`,`u8 module` | Fehler → FAULT-Zustand |
 | `0x87` | `EVT_RFKILL` | `u8 state`,`u8 reason` | Kill-Zustandswechsel |
 | `0x88` | `EVT_WAKE` | `u8 source` | Wake-Ursache (Touch/Power/RTC) |
+| `0x89` | `EVT_NONCE` | `u8 valid`,`u8 nonce[8]` | Antwort auf `CMD_GET(0x04)`; `valid=0` heißt „noch keine Nutzergeste" |
 
 ### Beide Richtungen
 | TYPE | Name | Payload | Bedeutung |

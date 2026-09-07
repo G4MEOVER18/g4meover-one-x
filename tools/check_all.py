@@ -36,7 +36,7 @@ CHECKS = [
     ("Master-Spec (verbotene Claims / Konsistenz)", "spec_validator.py", ["--check"], False),
     ("Netznamen-Konsistenz (Inter-Board-Mirror)", "schematic_netcheck.py", [], False),
     ("KiCad-Ableitung (reproduzierbar + Selbstpruefung)", "gen_kicad_project.py", ["--check"], False),
-    ("Firmware-Unit-Tests (Link-Codec + RF-Kill)", "fw_test.py", ["--check"], True),
+    ("Firmware-Unit-Tests (Codec + RF-Kill + Link)", "fw_test.py", ["--check"], True),
 ]
 
 

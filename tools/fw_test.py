@@ -43,6 +43,16 @@ SUITES = [
         "sources": [FW / "src" / "onex_rfkill.c"],
         "test": FW / "test" / "test_onex_rfkill.c",
     },
+    {
+        # Integrationssuite: Codec + RF-Kill + Endpunkt ueber die Drahtdarstellung.
+        "name": "onex_link (Protokoll-Endpunkt, Integration)",
+        "sources": [
+            FW / "src" / "onex_link.c",
+            FW / "src" / "onex_proto.c",
+            FW / "src" / "onex_rfkill.c",
+        ],
+        "test": FW / "test" / "test_onex_link.c",
+    },
 ]
 
 # Streng: Warnungen sind Fehler. Firmware-Code, der auf dem Host warnt,

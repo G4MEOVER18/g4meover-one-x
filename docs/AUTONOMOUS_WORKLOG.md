@@ -12,6 +12,33 @@
 
 ---
 
+## 2026-09-07 — Session 22 (`rk3576_link`: Protokoll-Endpunkt — Codec + RF-Kill zusammengeführt)
+
+**Umgesetzt:** Der Link RK3576 ↔ RP2350B ist erstmals **als Ganzes bedienbar und getestet**. `include/onex_link.h` + `src/onex_link.c` + `test/test_onex_link.c` (**64 Prüfungen**, Integrationstests über die echte Drahtdarstellung). Gesamt jetzt **168 Prüfungen** in 3 Suiten; check_all bleibt 4/4.
+
+Aufgaben des Moduls: Bytestrom → Frames → Kommando ausführen → `ACK`/`NACK` mit gespiegelter SEQ; Heartbeat (~1 Hz) mit `state`/`flags`/`uptime_s`; Events mit eigener, fortlaufender SEQ. Transport (UART primär, SPI optional — Busauswahl HOLD bis G07) hängt an einem Schreib-Callback → weiterhin voll host-testbar.
+
+**Drei prägende Entscheidungen:**
+1. **Wiederholungen wirken genau einmal.** `PROTOCOL.md` §2 lässt den Host bei Timeout 3×/20 ms wiederholen — er kann ein verlorenes Kommando nicht von einer verlorenen Antwort unterscheiden. Ein **Duplikat-Cache** (gleiche SEQ *und* gleicher Typ) sendet die gespeicherte Antwort erneut, statt das Kommando ein zweites Mal auszuführen. Ohne das würde ein wiederholtes `CMD_POWER reboot` doppelt wirken. Beim RF-Kill kommt die Idempotenz des Automaten als zweite Ebene dazu.
+2. **Auf CRC-Fehler folgt keine Antwort.** Bei falscher Prüfsumme ist kein Header-Feld vertrauenswürdig — auch die SEQ nicht; ein `NACK` mit geratener SEQ könnte beim Host ein anderes, noch offenes Kommando als abgelehnt markieren. Der Manager schweigt und zählt nur. Bei **Versionsfehlern** wird geantwortet, weil die SEQ dort CRC-gedeckt ist — der Zweck der Prüfreihenfolge aus Session 20 zahlt sich hier konkret aus.
+3. **Fehlende Module sagen `BUSY`, nicht `ACK`.** Für POWER/FAN/HAPTIC/LED/RECOVERY/TIME_SYNC gibt es noch keine Implementierung; ohne registrierten Delegaten antwortet der Link `NACK(BUSY)`. Ein ACK würde eine Wirkung behaupten, die es nicht gibt. Ebenso meldet der Heartbeat **ohne** RF-Kill-Modul „Kill aktiv" — ein fehlendes Sicherheitsmodul darf nie als „TX frei" erscheinen.
+
+**Protokoll additiv erweitert** (v1 bleibt, keine Bruchänderung): `EVT_NONCE = 0x89` (`u8 valid, u8 nonce[8]`) als Antwort auf `CMD_GET`, plus die `CMD_GET.what`-Konstanten (STATUS/BATTERY/RFKILL/RFKILL_NONCE). Damit ist die Freigabe-Policy aus Session 21 **end-to-end über den Draht bedienbar**: Geste am Gerät → Host holt Nonce per `CMD_GET(0x04)` → spiegelt es in `CMD_RFKILL_SET engage=0`. `PROTOCOL.md` §2/§3 entsprechend nachgezogen.
+
+**Zwei echte Funde durch Mutationstest:**
+- **Testlücke:** Bei abgeschaltetem Duplikat-Cache blieb der Test „Retry erhält wieder ACK" grün — weil `onex_rfkill_request` im Zustand RELEASED bereits selbst idempotent antwortet. Der Test prüfte Zähler und ACK-Anzahl, aber **nie, ob der Delegat wirklich nur einmal gerufen wurde** — und das ist der eigentliche Schaden. Zählenden Delegaten ergänzt; L1 fängt jetzt „Kommando trotz Retry nur EINMAL ausgeführt: got 2, want 1" plus „neue SEQ führt erneut aus".
+- **Ungenaue Begründung im Code:** Der Kommentar behauptete, ohne Cache käme beim RF-Kill `NACK(policy)` zurück. Tatsächlich fängt der Automat diesen Fall selbst ab. Korrigiert auf die zutreffende Darstellung (Cache = Schutz vor allem für **nicht-idempotente** Kommandos, RF-Kill doppelt abgesichert).
+
+**Mutationslauf (5/5 gefangen, nach der Korrektur):** Duplikat-Cache abgeschaltet → 4 · Antwort auf CRC-Fehler → 1 · gültiger Frame speist Karenz nicht → 1 · fehlendes RF-Kill-Modul meldet nicht „Kill aktiv" → 1 · ACK/NACK vom Host werden beantwortet (Echo-Schleife) → 1.
+
+**Weitere abgedeckte Fälle:** byteweise Einspeisung mit vorangehendem Leitungsmüll, RX-Puffer-Flut ohne verwertbaren Frame (Resync statt Blockade — ein stehender Link wäre schlimmer als Datenverlust), keine Echo-Schleife auf ACK/NACK des Hosts, Heartbeat-Takt und -Flags, Event-SEQ zählt hoch (Host kann Lücken erkennen), Freigabe ohne Token → `BADARG`, Kill ohne Token → `ACK`.
+
+**Keine Spec-Änderung, keine HOLDs berührt.** check_all 4/4 grün.
+
+**Nächster Schritt (Session 23+):** (a) `power` + `watchdog` — die letzten beiden safety-critical Module, danach ist die Sicherheitskette vollständig getestet; (b) Superloop-Scheduler, der die Modul-Tabelle aus `onex_modules.h` tatsächlich fährt; (c) echte KiCad-Zeichnung → G07; (d) HOLDs mit Vendor-Rückmeldungen schließen.
+
+---
+
 ## 2026-09-07 — Session 21 (RF-Kill-Zustandsautomat — sicherheitskritischstes Modul, getestet)
 
 **Umgesetzt:** `ONEX_MOD_RF_KILL` (Priorität 0 im Superloop) ist implementiert und verifiziert. Setzt `ARCHITECTURE.md` §5, `PROTOCOL.md` §4 und `hardware/rf-core/schematic/sheet_01_supervisor_rfkill.md` in ausführbare, getestete Logik um — weiterhin pin-/HAL-frei (Pinmap HOLD bis G07).

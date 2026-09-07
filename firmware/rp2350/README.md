@@ -37,10 +37,13 @@ IRQ    ▶│                                                                   
 | [`include/onex_proto.h`](include/onex_proto.h) | C-Header: Frame-/Nachrichtendefinition (pin-unabhängig, implementierbar) |
 | [`include/onex_modules.h`](include/onex_modules.h) | C-Header: Modul-Vertrag (`init`/`tick`/`event`) + Modul-Enum |
 | [`include/onex_rfkill.h`](include/onex_rfkill.h) | C-Header: RF-Kill-Zustandsautomat (Zustände, Gründe, Freigabe-Policy) |
+| [`include/onex_link.h`](include/onex_link.h) | C-Header: Protokoll-Endpunkt `rk3576_link` |
 | [`src/onex_proto.c`](src/onex_proto.c) | **Implementierung** des Frame-Codecs (CRC-16, Encode, Decode, Resync) |
 | [`src/onex_rfkill.c`](src/onex_rfkill.c) | **Implementierung** des RF-Kill-Automaten (safety-critical, Priorität 0) |
+| [`src/onex_link.c`](src/onex_link.c) | **Implementierung** des Endpunkts: RX/Dispatch/ACK-NACK, Heartbeat, Events |
 | [`test/test_onex_proto.c`](test/test_onex_proto.c) | Host-Unit-Tests — frieren das Wire-Format als Regressionsschranke ein |
 | [`test/test_onex_rfkill.c`](test/test_onex_rfkill.c) | Host-Unit-Tests — überwiegend **negativ**: was *nicht* freigeben darf |
+| [`test/test_onex_link.c`](test/test_onex_link.c) | **Integrationstests** — echte Abläufe über die Drahtdarstellung |
 
 ## Was hier schon *verifiziert* ist
 
@@ -77,6 +80,18 @@ Der Zustandsautomat setzt [`PROTOCOL.md` §4](PROTOCOL.md) und [RF-Core Sheet 01
 Beide Zeitkonstanten sind **TARGET**, nicht FIXED — im Feld abstimmbar über `onex_rfkill_configure()`.
 
 Die Testsuite ist bewusst überwiegend **negativ**: jede einzelne Bedingung der Freigabekette hat einen eigenen Test, in dem genau sie — und nur sie — verletzt ist. Dazu Millisekunden-Zähler-Überlauf (~49,7 Tage Always-On, im Feld erreichbar), Profilverlust im laufenden Betrieb und `NULL`-Eingänge (→ killen, nicht raten).
+
+## `rk3576_link` — der Protokoll-Endpunkt
+
+Führt Codec und RF-Kill zu einem bedienbaren Link zusammen: Bytestrom → Frames → Kommando → `ACK`/`NACK`, dazu Heartbeat (~1 Hz) und Events. Der Transport (UART primär, SPI optional — Busauswahl HOLD bis G07) hängt an einem Schreib-Callback, deshalb ist auch der Endpunkt vollständig host-testbar.
+
+Drei Entscheidungen prägen sein Verhalten:
+
+- **Wiederholungen wirken genau einmal.** Der Host kann ein verlorenes Kommando nicht von einer verlorenen Antwort unterscheiden und wiederholt bei Timeout. Ein Duplikat-Cache (gleiche SEQ **und** gleicher Typ) sendet dann die *gespeicherte* Antwort erneut, statt das Kommando ein zweites Mal auszuführen — sonst würde ein wiederholtes `CMD_POWER reboot` doppelt wirken. Beim RF-Kill greift zusätzlich die Idempotenz des Automaten selbst.
+- **Auf CRC-Fehler folgt keine Antwort.** Ist die Prüfsumme falsch, ist auch die SEQ unglaubwürdig; ein `NACK` mit geratener SEQ könnte beim Host ein ganz anderes, noch offenes Kommando als abgelehnt markieren. Bei **Versionsfehlern** wird dagegen geantwortet — dort deckt die Prüfsumme die SEQ ab. Genau dafür prüft der Codec CRC vor Version.
+- **Fehlende Module sagen `BUSY`, nicht `ACK`.** Für `POWER`/`FAN`/`HAPTIC`/`LED`/`RECOVERY`/`TIME_SYNC` gibt es in Phase 2 noch keine Implementierung. Ohne registrierten Delegaten antwortet der Link mit `NACK(BUSY)` — ein `ACK` würde eine Wirkung behaupten, die es nicht gibt. Ebenso meldet der Heartbeat ohne RF-Kill-Modul **Kill aktiv**: ein fehlendes Sicherheitsmodul darf nie als „TX frei" erscheinen.
+
+Der Puffer erholt sich nachweislich aus einer Müllflut (Resync statt Blockade — ein stehender Link wäre schlimmer als Datenverlust), und jeder gültige Frame speist die RF-Kill-Karenz.
 
 ## Build-Ziel (später)
 Pico-SDK (RP2350, Cortex-M33). Die pin-abhängige HAL-Schicht kommt erst nach dem Mainboard-Schaltplan (Phase 5 / Gate G07). Alles hier ist so geschnitten, dass es **ohne** Pinmap kompiliert — Logik oben, Hardwarezugriff unten.
