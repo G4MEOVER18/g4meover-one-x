@@ -25,7 +25,8 @@ Weg von der synchronisierten Architektur (EVT6) zum echten EVT-Prototyp — **oh
 - **Phase 2 — RP2350B System-Manager** → Firmware-Architektur (power/buttons/touch_ring/haptic/sensors/fan/battery/watchdog/rk3576_link/recovery/rf_kill/protocol). Muss unabhängig von Linux laufen.
   - Architektur + Protokoll-Verträge ✅
   - **ONE-X-Link-v1-Codec implementiert + host-getestet ✅** (`firmware/rp2350/src/`, 40 Prüfungen via `tools/fw_test.py`, Teil des grünen Tors)
-  - offen: `rf_kill`-Zustandsautomat (pin-frei testbar; Freigabe-Policy braucht Owner-Entscheidung), danach die übrigen Module; HAL erst nach G07.
+  - **`rf_kill`-Zustandsautomat implementiert + host-getestet ✅** (64 Prüfungen, überwiegend negativ; Freigabe-Policy per Owner-Entscheidung 2026-09-07 festgelegt: One-Shot-Nonce nach physischer Geste + Karenzzeit bei Link-Verlust)
+  - offen: `rk3576_link` (Protokoll-Endpunkt), `power`, `watchdog`, danach die übrigen Module; HAL erst nach G07.
 - **Phase 3 — Vendor-Docs / Core-BOM-Freeze** → G02/G03. Kein Mainboard-Layout davor.
 - **Phase 4 — PCBWay HDI-DFM** → G06.
 - **Phase 5 — Mainboard-Schaltplan** (18 Sheets: RK3576-Core, RK806-Power, LPDDR5, UFS, USB-C-PD, USB-Host, HDMI/DP, 2× Ethernet, Wi-Fi/BT, M.2, RP2350-Link, Audio, Sensoren, Debug/Recovery, Connectors, Power-Tree, Testpoints).

@@ -38,6 +38,11 @@ SUITES = [
         "sources": [FW / "src" / "onex_proto.c"],
         "test": FW / "test" / "test_onex_proto.c",
     },
+    {
+        "name": "onex_rfkill (RF-Kill-Zustandsautomat, safety-critical)",
+        "sources": [FW / "src" / "onex_rfkill.c"],
+        "test": FW / "test" / "test_onex_rfkill.c",
+    },
 ]
 
 # Streng: Warnungen sind Fehler. Firmware-Code, der auf dem Host warnt,

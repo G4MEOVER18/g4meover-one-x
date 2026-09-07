@@ -12,6 +12,34 @@
 
 ---
 
+## 2026-09-07 — Session 21 (RF-Kill-Zustandsautomat — sicherheitskritischstes Modul, getestet)
+
+**Umgesetzt:** `ONEX_MOD_RF_KILL` (Priorität 0 im Superloop) ist implementiert und verifiziert. Setzt `ARCHITECTURE.md` §5, `PROTOCOL.md` §4 und `hardware/rf-core/schematic/sheet_01_supervisor_rfkill.md` in ausführbare, getestete Logik um — weiterhin pin-/HAL-frei (Pinmap HOLD bis G07).
+
+- **`include/onex_rfkill.h`** + **`src/onex_rfkill.c`** (neu) — vier Zustände: ENGAGED (Default) · ARMED (Freigabefenster, **TX weiterhin gesperrt**) · RELEASED · FAULT (gelatcht).
+- **`test/test_onex_rfkill.c`** (neu) — 20 Testgruppen, **64 Prüfungen**, bewusst überwiegend **negativ**.
+- `tools/fw_test.py` um die zweite Suite erweitert → **104 Prüfungen** insgesamt, check_all weiterhin 4/4.
+
+**Owner-Entscheidungen (2026-09-07), jetzt verbindlich in Code + `PROTOCOL.md` §4:**
+1. **Token = One-Shot-Nonce nach physischer Geste.** Der RP2350 erzeugt es erst, wenn am Gerät eine Taste/Ring-Geste erkannt wurde. Damit kann Software allein — auch kompromittiertes Linux — nie senden. Nach jeder Anfrage verbraucht, **auch bei Ablehnung** (sonst im offenen Fenster durch Wiederholung erratbar). Ohne Entropiequelle wird gar kein Token ausgegeben und jede Freigabe scheitert (fail-safe statt vorhersagbares Token).
+2. **Link-Verlust → Karenzzeit, dann Kill.** `ONEX_RFKILL_LINK_GRACE_MS` = 3 s, `ONEX_RFKILL_ARM_TTL_MS` = 10 s — beide **TARGET**, nicht FIXED, zur Laufzeit über `onex_rfkill_configure()` abstimmbar.
+
+**Leitprinzip: Kill ist billig, Freigabe ist teuer.** `engage=1` wirkt immer und sofort — ohne Token, ohne Profil, in jedem Zustand; Sicherheit darf nie an einer Prüfung scheitern. `engage=0` verlangt die volle Kette (Geste · Fenster · Profil · Token · kein Fault · kein Notfallschalter). Eine symmetrische Prüfung beider Richtungen wäre hier ein Designfehler.
+
+**Gate-Abgleich als eigentlicher Zweck von `TX_GATE_OK`:** Der *gemessene* Zustand ist die Wahrheit, nicht der befohlene. „Wir killen, aber TX ist physisch frei" heißt, der Kill-Pfad wirkt nicht → **FAULT, gelatcht**, nur per bewusstem `clear_fault()` verlassbar (und der führt nach ENGAGED, nie direkt nach RELEASED). Die Gegenrichtung (freigegeben, Gate meldet noch nicht ok) ist Einschwingzeit und ausdrücklich **kein** Fault — sonst wäre jede Freigabe ein Fehlalarm.
+
+**Echter Fund durch Mutationstest:** Die erste Fassung berechnete „TX frei" an **zwei** Stellen (Sollwert fürs Gate und Ausgabe `tx_enable`). Eine Mutation, die nur eine Kopie traf, blieb grün — genau der Bug-Typ, der in einem Sicherheitspfad tödlich ist: läuft eine Kopie weg, prüft der Diskrepanz-Abgleich gegen eine Erwartung, die nicht mehr dem Befehl entspricht. Zusammengeführt zu einer einzigen Definition (`tx_allowed()`); danach schlägt die Mutation an. **Nebenbefund über das Werkzeug selbst:** der Mutations-Grep filterte nur auf `FAIL` und verschluckte `[BUILD-FEHLER]` — ein fehlgeschlagener Build sah aus wie „Mutation nicht gefangen". Korrigiert; auch der Prüfaufbau braucht Skepsis.
+
+**Mutationslauf nach der Korrektur (6/6 gefangen):** ARMED gibt TX frei → 1 · Token-Vergleich immer true → 3 · Gate-Mismatch-Erkennung entfernt → 5 · Link-Karenz nie ausgelöst → 5 · naive Wrap-Behandlung → 2 · Nonce nach Fehlversuch nicht verbrannt → 1. Danach Original wiederhergestellt, 104/104 grün.
+
+**Weitere abgedeckte Fälle:** Millisekunden-Zähler-Überlauf (~49,7 Tage Always-On — im Feld erreichbar; naive Subtraktion würde die Karenz falsch bewerten), Wegfall des Regulierungsprofils im laufenden Betrieb, Notfallschalter mit Vorrang vor allem, `NULL`-Eingangsbild (→ killen, nicht raten), und kein `EVT_RFKILL`-Spam ohne Zustandswechsel.
+
+**Keine Spec-Änderung, keine HOLDs berührt.** check_all 4/4 grün.
+
+**Nächster Schritt (Session 22+):** (a) `rk3576_link` — Codec + RF-Kill zum Protokoll-Endpunkt zusammenführen (ACK/NACK-Politik, SEQ-Verwaltung, Heartbeat-Takt); (b) `power`/`watchdog` (die übrigen safety-critical Module); (c) echte KiCad-Zeichnung → G07; (d) HOLDs mit Vendor-Rückmeldungen schließen.
+
+---
+
 ## 2026-09-07 — Session 20 (Firmware wird ausführbar: ONE-X-Link-Codec implementiert + getestet)
 
 **Ausgangslage:** `include/onex_proto.h` deklarierte seit Phase 2 drei Funktionen (`onex_crc16`, `onex_frame_encode`, `onex_frame_decode`) — **ohne jede `.c`-Datei im Repo**. Protokoll-Spec und Header standen, die Implementierung fehlte. Damit war der Link RK3576 ↔ RP2350B bislang reine Papierform.

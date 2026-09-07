@@ -143,7 +143,8 @@ g4meover-one-x/
 │                    #  · score.py (G04-Auswahl) · install_hooks
 ├── hardware/        # 6 Boards, je schematic/ (40 Sheets Design-Spec) + kicad/ (Ableitung)
 │                    #  INTERFACE_NETS.md = kanonisches Inter-Board-Netz-Dictionary
-├── firmware/rp2350/ # Always-On-Systemcontroller-Firmware (Architektur + getesteter Codec)
+├── firmware/rp2350/ # Always-On-Systemcontroller-Firmware
+│                    #  Architektur + getesteter Link-Codec + RF-Kill-Automat
 ├── linux/           # Debian-/Linux-Plattform, Device-Tree, DRM-Bringup, ONE-X-UI
 ├── mechanical/      # CadQuery-Quelle, STEP/STL-Referenzen
 ├── validation/      # Geometrie-, Thermal-, Regressions-Checks
@@ -170,7 +171,7 @@ python tools/check_all.py
 | Verbotene Claims / Spec-Konsistenz | `spec_validator.py` | keine Behauptung widerspricht der Single Source of Truth |
 | Inter-Board-Netznamen | `schematic_netcheck.py` | Connector-Signale beidseitig identisch benannt ([`hardware/INTERFACE_NETS.md`](hardware/INTERFACE_NETS.md)) |
 | KiCad-Ableitung | `gen_kicad_project.py` | Projekt/Manifest/Bauplan je Board reproduzierbar aus den Design-Specs |
-| Firmware-Codec | `fw_test.py` | ONE-X-Link-v1-Wire-Format bleibt bitgenau; Framing übersteht CRC-Fehler ohne Hänger |
+| Firmware-Logik | `fw_test.py` | ONE-X-Link-v1-Wire-Format bleibt bitgenau; Framing übersteht CRC-Fehler ohne Hänger; RF-Kill gibt nur über die volle Freigabekette frei |
 
 Aktivierung des lokalen Pre-Commit-Hooks: `python tools/install_hooks.py`. Serverseitig läuft derselbe Check plus ein **Determinismus-Test** (regenerierte Ableitungen dürfen keinen Diff erzeugen) bei jedem Push/PR — siehe Badge oben.
 

@@ -62,8 +62,11 @@ Max. Framegröße = 2+1+1+1+1+255+2 = **263 Byte**.
 | `0x41` | `NACK` | `u8 ack_seq`,`u8 reason` | Kommando abgelehnt |
 
 ## 4. RF-Kill-Semantik (sicherheitskritisch)
-- Der **Manager ist die Autorität**. `CMD_RFKILL_SET engage=1` wirkt **sofort und physisch**.
+- Der **Manager ist die Autorität**. `CMD_RFKILL_SET engage=1` wirkt **sofort und physisch** — ohne Token, ohne Profilprüfung, in jedem Zustand.
 - `engage=0` ist nur eine **Freigabe-ANFRAGE**: Der Manager gibt frei **nur**, wenn (a) ein gültiges Regulierungsprofil aktiv ist und (b) das `token` eine bewusste Nutzerfreigabe belegt. Sonst `NACK(reason=policy)`.
+- **`token` = One-Shot-Nonce nach physischer Geste** (Festlegung 2026-09-07). Der Manager erzeugt es *erst*, wenn am Gerät eine Taste/Ring-Geste erkannt wurde, und gibt es per `CMD_GET` heraus. Der Host spiegelt es zurück. Nach jeder Anfrage ist es verbraucht — **auch bei Ablehnung**, sonst wäre es im offenen Zeitfenster durch Wiederholung erratbar. Fenster: 10 s (TARGET).
+- **Link-Verlust:** Bleiben Frames vom Host aus, greift der Kill nach einer Karenzzeit von 3 s (TARGET) mit `EVT_RFKILL(reason=LINK_LOSS)`. Kurze Aussetzer unterbrechen keine laufende autorisierte Messung, ein Absturz führt aber zuverlässig zum funkstillen Zustand.
+- Zustandsautomat + Policy vollständig: [`include/onex_rfkill.h`](include/onex_rfkill.h), Umsetzung in [`src/onex_rfkill.c`](src/onex_rfkill.c).
 - Nach **Boot/Reset/Fault** ist RF-Kill **aktiv** (Default-sicher). Linux allein kann den Kill **nie** softwareseitig umgehen.
 - Jeder Kill-Zustandswechsel wird per `EVT_RFKILL` gemeldet; `EVT_HEARTBEAT.flags bit0` spiegelt den Live-Zustand.
 
