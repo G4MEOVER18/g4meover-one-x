@@ -23,6 +23,9 @@ Weg von der synchronisierten Architektur (EVT6) zum echten EVT-Prototyp — **oh
 - **Phase 0 — Repo & Automation** ✅ Repo-Struktur, Master-Spec, `spec_validator.py`.
 - **Phase 1 — Display PoC** → G01. Höchste Priorität (zentrales Produktmerkmal).
 - **Phase 2 — RP2350B System-Manager** → Firmware-Architektur (power/buttons/touch_ring/haptic/sensors/fan/battery/watchdog/rk3576_link/recovery/rf_kill/protocol). Muss unabhängig von Linux laufen.
+  - Architektur + Protokoll-Verträge ✅
+  - **ONE-X-Link-v1-Codec implementiert + host-getestet ✅** (`firmware/rp2350/src/`, 40 Prüfungen via `tools/fw_test.py`, Teil des grünen Tors)
+  - offen: `rf_kill`-Zustandsautomat (pin-frei testbar; Freigabe-Policy braucht Owner-Entscheidung), danach die übrigen Module; HAL erst nach G07.
 - **Phase 3 — Vendor-Docs / Core-BOM-Freeze** → G02/G03. Kein Mainboard-Layout davor.
 - **Phase 4 — PCBWay HDI-DFM** → G06.
 - **Phase 5 — Mainboard-Schaltplan** (18 Sheets: RK3576-Core, RK806-Power, LPDDR5, UFS, USB-C-PD, USB-Host, HDMI/DP, 2× Ethernet, Wi-Fi/BT, M.2, RP2350-Link, Audio, Sensoren, Debug/Recovery, Connectors, Power-Tree, Testpoints).

@@ -5,8 +5,15 @@ Fuehrt alle Repo-Checker nacheinander aus und fasst das Ergebnis zusammen:
   1. spec_validator.py       -- Master-Spec konsistent, keine verbotenen Claims
   2. schematic_netcheck.py   -- Inter-Board-Netznamen beidseitig gespiegelt
   3. gen_kicad_project.py     -- KiCad-Ableitung reproduzierbar + selbstgeprueft
+  4. fw_test.py               -- Firmware-Unit-Tests (Host-Compiler)
 
 Exit 0 nur, wenn ALLE bestehen; sonst Exit 1. CI-/Handoff-tauglich.
+
+Ein Check darf UEBERSPRUNGEN melden, wenn eine externe Voraussetzung fehlt
+(z.B. kein C-Compiler fuer die Firmware-Tests). Das ist kein FAIL, wird aber
+sichtbar ausgewiesen -- ein uebersprungener Check darf nie wie ein bestandener
+aussehen.
+
 Aufruf:  python tools/check_all.py
 """
 import subprocess
@@ -19,11 +26,17 @@ except (AttributeError, ValueError):
     pass
 
 TOOLS = Path(__file__).resolve().parent
+
+# Exit-Code, mit dem ein Check "Voraussetzung fehlt" (statt FAIL) meldet.
+RC_SKIPPED = 2
+
 # Alle im read-only --check-Modus, damit der Lauf keine Dateien schreibt (Pre-Commit-tauglich).
+# (label, script, args, skippable)
 CHECKS = [
-    ("Master-Spec (verbotene Claims / Konsistenz)", "spec_validator.py", ["--check"]),
-    ("Netznamen-Konsistenz (Inter-Board-Mirror)", "schematic_netcheck.py", []),
-    ("KiCad-Ableitung (reproduzierbar + Selbstpruefung)", "gen_kicad_project.py", ["--check"]),
+    ("Master-Spec (verbotene Claims / Konsistenz)", "spec_validator.py", ["--check"], False),
+    ("Netznamen-Konsistenz (Inter-Board-Mirror)", "schematic_netcheck.py", [], False),
+    ("KiCad-Ableitung (reproduzierbar + Selbstpruefung)", "gen_kicad_project.py", ["--check"], False),
+    ("Firmware-Unit-Tests (ONE-X-Link-Codec)", "fw_test.py", ["--check"], True),
 ]
 
 
@@ -45,26 +58,39 @@ def main():
     print(" G4MEOVER ONE-X -- Aggregierter Verifikations-Lauf")
     print("=" * 64)
     results = []
-    for label, script, args in CHECKS:
+    for label, script, args, skippable in CHECKS:
         rc, out = run(script, args)
-        ok = rc == 0
-        results.append((label, script, ok))
-        badge = "PASS" if ok else "FAIL"
-        print(f"\n[{badge}] {label}")
+        if skippable and rc == RC_SKIPPED:
+            state = "SKIP"
+        else:
+            state = "PASS" if rc == 0 else "FAIL"
+        results.append((label, script, state))
+        print(f"\n[{state}] {label}")
         print(f"       ({script})  ->  {last_meaningful_line(out)}")
-        if not ok:
+        if state == "FAIL":
             # bei Fehler mehr Kontext zeigen
             for ln in out.splitlines()[-12:]:
                 print(f"       | {ln}")
 
     print("\n" + "-" * 64)
-    passed = sum(1 for _, _, ok in results if ok)
+    passed = sum(1 for _, _, st in results if st == "PASS")
+    skipped = sum(1 for _, _, st in results if st == "SKIP")
+    failed = sum(1 for _, _, st in results if st == "FAIL")
     total = len(results)
-    if passed == total:
-        print(f"ERGEBNIS: {passed}/{total} gruen -- Repo bereit fuer die KiCad-Phase (G07).")
+
+    if failed:
+        print(f"ERGEBNIS: {passed}/{total} gruen -- {failed} Check(s) FAIL, vor G07 beheben.")
+        return 1
+
+    if skipped:
+        # Ehrlich benennen: das Tor ist offen, aber nicht vollstaendig geprueft.
+        names = ", ".join(s for _, s, st in results if st == "SKIP")
+        print(f"ERGEBNIS: {passed}/{total} gruen, {skipped} uebersprungen ({names}) "
+              f"-- Voraussetzung fehlt, NICHT vollstaendig geprueft.")
         return 0
-    print(f"ERGEBNIS: {passed}/{total} gruen -- {total - passed} Check(s) FAIL, vor G07 beheben.")
-    return 1
+
+    print(f"ERGEBNIS: {passed}/{total} gruen -- Repo bereit fuer die KiCad-Phase (G07).")
+    return 0
 
 
 if __name__ == "__main__":

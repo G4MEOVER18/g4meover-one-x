@@ -85,6 +85,16 @@ typedef struct {
     uint8_t len;
 } onex_hdr_t;
 
+/*
+ * Decoder-Rueckgabecodes (negativ). Bilden direkt auf NACK-Gruende ab:
+ *   ERR_CRC     -> ONEX_NACK_CRC
+ *   ERR_VERSION -> ONEX_NACK_VERSION (hdr ist gefuellt, SEQ ist CRC-gedeckt)
+ */
+enum {
+    ONEX_DEC_ERR_CRC     = -1,
+    ONEX_DEC_ERR_VERSION = -2,
+};
+
 /* CRC-16/CCITT-FALSE (Poly 0x1021, Init 0xFFFF) ueber ver..payload. */
 uint16_t onex_crc16(const uint8_t *data, size_t len);
 
@@ -101,9 +111,37 @@ size_t onex_frame_encode(uint8_t type, uint8_t seq,
  * Rueckgabe: Anzahl konsumierter Bytes bei Erfolg (Header via *hdr,
  * Payload-Zeiger in *payload), 0 wenn (noch) kein vollstaendiger Frame,
  * negativ bei CRC-/Versionsfehler (Aufrufer resynct auf naechstes SOF).
+ *
+ * Semantik im Detail:
+ *  > 0 : gueltiger Frame. Der Wert schliesst evtl. uebersprungenen Muell
+ *        VOR dem SOF mit ein -- der Aufrufer darf genau so viele Bytes
+ *        aus seinem Ringpuffer entfernen. *payload zeigt IN buf.
+ *  = 0 : noch unvollstaendig ODER nur Muell ohne SOF-Kandidat. Der Aufrufer
+ *        wartet auf mehr Bytes; er darf aber onex_frame_resync() nutzen,
+ *        um fuehrenden Muell zu verwerfen, statt den Puffer volllaufen zu lassen.
+ *  < 0 : ONEX_DEC_ERR_* . Der Aufrufer verwirft onex_frame_resync()-Bytes
+ *        und antwortet ggf. mit NACK.
+ *
+ * Pruefreihenfolge bewusst CRC VOR Version: nur so ist die SEQ, die ein
+ * NACK(version) zurueckspiegelt, durch die Pruefsumme gedeckt (PROTOCOL.md 5).
  */
 int onex_frame_decode(const uint8_t *buf, size_t buflen,
                       onex_hdr_t *hdr, const uint8_t **payload);
+
+/*
+ * Resync: Anzahl Bytes, die ab buf[0] verworfen werden muessen, um auf den
+ * naechsten SOF-Kandidaten zu kommen. Die Suche startet HINTER dem aktuellen
+ * Anker (nicht bei buf[1]) -- sonst faende sie bei fuehrendem Leitungsmuell
+ * erneut denselben defekten Frame und der Parser traete auf der Stelle.
+ *
+ * Bewusst konservativ: es wird NICHT um die (bei CRC-Fehler unglaubwuerdige)
+ * LEN-Angabe gesprungen, sondern byteweise gesucht -- ein gekipptes LEN darf
+ * keinen nachfolgenden echten Frame verschlucken.
+ *
+ * Ein abschliessendes 0xA5 bleibt erhalten (es koennte die erste Haelfte eines
+ * noch unvollstaendig empfangenen SOF sein).
+ */
+size_t onex_frame_resync(const uint8_t *buf, size_t buflen);
 
 #ifdef __cplusplus
 }

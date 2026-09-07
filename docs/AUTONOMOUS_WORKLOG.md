@@ -12,6 +12,32 @@
 
 ---
 
+## 2026-09-07 — Session 20 (Firmware wird ausführbar: ONE-X-Link-Codec implementiert + getestet)
+
+**Ausgangslage:** `include/onex_proto.h` deklarierte seit Phase 2 drei Funktionen (`onex_crc16`, `onex_frame_encode`, `onex_frame_decode`) — **ohne jede `.c`-Datei im Repo**. Protokoll-Spec und Header standen, die Implementierung fehlte. Damit war der Link RK3576 ↔ RP2350B bislang reine Papierform.
+
+**Umgesetzt:** Der Codec ist implementiert und **maschinell verifiziert**. Erstmals wird in diesem Repo nicht nur *spezifiziert*, sondern Verhalten ausgeführt und geprüft.
+
+- **`firmware/rp2350/src/onex_proto.c`** (neu) — CRC-16/CCITT-FALSE, Encoder, Decoder, Resync. Freistehend (kein malloc, keine libc-Strings), Zero-Copy beim Dekodieren, keine Endianness-Annahme (Mehrbyte-Felder explizit byteweise big-endian). Läuft unverändert auf Cortex-M33 und Host.
+- **`firmware/rp2350/test/test_onex_proto.c`** (neu) — 11 Testgruppen, **40 Prüfungen**: CCITT-FALSE-Normvektor (`"123456789"` → `0x29B1`), Wire-Layout byteweise, Roundtrip über **alle** Payload-Längen 0…255 (beide Grenzen, inkl. Maximalframe 263 B), jedes unvollständige Präfix, CRC-Fehler, unbekannte Version, führender Leitungsmüll, Resync, und ein Empfangsstrom, der sich nach einem zerstörten Frame nachweislich wieder fängt.
+- **`tools/fw_test.py`** (neu) — baut + startet die Tests mit dem System-Compiler. Bewusst **ohne** `arm-none-eabi`: geprüft wird nur die pin-/HAL-freie Logik (Pinmap bleibt HOLD bis G07). Flags `-Wall -Wextra -Werror -Wconversion -Wshadow -Wstrict-prototypes` — Warnungen sind Fehler.
+- **`tools/check_all.py`** — vierter Check eingehängt, Lauf jetzt **4/4 grün**. Neu: ein Check darf **`SKIP`** melden, wenn eine externe Voraussetzung fehlt (Exit 2, z. B. kein Compiler). Das zählt nicht als FAIL, wird aber explizit ausgewiesen — ein übersprungener Check darf nie wie ein bestandener aussehen. SKIP-Pfad getestet.
+- Header additiv erweitert: `ONEX_DEC_ERR_CRC` / `ONEX_DEC_ERR_VERSION` + `onex_frame_resync()`. **Keine bestehende Signatur geändert.**
+
+**Zwei sicherheitsrelevante Entwurfsentscheidungen (je durch einen eigenen Test festgenagelt):**
+1. **CRC wird vor der Version geprüft.** `PROTOCOL.md` §5 verlangt bei unbekannter `VER` ein `NACK(version)` mit *gespiegelter SEQ*. Nur bei dieser Reihenfolge ist die zurückgespiegelte SEQ überhaupt durch die Prüfsumme gedeckt — umgekehrt würde ein korrupter Frame eine erfundene SEQ zurücksenden.
+2. **Resync springt hinter den defekten Anker**, nicht auf Byte 1, und springt **nicht** um `LEN` (das ist bei CRC-Fehler unglaubwürdig — ein gekipptes LEN-Byte dürfte keinen nachfolgenden echten Frame verschlucken). Ohne diese Fortschrittsgarantie stünde der Parser bei führendem Leitungsmüll endlos auf demselben kaputten Frame.
+
+**Verifikation der Verifikation (Mutationstest):** Grüne Tests beweisen nichts, solange nicht gezeigt ist, dass sie anschlagen. Drei Regressionen wurden bewusst eingebaut und alle gefangen: Resync-Suche ab Index 1 → 2 Fehler · CRC-Init `0x0000` statt `0xFFFF` → 2 Fehler · Version-vor-CRC → 1 Fehler. Danach Original wiederhergestellt, wieder 0 Fehler.
+
+**Wirkung:** Die Firmware-Tests laufen ab sofort bei **jedem Commit** (pre-commit-Hook → `check_all`) und in der **CI** (ubuntu-latest bringt gcc mit). Das Wire-Format zwischen RK3576 und RP2350B ist damit gegen stille Änderung gesichert, bevor die erste EVT-Platine existiert.
+
+**Keine Spec-/Signal-Änderung, keine HOLDs berührt.** Alle GPIO-/Bus-Zuordnungen bleiben HOLD (G07). check_all 4/4 grün.
+
+**Nächster Schritt (Session 21+):** (a) **RF-Kill-Zustandsautomat** (`ONEX_MOD_RF_KILL`) — sicherheitskritischstes Modul, ebenfalls pin-frei testbar; die Freigabe-Policy aus `PROTOCOL.md` §4 braucht eine Owner-Entscheidung (Token-Semantik, Verhalten bei Link-Verlust); (b) echte KiCad-Zeichnung (KiCad + Vendor-Libs) → G07; (c) HOLDs mit Vendor-Rückmeldungen schließen (G02/G03/G04/G05/G06).
+
+---
+
 ## 2026-09-02 — Session 19 (README aktualisiert: CI-Badge + Verifikation + Struktur)
 
 **Umgesetzt:** Flaggschiff-`README.md` auf den realen Reifegrad gebracht (war seit Session 1 nicht nachgezogen).

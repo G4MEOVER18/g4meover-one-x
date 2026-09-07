@@ -9,3 +9,8 @@ hardware/**/kicad/KICAD_BUILD_PLAN.md text eol=lf
 # Tools deterministisch (LF), damit Hooks/CS ueberall gleich laufen.
 tools/*.py       text eol=lf
 .githooks/*      text eol=lf
+
+# Firmware-Quellen LF: derselbe Baum wird unter Windows und in der CI (ubuntu)
+# mit demselben Compiler-Aufruf uebersetzt -- keine CRLF-Ueberraschungen.
+firmware/**/*.c  text eol=lf
+firmware/**/*.h  text eol=lf
