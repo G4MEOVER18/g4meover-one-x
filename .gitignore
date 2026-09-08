@@ -29,3 +29,10 @@ desktop.ini
 
 # Interne Arbeitsanweisung — nicht öffentlich auf GitHub (bleibt lokal).
 CLAUDE.md
+
+# KiCad-Benutzerdateien: entstehen beim Oeffnen/Pruefen der Projekte
+# (auch durch kicad-cli) und enthalten lokale Einstellungen, keine
+# Design-Information. Gehoeren nicht ins Repo.
+*.kicad_prl
+*-backups/
+fp-info-cache
