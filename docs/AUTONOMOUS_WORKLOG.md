@@ -12,6 +12,30 @@
 
 ---
 
+## 2026-09-08 — Session 23 (`power` + `watchdog` — Sicherheitskette vollständig)
+
+**Umgesetzt:** Die beiden verbleibenden safety-critical Module. Damit ist die Kette `watchdog → power → rf_kill` aus `ARCHITECTURE.md` §4 **durchgehend implementiert und getestet**. Neu: `include/onex_power.h` + `src/onex_power.c`, `include/onex_watchdog.h` + `src/onex_watchdog.c`, `test/test_onex_power.c` (**80 Prüfungen** für beide Module plus ihre Kopplung). Gesamt **248 Prüfungen** in 4 Suiten; check_all bleibt 4/4.
+
+**`power` — Rail-Sequencing + Zustandsmaschine.** Einschaltreihenfolge `VSYS → +5V_SYS → +3V3_SYS → PMIC` aus `sheet_01_power_tree.md`, Abschalten exakt umgekehrt (beides per Test festgenagelt). Zwei Randbedingungen kommen direkt aus der Hardware:
+- **`+3V3_AON` ist Voraussetzung, kein Sequenzschritt** — die Rail speist den RP2350B selbst („immer zuerst / immer an"); ein Controller kann seine eigene Versorgung nicht sequenzieren.
+- **RK806S-Rail-Map ist HOLD** → der PMIC wird als Black-Box mit einem Enable und einem Power-Good behandelt. **Die HOLD-Grenze wurde zur Modulgrenze gemacht**, statt die RK3576-interne Sequenz zu raten.
+
+Weitere Eigenschaften: nie endlos warten (jeder Schritt hat eine Frist → sonst `FAULT`, keine stille Endlosschleife), Host-Boot-Timeout, Power-Good-Verlust im RUN = Fehler (kein geordnetes Abschalten), Brown-out/Akku/Thermik als harte Stopps, `FAULT` gelatcht mit Ausgang **nach OFF** (nie direkt nach RUN), **erster** Fehlercode bleibt stehen (Folgefehler sind Symptome). Niedriges VSYS im Zustand OFF ist ausdrücklich **kein** Fehler — sonst wäre das Gerät nach dem Einschalten sofort im FAULT.
+
+**`watchdog` — Wirkung durch Unterlassen.** Das Modul kann nichts abschalten; seine einzige Macht ist, den HW-Watchdog nicht mehr zu füttern. Der gefährliche Fehler ist deshalb nicht „kickt zu selten", sondern **„kickt weiter, obwohl etwas kaputt ist"**. Gekickt wird nur bei durchgehend OK gemeldeten kritischen Modulen; **Schweigen zählt wie ein Fault** (fängt das hängende Modul, das nicht einmal mehr einen Fehler meldet); `DEGRADED` und defekte *unkritische* Module lösen keinen Reset aus; Entzug ist gelatcht. Die **Startkarenz** verhindert die Reset-Schleife nach dem Boot, ist aber kein Freibrief: ein explizit gemeldeter `FAULT` schlägt sie.
+
+**Zwei Funde durch Mutationstest:**
+- **Echte Testlücke (P3):** „Folgefehler überschreibt Erstursache" blieb grün. Grund: der `tick`-Pfad wertet im FAULT-Zustand gar keine Ursachen mehr aus — überschreiben kann sich nur über `onex_power_notify_fault()`, und genau diesen Pfad testete nichts. Test `test_notify_fault_keeps_first_cause` ergänzt; die Mutation fällt jetzt auf.
+- **Äquivalente Mutation (W4):** Der Startwert `ONEX_HEALTH_FAULT` in `onex_watchdog_init` ist im heutigen Ablauf **nicht wirksam** — die Absicherung gegen „nie gemeldet" ist das `reported[]`-Flag, die Schleife liest `health[]` vorher gar nicht. Der Kommentar behauptete das Gegenteil und war irreführend; korrigiert auf „redundante Verteidigung, nicht durch Test abgedeckt". Kein Codefehler, aber eine falsche Begründung weniger.
+
+**Mutationslauf (8 Mutationen):** Watchdog kickt trotz Fault → 5 · Schweigen nicht als Fault → 3 · Startkarenz deckt echte Faults → 4 · Rail-Timeout entfernt → 3 · Power-Good-Verlust ignoriert → 2 · Folgefehler überschreibt Erstursache → 1 (nach Testergänzung) · `clear_fault` führt nach RUN → 2. Eine Mutation (Startwert OK statt FAULT) ist nachweislich **äquivalent** und daher zu Recht nicht gefangen — dokumentiert statt kaschiert.
+
+**Keine Spec-Änderung, keine HOLDs berührt.** check_all 4/4 grün.
+
+**Nächster Schritt (Session 24+):** (a) Superloop-Scheduler, der die Modul-Tabelle aus `onex_modules.h` tatsächlich fährt und die Module in Prioritätsreihenfolge tickt — damit wäre Phase 2 im Kern abgeschlossen; (b) echte KiCad-Zeichnung → G07; (c) HOLDs mit Vendor-Rückmeldungen schließen.
+
+---
+
 ## 2026-09-07 — Session 22 (`rk3576_link`: Protokoll-Endpunkt — Codec + RF-Kill zusammengeführt)
 
 **Umgesetzt:** Der Link RK3576 ↔ RP2350B ist erstmals **als Ganzes bedienbar und getestet**. `include/onex_link.h` + `src/onex_link.c` + `test/test_onex_link.c` (**64 Prüfungen**, Integrationstests über die echte Drahtdarstellung). Gesamt jetzt **168 Prüfungen** in 3 Suiten; check_all bleibt 4/4.

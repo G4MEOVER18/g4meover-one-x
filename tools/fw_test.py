@@ -44,6 +44,16 @@ SUITES = [
         "test": FW / "test" / "test_onex_rfkill.c",
     },
     {
+        # power + watchdog + ihre Kopplung an den RF-Kill (Sicherheitskette).
+        "name": "onex_power + onex_watchdog (safety-critical)",
+        "sources": [
+            FW / "src" / "onex_power.c",
+            FW / "src" / "onex_watchdog.c",
+            FW / "src" / "onex_rfkill.c",
+        ],
+        "test": FW / "test" / "test_onex_power.c",
+    },
+    {
         # Integrationssuite: Codec + RF-Kill + Endpunkt ueber die Drahtdarstellung.
         "name": "onex_link (Protokoll-Endpunkt, Integration)",
         "sources": [

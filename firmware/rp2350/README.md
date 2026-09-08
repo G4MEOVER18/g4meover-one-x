@@ -38,12 +38,17 @@ IRQ    ▶│                                                                   
 | [`include/onex_modules.h`](include/onex_modules.h) | C-Header: Modul-Vertrag (`init`/`tick`/`event`) + Modul-Enum |
 | [`include/onex_rfkill.h`](include/onex_rfkill.h) | C-Header: RF-Kill-Zustandsautomat (Zustände, Gründe, Freigabe-Policy) |
 | [`include/onex_link.h`](include/onex_link.h) | C-Header: Protokoll-Endpunkt `rk3576_link` |
+| [`include/onex_power.h`](include/onex_power.h) | C-Header: Rail-Sequencing + System-Zustandsmaschine |
+| [`include/onex_watchdog.h`](include/onex_watchdog.h) | C-Header: Gesundheitswächter (Kick-Erlaubnis, Eskalation) |
 | [`src/onex_proto.c`](src/onex_proto.c) | **Implementierung** des Frame-Codecs (CRC-16, Encode, Decode, Resync) |
 | [`src/onex_rfkill.c`](src/onex_rfkill.c) | **Implementierung** des RF-Kill-Automaten (safety-critical, Priorität 0) |
 | [`src/onex_link.c`](src/onex_link.c) | **Implementierung** des Endpunkts: RX/Dispatch/ACK-NACK, Heartbeat, Events |
+| [`src/onex_power.c`](src/onex_power.c) | **Implementierung** von Rail-Sequencing + Zustandsmaschine (safety-critical) |
+| [`src/onex_watchdog.c`](src/onex_watchdog.c) | **Implementierung** des Wächters (safety-critical) |
 | [`test/test_onex_proto.c`](test/test_onex_proto.c) | Host-Unit-Tests — frieren das Wire-Format als Regressionsschranke ein |
 | [`test/test_onex_rfkill.c`](test/test_onex_rfkill.c) | Host-Unit-Tests — überwiegend **negativ**: was *nicht* freigeben darf |
 | [`test/test_onex_link.c`](test/test_onex_link.c) | **Integrationstests** — echte Abläufe über die Drahtdarstellung |
+| [`test/test_onex_power.c`](test/test_onex_power.c) | Host-Unit-Tests für `power` + `watchdog` + Kopplung an den RF-Kill |
 
 ## Was hier schon *verifiziert* ist
 
@@ -92,6 +97,29 @@ Drei Entscheidungen prägen sein Verhalten:
 - **Fehlende Module sagen `BUSY`, nicht `ACK`.** Für `POWER`/`FAN`/`HAPTIC`/`LED`/`RECOVERY`/`TIME_SYNC` gibt es in Phase 2 noch keine Implementierung. Ohne registrierten Delegaten antwortet der Link mit `NACK(BUSY)` — ein `ACK` würde eine Wirkung behaupten, die es nicht gibt. Ebenso meldet der Heartbeat ohne RF-Kill-Modul **Kill aktiv**: ein fehlendes Sicherheitsmodul darf nie als „TX frei" erscheinen.
 
 Der Puffer erholt sich nachweislich aus einer Müllflut (Resync statt Blockade — ein stehender Link wäre schlimmer als Datenverlust), und jeder gültige Frame speist die RF-Kill-Karenz.
+
+## `power` — Rail-Sequencing und Systemzustand
+
+Setzt die Zustandsmaschine aus [`ARCHITECTURE.md` §3](ARCHITECTURE.md) und den [Power-Tree](../../hardware/mainboard/schematic/sheet_01_power_tree.md) um. Einschaltreihenfolge `VSYS → +5V_SYS → +3V3_SYS → PMIC`, Abschalten exakt umgekehrt — beides durch Tests festgenagelt.
+
+Zwei Randbedingungen kommen direkt aus der Hardware:
+
+- **`+3V3_AON` ist Voraussetzung, kein Sequenzschritt.** Die Rail speist den RP2350B selbst („immer zuerst / immer an"). Ein Controller kann seine eigene Versorgung nicht sequenzieren — fällt sie weg, ist nichts mehr verlässlich (`FAULT_AON_LOST`).
+- **Die RK806S-Rail-Map ist HOLD.** Welche RK3576-Rails in welcher Reihenfolge kommen, braucht die Rockchip-Referenz. Der PMIC wird deshalb als Black-Box mit *einem* Enable und *einem* Power-Good behandelt — **die HOLD-Grenze ist die Modulgrenze**, nichts wird geraten.
+
+**Nie endlos warten:** Jeder Sequenzschritt hat eine Frist; bleibt Power-Good aus, geht es nach `FAULT` statt in eine stille Endlosschleife. Ebenso, wenn der RK3576 nach der PMIC-Freigabe nicht lebendig wird. `FAULT` ist gelatchter, sicherer Ruhezustand (Rails aus, Ursache meldbar); der Ausgang führt über einen bewussten `clear_fault()` **nach OFF**, nie direkt zurück nach RUN. Der **erste** Fehlercode bleibt stehen — Folgefehler sind Symptome, die Erstursache ist die Diagnose.
+
+## `watchdog` — Wirkung durch Unterlassen
+
+Das Modul kann nichts abschalten. Seine einzige Macht ist, den Hardware-Watchdog **nicht mehr zu füttern**; der löst dann den Reset aus, und danach startet die Firmware im sicheren Default (RF-Kill an, Rails aus). Der gefährliche Fehler ist deshalb nicht „kickt zu selten", sondern **„kickt weiter, obwohl etwas kaputt ist"** — und genau darauf zielen die Tests.
+
+- Gekickt wird nur, wenn **alle** safety-critical Module (`rf_kill`, `power`, `watchdog`) OK gemeldet haben.
+- **Schweigen zählt wie ein Fault.** Das fängt den Fall, den ein reiner Fehlerzähler nicht sieht: ein Modul, das hängt und deshalb gar nichts mehr meldet — auch keinen Fehler.
+- **`DEGRADED` löst keinen Reset aus** (so definiert in `onex_modules.h`), ein defektes *unkritisches* Modul ebenfalls nicht.
+- **Startkarenz, aber kein Freibrief:** Direkt nach dem Reset hat noch niemand gemeldet — ohne Karenz entstünde eine Reset-Schleife. Sie endet, sobald alle kritischen Module einmal gemeldet haben, spätestens nach `ONEX_WD_STARTUP_GRACE_MS`. Meldet ein Modul in dieser Zeit bereits `FAULT`, wird trotzdem nicht gekickt: die Karenz deckt Unwissenheit ab, nicht Defekte.
+- Einmal entzogen, bleibt der Kick entzogen (**gelatcht**) — ein Wächter, der sich selbst wieder beruhigt, verschleiert genau die Sprunghaftigkeit, die er melden soll.
+
+Die Kette `watchdog → power → rf_kill` aus `ARCHITECTURE.md` §4 ist durchgehend getestet: eine Eskalation bringt `power` nach `FAULT`, und der daraus abgeleitete `system_fault` sperrt den TX-Pfad.
 
 ## Build-Ziel (später)
 Pico-SDK (RP2350, Cortex-M33). Die pin-abhängige HAL-Schicht kommt erst nach dem Mainboard-Schaltplan (Phase 5 / Gate G07). Alles hier ist so geschnitten, dass es **ohne** Pinmap kompiliert — Logik oben, Hardwarezugriff unten.
