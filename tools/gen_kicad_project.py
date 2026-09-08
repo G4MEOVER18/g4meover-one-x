@@ -65,9 +65,19 @@ def det_uuid(*parts):
     return str(uuid.uuid5(NS, "|".join(parts)))
 
 
+# Dinge, die zwar in Backticks stehen, aber keine Netze sind. Ohne diesen
+# Filter landet jeder Dateiname aus einem Markdown-Link im Netz-Manifest --
+# genau das passierte mit `INTERFACE_NETS.md` und faellt erst im
+# CI-Determinismus-Check auf.
+NOT_A_NET = re.compile(
+    r'\.(md|py|json|csv|kicad_\w+|c|h|svg|png|pdf|zip|txt|ya?ml)$', re.I)
+
+
 def clean_net(tok):
     # Wildcards/Suffix-Rauschen abschneiden; nur den Stamm behalten
     tok = tok.split("/")[0].rstrip("*<>._-")
+    if NOT_A_NET.search(tok):
+        return ""
     return tok
 
 
@@ -162,20 +172,38 @@ def gen_board(board, write=True):
         "- Alle sheet-lokalen Netze siehe `hierarchy.json` → `sheets[].nets`.",
     ]
 
-    if write:
-        kdir = HW / board / "kicad"
-        kdir.mkdir(exist_ok=True)
-        (kdir / "hierarchy.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
-        (kdir / f"{board}.kicad_pro").write_text(json.dumps(pro, indent=2, ensure_ascii=False), encoding="utf-8")
-        (kdir / "KICAD_BUILD_PLAN.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    kdir = HW / board / "kicad"
+    artifacts = [
+        (kdir / "hierarchy.json", json.dumps(manifest, indent=2, ensure_ascii=False)),
+        (kdir / f"{board}.kicad_pro", json.dumps(pro, indent=2, ensure_ascii=False)),
+        (kdir / "KICAD_BUILD_PLAN.md", "\n".join(lines) + "\n"),
+    ]
 
-    return manifest, pro
+    if write:
+        kdir.mkdir(exist_ok=True)
+        for path, content in artifacts:
+            path.write_text(content, encoding="utf-8")
+        stale = []
+    else:
+        # --check muss die Dateien WIRKLICH vergleichen. Vorher pruefte dieser
+        # Modus nur die Selbstkonsistenz der Daten im Speicher -- eine
+        # veraltete Datei auf der Platte fiel damit nicht auf, und das gruene
+        # Tor war lokal gruen, obwohl es das nicht sein durfte. Gefangen hat
+        # es erst die CI (schreiben, dann git diff). Ein --check, der nicht
+        # gegen die Platte prueft, ist kein Determinismus-Check.
+        stale = [
+            str(path.relative_to(ROOT)) for path, content in artifacts
+            if not path.is_file()
+            or path.read_text(encoding="utf-8").replace("\r\n", "\n") != content
+        ]
+
+    return manifest, pro, stale
 
 
 def self_check(results):
     print("\n== Selbstpruefung ==")
     ok = True
-    for m, pro in results:
+    for m, pro, _stale in results:
         board = m["board"]
         # JSON-Serialisierbarkeit in-memory pruefen (kein Datei-Read -> auch im --check-Modus gueltig)
         try:
@@ -201,14 +229,28 @@ def main():
     for b in BOARDS:
         r = gen_board(b, write=not check_only)
         if r:
-            m, pro = r
+            m, pro, _stale = r
             results.append(r)
             ibn = sum(len(s["interboard_nets"]) for s in m["sheets"])
             holds = sum(1 for s in m["sheets"] if s["hold_stub"])
             print(f"  {b:13s}: {m['sheet_count']:2d} Sheets, {len(m['net_index']):3d} Netze, {ibn:2d} Inter-Board-Label-Refs, {holds} HOLD-Stub(s)")
     ok = self_check(results)
+
+    # Im --check-Modus zusaetzlich gegen die PLATTE pruefen: sind die
+    # committeten Dateien noch das, was der Generator heute erzeugen wuerde?
+    # Ohne diesen Vergleich pruefte --check nur die Selbstkonsistenz der Daten
+    # im Speicher; eine veraltete Datei fiel damit nicht auf, und das gruene
+    # Tor war lokal gruen, obwohl es das nicht sein durfte.
+    stale = [f for _m, _pro, s_ in results for f in s_]
+    if stale:
+        ok = False
+        print("\n== Veraltete abgeleitete Dateien ==")
+        for f in stale:
+            print(f"  [VERALTET] {f}")
+        print("  -> 'python tools/gen_kicad_project.py' laufen lassen und committen.")
+
     tail = "geprueft (read-only)." if check_only else "generiert und selbstgeprueft."
-    print("\n" + (f"Alle Manifeste/Projekte {tail}" if ok else "FEHLER in Selbstpruefung."))
+    print("\n" + (f"Alle Manifeste/Projekte {tail}" if ok else "FEHLER in der Pruefung."))
     return 0 if ok else 1
 
 

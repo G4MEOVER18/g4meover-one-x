@@ -30,6 +30,12 @@
 
 **Und ein Fehler im Prüfwerkzeug selbst:** `kicad_netcheck` las Netznamen mit dem Zeichenvorrat `[A-Za-z0-9_]` — **Rails mit führendem `+` waren damit unsichtbar**, ausgerechnet die Netzklasse, bei der ein Namensdrift am teuersten ist. Regex erweitert; per Gegenprobe bestätigt, dass die alte Fassung `+3V3_SYS` tatsächlich übersah.
 
+**Nachtrag — die CI fand zwei Fehler, die lokal grün blieben (dritter Fund dieser Art):**
+1. **Ein Markdown-Link wurde als Netzname eingelesen.** Mein Nachtrag in der Sheet-Spec enthielt `` `INTERFACE_NETS.md` `` in Backticks — der Netz-Extraktor von `gen_kicad_project.py` nimmt schlicht alles in Backticks als Netz, und der Dateiname landete im Netz-Manifest. Filter gegen Dateiendungen ergänzt.
+2. **Gravierender: `gen_kicad_project.py --check` prüfte gar nicht gegen die Platte.** Es führte nur eine Selbstprüfung der Daten im Speicher durch und verglich nie, ob die *committeten* Dateien noch dem entsprechen, was der Generator heute erzeugt. Eine veraltete Datei fiel damit nicht auf — **das grüne Tor war lokal grün, obwohl es das nicht sein durfte**. Gefangen hat es nur die CI (schreiben, dann `git diff`). Ein `--check`, der nicht gegen die Platte prüft, ist kein Determinismus-Check. Behoben und per Gegenprobe verifiziert (Exit 1 bei veralteter, 0 bei aktueller Datei).
+
+Dazu `.gitattributes` um die neuen generierten Artefakte erweitert (`*.kicad_sch`, `sym-lib-table`, `onex.kicad_sym`, Sourcing-Register) — ohne `eol=lf` hätte der CRLF-Determinismusfehler aus Session 18 sich für sie wiederholt.
+
 **Stand:** 4 Sheets ERC-sauber, 22 kanonische Inter-Board-Netze, **check_all 9/9** und CI vollständig (kein SKIP mehr).
 
 **Nächster Schritt (Session 28+):** (a) UI-Carrier Sheet 01 (Display/DSI) — **Vorarbeit nötig:** die Datenlanes `DSI0_D0..D3_P/N` fehlen im Wörterbuch, obwohl sie laut Sheet-Spec FIXED sind; (b) RF-Core Sheet 07 (Power/Host/Antennen); (c) die 10 WAHL_OFFEN-Positionen im Sourcing-Register.

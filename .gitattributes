@@ -14,3 +14,14 @@ tools/*.py       text eol=lf
 # mit demselben Compiler-Aufruf uebersetzt -- keine CRLF-Ueberraschungen.
 firmware/**/*.c  text eol=lf
 firmware/**/*.h  text eol=lf
+
+# Weitere generierte Artefakte (KiCad-Schaltplaene, Symbolbibliothek,
+# Sourcing-Register). Ohne eol=lf schreibt Windows CRLF, der Generator in der
+# CI schreibt LF -- der Determinismus-Check schlaegt dann fehl, obwohl sich
+# inhaltlich nichts geaendert hat. Genau dieser Fehler trat in Session 18
+# schon einmal auf.
+hardware/**/kicad/*.kicad_sch      text eol=lf
+hardware/**/kicad/sym-lib-table    text eol=lf
+hardware/kicad/onex.kicad_sym      text eol=lf
+manufacturing/BOM_ORDERABLE.csv    text eol=lf
+manufacturing/SOURCING_REGISTER.md text eol=lf
