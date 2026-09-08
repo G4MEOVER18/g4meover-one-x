@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -81,6 +82,63 @@ CFLAGS = [
 ]
 
 
+# ---------------------------------------------------------------------------
+# Statische Vorpruefung: fehlende <stddef.h>-Includes
+#
+# Warum eigens geprueft: Manche libc-Implementierungen (z. B. MinGW) ziehen
+# NULL/size_t beilaeufig ueber <stdint.h> mit herein, glibc nicht. Eine Datei,
+# die NULL nutzt, ohne <stddef.h> zu erreichen, kompiliert dann lokal
+# anstandslos und faellt erst in der CI um. Genau so ein Fehler ist in
+# Session 23 aufgetreten -- diese Pruefung faengt ihn plattformunabhaengig.
+# ---------------------------------------------------------------------------
+
+# Systemheader, die NULL/size_t garantiert mitbringen.
+STDDEF_PROVIDERS = {"stddef.h", "string.h", "stdio.h", "stdlib.h", "time.h"}
+# Symbole, die <stddef.h> braucht.
+STDDEF_SYMBOLS = ("NULL", "size_t", "ptrdiff_t", "offsetof")
+
+_SYS_INCLUDE = re.compile(r'^\s*#\s*include\s*<([^>]+)>', re.MULTILINE)
+_OWN_INCLUDE = re.compile(r'^\s*#\s*include\s*"([^"]+)"', re.MULTILINE)
+# Kommentare und Zeichenketten grob entfernen, damit ein "NULL" im Fliesstext
+# keinen Fehlalarm ausloest.
+_STRIP = re.compile(r'/\*.*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"', re.DOTALL)
+
+
+def _reaches_stddef(path: Path, seen: set[Path]) -> bool:
+    """Erreicht path (transitiv ueber eigene Header) einen stddef-Lieferanten?"""
+    if path in seen or not path.is_file():
+        return False
+    seen.add(path)
+
+    text = path.read_text(encoding="utf-8", errors="replace")
+    if STDDEF_PROVIDERS & set(_SYS_INCLUDE.findall(text)):
+        return True
+    return any(
+        _reaches_stddef(FW / "include" / own, seen)
+        for own in _OWN_INCLUDE.findall(text)
+    )
+
+
+def check_stddef_includes(quiet: bool) -> bool:
+    files = sorted(FW.glob("**/*.c")) + sorted(FW.glob("**/*.h"))
+    bad = []
+    for f in files:
+        body = _STRIP.sub(" ", f.read_text(encoding="utf-8", errors="replace"))
+        used = [s for s in STDDEF_SYMBOLS if re.search(rf'\b{s}\b', body)]
+        if used and not _reaches_stddef(f, set()):
+            bad.append((f, used))
+
+    if bad:
+        print("  [FEHLER] Datei nutzt stddef-Symbole ohne <stddef.h> zu erreichen:")
+        for f, used in bad:
+            print(f"           {f.relative_to(REPO)}  ->  {', '.join(used)}")
+        print("           (kompiliert je nach libc trotzdem -- faellt spaeter in der CI um)")
+        return False
+    if not quiet:
+        print(f"  [OK] stddef-Includes vollstaendig ({len(files)} Dateien geprueft)")
+    return True
+
+
 def find_compiler() -> str | None:
     """Bevorzugt $CC, sonst gcc/cc/clang."""
     env_cc = os.environ.get("CC")
@@ -136,7 +194,12 @@ def main() -> int:
         print(" ONE-X -- Firmware-Unit-Tests (Host, Compiler: %s)" % cc)
         print("=" * 64)
 
-    ok = True
+    # Vorpruefung: laeuft ohne Compiler-Lauf und faengt libc-abhaengige
+    # Include-Luecken, die lokal unsichtbar bleiben.
+    if not args.check:
+        print("\n>> Statische Vorpruefung")
+    ok = check_stddef_includes(quiet=args.check)
+
     with tempfile.TemporaryDirectory(prefix="onex_fwtest_") as tmp:
         for suite in SUITES:
             if not args.check:

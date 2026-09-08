@@ -62,6 +62,8 @@ Das geht, weil der Codec bewusst **frei von Pin-/HAL-Annahmen** ist (alle GPIO-Z
 
 Abgedeckt: CCITT-FALSE-Normvektor, Wire-Layout byteweise, Roundtrip über **alle** Payload-Längen 0…255 (beide Grenzen), unvollständige Frames, CRC-Fehler, unbekannte Version, führender Leitungsmüll, Resync-Fortschrittsgarantie und ein Empfangsstrom, der sich nach einem zerstörten Frame nachweislich wieder fängt.
 
+Vor dem Build läuft eine **statische Vorprüfung** auf fehlende `<stddef.h>`-Includes. Grund: Manche libc-Implementierungen (MinGW) ziehen `NULL`/`size_t` beiläufig über `<stdint.h>` mit herein, glibc nicht — solcher Code kompiliert lokal anstandslos und fällt erst in der CI um. Die Prüfung löst den Include-Graph über die eigenen Header auf und braucht keinen Compiler.
+
 Zwei Eigenschaften sind **sicherheitsrelevant** und deshalb je durch einen eigenen Test festgenagelt:
 1. **CRC wird vor der Version geprüft.** Nur so ist die SEQ, die ein `NACK(version)` zurückspiegelt, durch die Prüfsumme gedeckt ([`PROTOCOL.md` §5](PROTOCOL.md)).
 2. **Resync springt hinter den defekten Anker**, nicht auf Byte 1 — sonst fände der Parser bei führendem Müll denselben kaputten Frame erneut und träte auf der Stelle.

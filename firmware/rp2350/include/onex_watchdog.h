@@ -25,6 +25,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>   /* NULL -- glibc zieht es nicht ueber <stdint.h> mit */
 
 #include "onex_modules.h"
 

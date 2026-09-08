@@ -32,6 +32,10 @@ Weitere Eigenschaften: nie endlos warten (jeder Schritt hat eine Frist → sonst
 
 **Keine Spec-Änderung, keine HOLDs berührt.** check_all 4/4 grün.
 
+**Nachtrag — die CI fing einen echten Portabilitätsfehler (Commit 2f50daa → Fix):** Lokal 4/4 grün, in der CI rot. Ursache: `onex_watchdog.c` nutzt `NULL`, erreichte aber nie `<stddef.h>`. **MinGW zieht `NULL` beiläufig über `<stdint.h>` mit herein, glibc nicht** — der Fehler ist auf dem Entwicklungsrechner strukturell unsichtbar. Die übrigen Module entkamen nur zufällig (`onex_power.h` erreicht `<stddef.h>` über `onex_proto.h`, `onex_rfkill.h` inkludiert es selbst); ausgerechnet `onex_watchdog.h` inkludiert `<stdint.h>` + `<stdbool.h>` + `onex_modules.h` — keiner davon liefert `NULL`.
+
+Das ist bereits der **zweite CI-Fund dieser Art** nach dem CRLF-Determinismusfehler in Session 18. Muster: Die zweite Plattform findet, was auf der ersten unsichtbar ist. Deshalb blieb es nicht beim Ein-Zeilen-Fix — `tools/fw_test.py` hat jetzt eine **statische Vorprüfung**, die den transitiven Include-Graph über die eigenen Header auflöst und meldet, wenn eine Datei `NULL`/`size_t`/`ptrdiff_t`/`offsetof` nutzt, ohne einen `<stddef.h>`-Lieferanten zu erreichen. Gegenprobe: mit zurückgenommenem Fix meldet sie den Fehler **lokal auf MinGW**, wo der Compiler schweigt. Die Prüfung braucht keinen Compiler und läuft vor jedem Build.
+
 **Nächster Schritt (Session 24+):** (a) Superloop-Scheduler, der die Modul-Tabelle aus `onex_modules.h` tatsächlich fährt und die Module in Prioritätsreihenfolge tickt — damit wäre Phase 2 im Kern abgeschlossen; (b) echte KiCad-Zeichnung → G07; (c) HOLDs mit Vendor-Rückmeldungen schließen.
 
 ---
