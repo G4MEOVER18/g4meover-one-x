@@ -12,6 +12,30 @@
 
 ---
 
+## 2026-09-08 — Session 27 (Netzlisten-Regeln, KiCad in der CI, viertes Sheet)
+
+**Auftrag: „mach es richtig."** Zwei Halbheiten standen offen — ERC lief in der CI gar nicht (SKIP mangels KiCad), und die Netzprüfung verglich nur *Namen* gegen ein Wörterbuch statt die tatsächliche Verdrahtung. Beide geschlossen.
+
+**1. Regelprüfung auf der echten Netzliste (`tools/kicad_netlist_check.py`).** ERC prüft allgemeine elektrische Plausibilität und kennt die Regeln *dieses* Geräts nicht; `kicad_netcheck` prüft nur Namen. Hier wird geprüft, ob die Schaltung die Zusagen der Design-Spec einhält — auf der Netzliste, die KiCad aus dem Schaltplan rechnet. Fünf Regeln, darunter der bisher nur handschriftlich vermerkte Review-Punkt aus `rf-core/sheet_01`: **„Kein verdeckter TX-Pfad — jedes PA-Enable muss über den Supervisor laufen"**, jetzt automatisiert. Dazu: `TX_GATE_OK` hinter dem Gate abgegriffen, beide Kill-Eingänge erreichen das Gate, Diff-Paare vollständig und symmetrisch, keine Ein-Knoten-Netze.
+
+**Zwei Funde beim Mutationstest der eigenen Regeln:**
+- **Lokale Netze tragen einen Blattpfad-Präfix** (`/PCIE_RX_P`), globale nicht. Eine Regel, die auf `PA_EN_` prüft, hätte ein versehentlich *lokales* Label stillschweigend übersprungen — eine Prüfung, die sich durch die Label-Sorte umgehen lässt, ist keine. Netznamen werden jetzt normalisiert.
+- **„Netz nicht vorhanden" wurde als „in Ordnung" gewertet.** Verschmilzt `TX_GATE_OK` mit einem anderen Netz (etwa weil es fälschlich vor dem Gate abgegriffen wird), benennt KiCad das gemeinsame Netz nach nur einem Namen; `nets.get()` lieferte `None` und die Regel gab eine leere Fehlerliste zurück — **genau der Fall, den sie fangen soll, machte sie blind**. Regeln prüfen jetzt zuerst die Existenz, sofern das Blatt das Supervisor-Gate enthält.
+
+**2. KiCad in der CI.** Zweiter Job im Container `kicad/kicad:10.0` (gleiche Hauptversion wie die erzeugten Dateien — ein älteres KiCad könnte das Format nicht lesen). Führt ERC, Netzlisten-Regeln und den Reproduzierbarkeits-Check aus; **läuft in 46 s**. Damit ist ERC serverseitig nicht mehr SKIP. Der Determinismus-Check deckt jetzt auch `gen_kicad_sch` und `gen_sourcing` ab.
+
+**3. Viertes Sheet: `m2-bridge/sheet_02_sideband_power`** — PCIe-Sideband (`PERST_n`/`CLKREQ_n`/`WAKE_n`), Rails, Entkopplung nahe Endpoint, Bring-up-Testpunkte. ERC-sauber auf Anhieb.
+
+**Namens-Drift aufgedeckt und behoben:** Das M.2-Sheet führte die Logik-Rail als `+3V3`, der Power-Tree dieselbe Rail als **`+3V3_SYS`**. Zwei Namen für eine Rail fallen erst beim Zusammenführen der Boards auf — dann aber teuer. Kanonisch ist `+3V3_SYS`; `INTERFACE_NETS.md` ergänzt, die Markdown-Spec des Sheets nachgezogen.
+
+**Und ein Fehler im Prüfwerkzeug selbst:** `kicad_netcheck` las Netznamen mit dem Zeichenvorrat `[A-Za-z0-9_]` — **Rails mit führendem `+` waren damit unsichtbar**, ausgerechnet die Netzklasse, bei der ein Namensdrift am teuersten ist. Regex erweitert; per Gegenprobe bestätigt, dass die alte Fassung `+3V3_SYS` tatsächlich übersah.
+
+**Stand:** 4 Sheets ERC-sauber, 22 kanonische Inter-Board-Netze, **check_all 9/9** und CI vollständig (kein SKIP mehr).
+
+**Nächster Schritt (Session 28+):** (a) UI-Carrier Sheet 01 (Display/DSI) — **Vorarbeit nötig:** die Datenlanes `DSI0_D0..D3_P/N` fehlen im Wörterbuch, obwohl sie laut Sheet-Spec FIXED sind; (b) RF-Core Sheet 07 (Power/Host/Antennen); (c) die 10 WAHL_OFFEN-Positionen im Sourcing-Register.
+
+---
+
 ## 2026-09-08 — Session 26 (Zwei weitere Sheets + Netznamen-Prüfung gegen die Wahrheit)
 
 **Umgesetzt:** Zwei weitere reale Schaltplan-Sheets, beide **ERC-sauber** — gezielt solche, die **keine** Hersteller-Pinbelegung brauchen:

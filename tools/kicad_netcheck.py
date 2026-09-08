@@ -28,7 +28,11 @@ REPO = Path(__file__).resolve().parent.parent
 DICT = REPO / "hardware" / "INTERFACE_NETS.md"
 
 _GLOBAL = re.compile(r'\(global_label\s+"([^"]+)"')
-_TICKED = re.compile(r'`([A-Za-z0-9_]+)`')
+# Netznamen duerfen "+", "-" und "." enthalten (Rails wie "+3V3_SYS").
+# Ein Zeichenvorrat von nur [A-Za-z0-9_] haette genau die Power-Rails
+# uebersehen -- und damit die Netzklasse, bei der ein Namensdrift am
+# teuersten ist.
+_TICKED = re.compile(r'`([A-Za-z0-9_+.\-]+)`')
 
 # Netze, die bewusst kein Eintrag im Woerterbuch sind: sie existieren pro
 # Radio und werden dort als Muster gefuehrt, nicht einzeln aufgezaehlt.

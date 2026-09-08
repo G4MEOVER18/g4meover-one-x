@@ -197,6 +197,25 @@ SYMBOLS = """
 					(number "3" (effects (font (size 1.016 1.016)))))
 			)
 		)
+		(symbol "ONEX:TP"
+			(pin_numbers (hide yes))
+			(pin_names (offset 0) (hide yes))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "TP" (at 0 -3.81 0) (effects (font (size 1.016 1.016))))
+			(property "Value" "TP" (at 0 3.81 0) (effects (font (size 1.016 1.016))))
+			(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Description" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(symbol "TP_0_1"
+				(circle (center 0 1.905) (radius 0.635)
+					(stroke (width 0.254) (type default)) (fill (type none)))
+			)
+			(symbol "TP_1_1"
+				(pin passive line (at 0 0 90) (length 1.27)
+					(name "tp" (effects (font (size 1.016 1.016))))
+					(number "1" (effects (font (size 1.016 1.016)))))
+			)
+		)
 		(symbol "ONEX:SRC"
 			(pin_numbers (hide yes))
 			(pin_names (offset 0) (hide yes))
@@ -761,9 +780,102 @@ def build_rf_core_sheet01() -> Sheet:
     return s
 
 
+# ------------------------------------- M.2-Bridge Sheet 02 (real)
+#
+# Quelle: hardware/m2-bridge/schematic/sheet_02_sideband_power.md
+#
+# NAMENS-PRAEZISIERUNG: Das Sheet nannte die Logik-Rail "+3V3". Der Power-Tree
+# (mainboard sheet_01) fuehrt genau diese Rail als "+3V3_SYS" ("Logik, Radios,
+# M.2"). Es ist dieselbe Rail -- hier wird der kanonische Name verwendet, und
+# die Markdown-Spec wurde nachgezogen. Zwei Namen fuer eine Rail waeren beim
+# Zusammenfuehren der Boards ein Fehler.
+
+def build_m2_bridge_sheet02() -> Sheet:
+    board, sheet = "m2-bridge", "sheet_02_sideband_power"
+
+    sideband = [
+        ("PCIE_PERST_n",  "Reset vom Host an den Endpoint"),
+        ("PCIE_CLKREQ_n", "Clock-Request (Richtung je Modus, G04)"),
+        ("PCIE_WAKE_n",   "Wake vom Endpoint an den Host"),
+    ]
+    rails = [
+        ("+3V3_SYS",       "M.2-Logik/Referenz"),
+        ("HYPERRF_AUX_5V", "Durchfuehrung bis 5 A - Pinbudget TBD"),
+    ]
+
+    host_pins = [(n, n) for n, _ in sideband] + [(n, n) for n, _ in rails] + [("GND", "GND")]
+    extra = "\n" + conn_symbol("J_M2_SB", host_pins)
+    extra += "\n" + conn_symbol("M2_BKEY_SB", [(p, p) for p, _ in host_pins])
+    s = Sheet(board, sheet, "ONE-X M.2-Bridge - Sheet 02 - Sideband / Power / Testpunkte", extra)
+
+    hx, hy = g(24), g(48)
+    ex, ey = g(96), g(48)
+    s.place("J_M2_SB", hx, hy, "J22", "J_M2 (Sideband)")
+    s.place("M2_BKEY_SB", ex, ey, "J23", "M.2 B-Key (Sideband)")
+
+    top = conn_pin_offset(len(host_pins))
+    hpin_x, epin_x = hx + CONN_PIN_X, ex + CONN_PIN_X
+
+    all_nets = [n for n, _ in sideband] + [n for n, _ in rails]
+    for i, net in enumerate(all_nets):
+        py = hy - top + g(2) * i
+        s.wire(hpin_x, py, hpin_x + g(4), py)
+        s.glabel(net, hpin_x + g(4), py)
+        epy = ey - top + g(2) * i
+        s.wire(epin_x, epy, epin_x + g(4), epy)
+        s.glabel(net, epin_x + g(4), epy)
+
+    # Masse beidseitig, ein Power-Flag.
+    for cxx, cyy, tag in ((hpin_x, hy, "H"), (epin_x, ey, "E")):
+        gy = cyy - top + g(2) * len(all_nets)
+        s.wire(cxx, gy, cxx + g(4), gy)
+        s.wire(cxx + g(4), gy, cxx + g(4), gy + g(4))
+        s.place("GND", cxx + g(4), gy + g(4), f"#PWR{tag}0", "GND")
+    gy = hy - top + g(2) * len(all_nets)
+    s.wire(hpin_x + g(4), gy, hpin_x + g(8), gy)
+    s.place("PWR_FLAG", hpin_x + g(8), gy, "#FLG02", "PWR_FLAG")
+
+    # Testpunkte fuer den gestaffelten Bring-up (Sheet 02: "messbar").
+    # Jeder haengt an einem Netz, das auch anderswo verwendet wird.
+    for i, (net, _why) in enumerate(sideband + rails):
+        tx, ty = g(52), g(20) + g(6) * i
+        s.glabel(net, tx, ty)
+        s.wire(tx, ty, tx + g(4), ty)
+        s.place("TP", tx + g(4), ty, s._ref("TP"), f"TP_{net}",
+                fields={"ONEX_Note": "Bring-up-Messpunkt"})
+
+    # Entkopplung nahe dem Endpoint (Sheet 02: "Entkopplung an +3V3 nahe EP").
+    dx, dy = g(80), g(20)
+    s.glabel("+3V3_SYS", dx, dy)
+    s.wire(dx, dy, dx, dy + g(3))
+    s.place("C", dx, dy + g(6), s._ref("C"), "100n",
+            fields={"ONEX_Status": "TARGET",
+                    "ONEX_Note": "Entkopplung nahe Endpoint"})
+    s.wire(dx, dy + g(9), dx, dy + g(11))
+    s.place("GND", dx, dy + g(11), "#PWR20", "GND")
+
+    # Rails brauchen einen deklarierten Treiber, sonst gelten sie als
+    # ungespeist -- sie kommen physisch vom Mainboard.
+    for i, (net, _why) in enumerate(rails):
+        fx, fy = g(88), g(38) + g(6) * i
+        s.glabel(net, fx, fy)
+        s.wire(fx, fy, fx + g(4), fy)
+        s.place("PWR_FLAG", fx + g(4), fy, f"#FLG1{i}", "PWR_FLAG")
+
+    s.text("Power-vor-Reset: +3V3_SYS und HYPERRF_AUX_5V stabil, DANN PCIE_PERST_n freigeben.",
+           g(18), g(10), 2.0)
+    s.text("Rail heisst kanonisch +3V3_SYS (Power-Tree), nicht '+3V3' - zwei Namen fuer eine",
+           g(18), g(14))
+    s.text("Rail waeren beim Zusammenfuehren der Boards ein Fehler.", g(18), g(17))
+    s.text("TBD: Kontakt-/Strombudget fuer HYPERRF_AUX_5V (bis 5 A) - Layout-Review G08.",
+           g(18), g(56))
+    return s
+
+
 SHEETS = [
     ("antenna-rail", "sheet_01_sma_feeds", build_antenna_rail_sheet01),
     ("m2-bridge", "sheet_01_pcie_usb3", build_m2_bridge_sheet01),
+    ("m2-bridge", "sheet_02_sideband_power", build_m2_bridge_sheet02),
     ("rf-core", "sheet_01_supervisor_rfkill", build_rf_core_sheet01),
 ]
 

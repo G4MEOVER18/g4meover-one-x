@@ -78,8 +78,11 @@ Die RF-Core-internen PA-Enables (`PA_EN_<radio>`) bleiben **board-lokal** (quere
 | Kanonisch | Rolle |
 |---|---|
 | `HYPERRF_AUX_5V` | HyperRF-Einspeisung bis 5 A (`J_M2`) |
+| `+3V3_SYS` | System-Logik-Rail (`J_M2`, `J_UI`, `J_RFCORE`) — speist Logik, Radios, M.2 |
 | `BAT_2S2P` | Akku (`J_BAT`, G11) |
 | `GND` / `AGND` | Masse / Analog-Masse |
+
+> **Namens-Präzisierung (2026-09-08):** Die M.2-Bridge führte diese Rail als „`+3V3`", der [Power-Tree](mainboard/schematic/sheet_01_power_tree.md) als `+3V3_SYS`. Es ist **dieselbe** Rail; kanonisch ist `+3V3_SYS`. Zwei Namen für eine Rail fallen erst beim Zusammenführen der Boards auf — dann aber teuer.
 
 ## Board-lokal (queren KEINE Board-Grenze — nicht im Mirror-Check)
 `PA_EN_*`, `HRF_*`, `LMSx_LML_*`, `HB_*`, `RADAR_*`, `UWB_*`, `KEY_*`, `RING_*`, `HAPTIC_*`, `LED_*`, `PMIC_*` — bleiben auf ihrem Board.
