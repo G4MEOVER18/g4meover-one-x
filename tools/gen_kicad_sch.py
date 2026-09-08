@@ -126,6 +126,96 @@ SYMBOLS = """
 					(number "2" (effects (font (size 1.27 1.27)))))
 			)
 		)
+		(symbol "ONEX:R"
+			(pin_numbers (hide yes))
+			(pin_names (offset 1.016) (hide yes))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "R" (at 2.54 1.27 0) (effects (font (size 1.27 1.27))))
+			(property "Value" "R" (at 2.54 -1.27 0) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Description" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(symbol "R_0_1"
+				(rectangle (start -1.016 2.54) (end 1.016 -2.54)
+					(stroke (width 0.254) (type default)) (fill (type none)))
+			)
+			(symbol "R_1_1"
+				(pin passive line (at 0 5.08 270) (length 2.54)
+					(name "A" (effects (font (size 1.27 1.27))))
+					(number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 0 -5.08 90) (length 2.54)
+					(name "B" (effects (font (size 1.27 1.27))))
+					(number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+		(symbol "ONEX:C"
+			(pin_numbers (hide yes))
+			(pin_names (offset 1.016) (hide yes))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "C" (at 2.54 1.27 0) (effects (font (size 1.27 1.27))))
+			(property "Value" "C" (at 2.54 -2.54 0) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Description" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(symbol "C_0_1"
+				(polyline (pts (xy -2.54 0.635) (xy 2.54 0.635))
+					(stroke (width 0.508) (type default)) (fill (type none)))
+				(polyline (pts (xy -2.54 -0.635) (xy 2.54 -0.635))
+					(stroke (width 0.508) (type default)) (fill (type none)))
+			)
+			(symbol "C_1_1"
+				(pin passive line (at 0 3.81 270) (length 3.175)
+					(name "A" (effects (font (size 1.27 1.27))))
+					(number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 0 -3.81 90) (length 3.175)
+					(name "B" (effects (font (size 1.27 1.27))))
+					(number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
+		(symbol "ONEX:AND2"
+			(pin_names (offset 0.254))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "U" (at 0 6.35 0) (effects (font (size 1.27 1.27))))
+			(property "Value" "AND2" (at 0 -6.35 0) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Description" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(symbol "AND2_0_1"
+				(rectangle (start -3.81 3.81) (end 3.81 -3.81)
+					(stroke (width 0.254) (type default)) (fill (type background)))
+				(text "&" (at 0 0 0) (effects (font (size 1.778 1.778))))
+			)
+			(symbol "AND2_1_1"
+				(pin input line (at -7.62 2.54 0) (length 3.81)
+					(name "A" (effects (font (size 1.016 1.016))))
+					(number "1" (effects (font (size 1.016 1.016)))))
+				(pin input line (at -7.62 -2.54 0) (length 3.81)
+					(name "B" (effects (font (size 1.016 1.016))))
+					(number "2" (effects (font (size 1.016 1.016)))))
+				(pin output line (at 7.62 0 180) (length 3.81)
+					(name "Y" (effects (font (size 1.016 1.016))))
+					(number "3" (effects (font (size 1.016 1.016)))))
+			)
+		)
+		(symbol "ONEX:SRC"
+			(pin_numbers (hide yes))
+			(pin_names (offset 0) (hide yes))
+			(exclude_from_sim no) (in_bom no) (on_board yes)
+			(property "Reference" "#SRC" (at 0 3.81 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Value" "SRC" (at 0 5.588 0) (effects (font (size 1.016 1.016))))
+			(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Description" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(symbol "SRC_0_1"
+				(polyline (pts (xy -1.27 1.27) (xy 1.27 1.27) (xy 1.27 3.81) (xy -1.27 3.81) (xy -1.27 1.27))
+					(stroke (width 0.254) (type dash)) (fill (type none)))
+			)
+			(symbol "SRC_1_1"
+				(pin output line (at 0 0 90) (length 1.27)
+					(name "src" (effects (font (size 1.016 1.016))))
+					(number "1" (effects (font (size 1.016 1.016)))))
+			)
+		)
 		(symbol "ONEX:GND"
 			(power)
 			(pin_numbers (hide yes))
@@ -297,6 +387,35 @@ class Sheet:
             f'\t\t(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "{u}"))'
         )
 
+    def glabel(self, text: str, x: float, y: float, shape: str = "bidirectional",
+               rot: int = 0) -> None:
+        """
+        Blattuebergreifendes Netz. Lokale Labels enden am Blattrand -- ERC
+        meldet solche Netze zu Recht als isoliert. Signale, die andere Sheets
+        erreichen (PA_EN_*, TX_GATE_OK ...), muessen global sein.
+        """
+        u = uid(self.board, self.sheet, "glbl", f"{text}@{x},{y}")
+        self.items.append(
+            f'\t(global_label "{text}"\n'
+            f'\t\t(shape {shape})\n'
+            f'\t\t(at {x:.2f} {y:.2f} {rot})\n'
+            f'\t\t(effects (font (size 1.27 1.27)) (justify left))\n'
+            f'\t\t(uuid "{u}")\n'
+            f'\t\t(property "Intersheetrefs" "${{INTERSHEET_REFS}}" (at {x:.2f} {y:.2f} 0)\n'
+            f'\t\t\t(effects (font (size 1.27 1.27)) (hide yes)))\n'
+            f'\t)'
+        )
+
+    def source(self, x: float, y: float, note: str) -> None:
+        """
+        Markiert einen Eingang, der von einem ANDEREN Blatt getrieben wird.
+        Ohne diese Quelle meldet ERC "Input pin not driven" -- zu Recht, denn
+        aus dem Blatt allein ist nicht ersichtlich, ob das Signal je entsteht.
+        Den Pin stattdessen auf 'passive' zu setzen wuerde die Pruefung nur
+        stumm schalten, statt die Herkunft zu benennen.
+        """
+        self.place("SRC", x, y, self._ref("#SRC"), note)
+
     def text(self, s: str, x: float, y: float, size: float = 1.27) -> None:
         u = uid(self.board, self.sheet, "txt", f"{s[:40]}@{x},{y}")
         esc = s.replace('"', "'")
@@ -413,8 +532,239 @@ def build_antenna_rail_sheet01() -> Sheet:
     return s
 
 
+# ------------------------------------- M.2-Bridge Sheet 01 (real)
+#
+# Quelle: hardware/m2-bridge/schematic/sheet_01_pcie_usb3.md
+# Netznamen: hardware/INTERFACE_NETS.md (kanonisch, nicht neu erfunden)
+# FIXED  : PCIe 2.1 x1 + USB3 als Diff-Paare; AC-Kopplung im TX-Pfad
+# TBD    : AC-Kondensatorwerte (G08), RefClk-Modus (G04)
+
+def build_m2_bridge_sheet01() -> Sheet:
+    board, sheet = "m2-bridge", "sheet_01_pcie_usb3"
+
+    # (Netzbasis, AC-gekoppelt?, Kommentar) -- Reihenfolge = Blattreihenfolge.
+    pairs = [
+        ("PCIE_TX",     True,  "Host -> EP, AC-gekoppelt (Sender-Ende)"),
+        ("PCIE_RX",     False, "EP -> Host"),
+        ("PCIE_REFCLK", False, "100 MHz, Modus TBD (G04)"),
+        ("USB3_M2_TX",  True,  "SuperSpeed TX, AC-gekoppelt"),
+        ("USB3_M2_RX",  False, "SuperSpeed RX"),
+        ("USB2_M2_D",   False, "USB2 Fallback/Sideband"),
+    ]
+
+    host_pins: list[tuple[str, str]] = []
+    for base, _ac, _c in pairs:
+        host_pins.append((base + "_P", base + "_P"))
+        host_pins.append((base + "_N", base + "_N"))
+    host_pins.append(("GND", "GND"))
+
+    ep_pins = [(p, p) for p, _ in host_pins]
+
+    extra = "\n" + conn_symbol("J_M2_HOST", host_pins)
+    extra += "\n" + conn_symbol("M2_BKEY", ep_pins)
+    s = Sheet(board, sheet, "ONE-X M.2-Bridge - Sheet 01 - PCIe 2.1 x1 / USB3", extra)
+
+    # Links der Verbinder zum Mainboard, rechts der M.2-B-Key zum HyperRF.
+    hx, hy = g(24), g(60)
+    s.place("J_M2_HOST", hx, hy, "J20", "J_M2 (Mainboard)")
+    ex, ey = g(104), g(60)
+    s.place("M2_BKEY", ex, ey, "J21", "M.2 B-Key (HyperRF)")
+
+    htop = conn_pin_offset(len(host_pins))
+    hpin_x = hx + CONN_PIN_X
+    epin_x = ex + CONN_PIN_X
+
+    for idx, (base, ac, note) in enumerate(pairs):
+        for half, suffix in enumerate(("_P", "_N")):
+            net = base + suffix
+            i = idx * 2 + half
+            py = hy - htop + g(2) * i
+            row_y = g(20) + g(6) * i
+
+            # Host-Seite: Pin -> Label.
+            s.wire(hpin_x, py, hpin_x + g(4), py)
+            s.label(net, hpin_x + g(4), py)
+
+            # Strecke in der Blattmitte.
+            #
+            # Nur wo ein Serien-C sitzt, entstehen WIRKLICH zwei Netze
+            # (Host-Seite und M.2-Seite). Ohne C ist es durchgehend ein Netz --
+            # es dann trotzdem umzubenennen erzeugt zwei Namen fuer dieselbe
+            # Verbindung; ERC meldet das als "multiple_net_names", und in der
+            # Netzliste waere es schlicht falsch.
+            x0 = g(50)
+            ep_net = net + "_M2" if ac else net
+            if ac:
+                # Nur hier gibt es ueberhaupt eine Strecke in der Blattmitte.
+                # Ohne C haengt ein Label dort frei in der Luft.
+                #
+                # Der C ist um 90 Grad gedreht; seine Anschlusspunkte liegen
+                # dann bei +/- 3.81 mm (= 3 Raster) neben der Platzierung, NICHT
+                # am Symbolrand. Die Draehte muessen genau dort enden.
+                cx_ = x0 + g(4)
+                s.label(net, x0, row_y)
+                s.wire(x0, row_y, cx_ - g(3), row_y)
+                s.place("C", cx_, row_y, s._ref("C"), "TBD", rot=90,
+                        fields={"ONEX_Status": "Wert TBD (G08)",
+                                "ONEX_Note": "AC-Kopplung, bestueckt (kein DNP)"})
+                s.wire(cx_ + g(3), row_y, x0 + g(12), row_y)
+                s.label(ep_net, x0 + g(12), row_y)
+
+            # Endpoint-Seite.
+            epy = ey - htop + g(2) * i
+            s.wire(epin_x, epy, epin_x + g(4), epy)
+            s.label(ep_net, epin_x + g(4), epy)
+
+    # Masse beidseitig + ein Power-Flag.
+    for cx_, cy_, tag in ((hpin_x, hy, "H"), (epin_x, ey, "E")):
+        gy = cy_ - htop + g(2) * (len(host_pins) - 1)
+        s.wire(cx_, gy, cx_ + g(4), gy)
+        s.wire(cx_ + g(4), gy, cx_ + g(4), gy + g(4))
+        s.place("GND", cx_ + g(4), gy + g(4), f"#PWR{tag}0", "GND")
+    gy = hy - htop + g(2) * (len(host_pins) - 1)
+    s.wire(hpin_x + g(4), gy, hpin_x + g(8), gy)
+    s.place("PWR_FLAG", hpin_x + g(8), gy, "#FLG01", "PWR_FLAG")
+
+    s.text("FIXED: PCIe 2.1 x1 (kein Gen3 x4) + USB3. Diff-Paare, ein Treiber je Richtung.",
+           g(20), g(10), 2.0)
+    s.text("TBD: AC-Kondensatorwerte (SI-Review G08) - Bauteile sind bestueckt, nur der Wert offen.",
+           g(20), g(14))
+    s.text("TBD: PCIe-RefClk-Modus Common-Clock oder SRIS (haengt am FPGA-Endpoint, G04).",
+           g(20), g(17))
+    return s
+
+
+# ------------------------------------- RF-Core Sheet 01 (real)
+#
+# Quelle: hardware/rf-core/schematic/sheet_01_supervisor_rfkill.md
+# Das sicherheitskritischste Sheet des Geraets: der HW-erzwungene
+# TX-Disable-Pfad. Regel 2 dort: "auch ein haengender RP2350 laesst den Pfad
+# im sicheren Zustand" -- deshalb Pull-Downs Richtung Kill an jedem Enable.
+
+def build_rf_core_sheet01() -> Sheet:
+    board, sheet = "rf-core", "sheet_01_supervisor_rfkill"
+
+    radios = [
+        ("CC1101",   "Sub-GHz"),
+        ("SX1262",   "Sub-GHz LoRa"),
+        ("CC2652P7", "2,4 GHz"),
+        ("ZG23",     "Z-Wave"),
+        ("E710",     "UHF RAIN"),
+        ("LFRFID",   "LF-RFID TX-Feld"),
+        ("IRTX",     "IR-TX"),
+    ]
+
+    sup_pins = [("RF_KILL", "RF_KILL"),
+                ("RF_KILL_SW_n", "RF_KILL_SW_n"),
+                ("TX_GATE_OK", "TX_GATE_OK"),
+                ("GND", "GND")]
+    extra = "\n" + conn_symbol("J_SUP", sup_pins)
+    s = Sheet(board, sheet,
+              "ONE-X RF-Core - Sheet 01 - Supervisor / RF-Kill (sicherheitskritisch)", extra)
+
+    # Eingaenge vom RP2350 und vom physischen Notfallschalter.
+    cx, cy = g(20), g(28)
+    s.place("J_SUP", cx, cy, "J30", "J_RFCORE (Supervisor)")
+    top = conn_pin_offset(len(sup_pins))
+    pin_x = cx + CONN_PIN_X
+    # RF_KILL und RF_KILL_SW_n kommen von aussen (RP2350 bzw. Notfallschalter),
+    # TX_GATE_OK geht zurueck. Alle drei verlassen das Blatt -> global.
+    for i, (name, _n) in enumerate(sup_pins[:3]):
+        py = cy - top + g(2) * i
+        s.wire(pin_x, py, pin_x + g(4), py)
+        s.glabel(name, pin_x + g(4), py)
+
+    # Masse des Supervisor-Verbinders.
+    gy = cy - top + g(2) * 3
+    s.wire(pin_x, gy, pin_x + g(4), gy)
+    s.wire(pin_x + g(4), gy, pin_x + g(4), gy + g(4))
+    s.place("GND", pin_x + g(4), gy + g(4), "#PWR00", "GND")
+    s.wire(pin_x + g(4), gy, pin_x + g(8), gy)
+    s.place("PWR_FLAG", pin_x + g(8), gy, "#FLG01", "PWR_FLAG")
+
+    # Gemeinsames Gate: RF_KILL UND RF_KILL_SW_n. Beide muessen freigeben.
+    # Die beiden Eingaenge werden von aussen getrieben -> je eine benannte
+    # Quelle, damit ERC den Pfad als versorgt erkennt.
+    gate_x, gate_y = g(48), g(24)
+    for dy, src_note in ((-g(2), "RP2350"), (g(2), "Notfallschalter")):
+        y = gate_y + dy
+        # Anschlusspunkt der Quelle liegt auf ihrer Platzierung -> genau auf
+        # den Draht setzen, sonst haengt sie daneben (ERC: "not driven").
+        s.source(gate_x - g(14), y, src_note)
+        s.wire(gate_x - g(14), y, gate_x - g(6), y)
+    s.glabel("RF_KILL", gate_x - g(12), gate_y - g(2))
+    s.glabel("RF_KILL_SW_n", gate_x - g(12), gate_y + g(2))
+
+    s.place("AND2", gate_x, gate_y, "U30", "TX_GATE",
+            fields={"ONEX_Status": "FIXED (fail-safe)",
+                    "ONEX_Note": "Diskrete Logik, kein reiner MCU-GPIO"})
+    # Der Gate-Ausgang traegt den kanonischen Namen TX_GATE_OK
+    # (hardware/INTERFACE_NETS.md). Bewusst KEIN zweiter Name wie "TX_PERMIT"
+    # daneben: es ist ein und derselbe Knoten, und zwei Namen fuer ein Netz
+    # sind in der Netzliste schlicht falsch (ERC: multiple_net_names).
+    #
+    # Dass die Rueckmeldung an den RP2350 exakt das Signal ist, welches die
+    # PAs freigibt, ist die erwuenschte Eigenschaft: die Firmware vergleicht
+    # ihren Befehl dagegen und latcht bei Abweichung einen Fault
+    # (onex_rfkill.c). Ein Abgriff VOR dem Gate waere derselbe Wert wie der
+    # Befehl -- der Vergleich pruefte sich selbst.
+    s.wire(gate_x + g(6), gate_y, gate_x + g(10), gate_y)
+    s.wire(gate_x + g(10), gate_y, gate_x + g(10), gate_y + g(6))
+    s.wire(gate_x + g(10), gate_y + g(6), gate_x + g(4), gate_y + g(6))
+    s.glabel("TX_GATE_OK", gate_x + g(4), gate_y + g(6))
+
+    # Je Radio: eigenes Gate aus TX_PERMIT, mit Pull-Down Richtung Kill.
+    for i, (radio, band) in enumerate(radios):
+        ry = g(40) + g(14) * i
+
+        # Freigabe aus dem Supervisor-Gate (U30) dieses Blattes.
+        s.glabel("TX_GATE_OK", g(40), ry - g(2))
+        s.wire(g(40), ry - g(2), g(44), ry - g(2))
+
+        # Die Sendeanforderung kommt vom jeweiligen Radio-Chip auf einem
+        # anderen Sheet (02-06) -- global plus benannte Quelle, exakt auf
+        # dem Draht platziert.
+        s.source(g(36), ry + g(2), f"{radio} (Sheet 02-06)")
+        s.wire(g(36), ry + g(2), g(44), ry + g(2))
+        s.glabel(f"TXREQ_{radio}", g(38), ry + g(2))
+
+        s.place("AND2", g(50), ry, s._ref("U"), f"PA_GATE_{radio}",
+                fields={"ONEX_Status": "FIXED",
+                        "ONEX_Note": f"{band} - PA-Enable nur ueber dieses Gate"})
+        s.wire(g(56), ry, g(62), ry)
+
+        # Pull-Down: ohne aktives Treiben bleibt das Enable auf Kill.
+        s.place("R", g(62), ry + g(6), s._ref("R"), "100k",
+                fields={"ONEX_Status": "FIXED (fail-safe)",
+                        "ONEX_Note": "Pull Richtung Kill - Default TX gesperrt"})
+        s.wire(g(62), ry, g(62), ry + g(2))
+        s.wire(g(62), ry + g(10), g(62), ry + g(12))
+        s.place("GND", g(62), ry + g(12), f"#PWR{i+1:02d}", "GND")
+
+        # Das Enable verlaesst das Blatt Richtung Radio -> global.
+        s.wire(g(62), ry, g(70), ry)
+        s.glabel(f"PA_EN_{radio}", g(70), ry)
+
+    s.text("REGEL: Jedes PA/TX-Enable laeuft ueber dieses Gate. Kein verdeckter TX-Pfad.",
+           g(20), g(12), 2.0)
+    s.text("Default nach Boot/Reset/Fault = Kill aktiv. Pull-Downs ziehen jedes Enable Richtung Kill,",
+           g(20), g(16))
+    s.text("auch wenn der RP2350 haengt (sheet_01_supervisor_rfkill.md, Regel 2).", g(20), g(19))
+    s.text("TX_GATE_OK wird HINTER der Gate-Logik abgegriffen und an den RP2350 zurueckgemeldet.",
+           g(20), g(22))
+    s.text("Die Firmware vergleicht ihn gegen den Befehl und latcht bei Abweichung einen Fault",
+           g(20), g(25))
+    s.text("(onex_rfkill.c). Ein Abgriff VOR dem Gate waere derselbe Wert wie der Befehl -",
+           g(20), g(28))
+    s.text("der Vergleich pruefte sich selbst. Endgueltige Sense-Stelle hinter den PA-Enables: TBD.",
+           g(20), g(31))
+    return s
+
+
 SHEETS = [
     ("antenna-rail", "sheet_01_sma_feeds", build_antenna_rail_sheet01),
+    ("m2-bridge", "sheet_01_pcie_usb3", build_m2_bridge_sheet01),
+    ("rf-core", "sheet_01_supervisor_rfkill", build_rf_core_sheet01),
 ]
 
 

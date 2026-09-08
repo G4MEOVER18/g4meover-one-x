@@ -1,0 +1,4 @@
+(sym_lib_table
+	(version 7)
+	(lib (name "ONEX")(type "KiCad")(uri "${KIPRJMOD}/../../kicad/onex.kicad_sym")(options "")(descr "ONE-X generische Design-Spec-Symbole"))
+)

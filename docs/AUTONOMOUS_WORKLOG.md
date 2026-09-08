@@ -12,6 +12,32 @@
 
 ---
 
+## 2026-09-08 — Session 26 (Zwei weitere Sheets + Netznamen-Prüfung gegen die Wahrheit)
+
+**Umgesetzt:** Zwei weitere reale Schaltplan-Sheets, beide **ERC-sauber** — gezielt solche, die **keine** Hersteller-Pinbelegung brauchen:
+- `hardware/m2-bridge/kicad/sheet_01_pcie_usb3.kicad_sch` — PCIe 2.1 ×1 + USB3 als Diff-Paare zwischen `J_M2` (Mainboard) und M.2-B-Key (HyperRF), AC-Kopplung im TX-Pfad.
+- `hardware/rf-core/kicad/sheet_01_supervisor_rfkill.kicad_sch` — der **sicherheitskritischste Plan des Geräts**: Supervisor-Gate (`RF_KILL` ∧ `RF_KILL_SW_n`), davon abgeleitet sieben Radio-Gates mit Pull-Down Richtung Kill.
+
+Generator um `R`, `C`, `AND2`, `SRC` und **globale Labels** erweitert. Neu: `tools/kicad_netcheck.py`. **check_all jetzt 8/8.**
+
+**Was ERC diesmal gefunden hat — vier verschiedene Fehlerklassen:**
+1. **Blattübergreifende Netze brauchen `global_label`.** Mit lokalen Labels endeten `TXREQ_*`/`PA_EN_*` im Nichts → „Input pin not driven", „Label connected to only one pin". Kein Generatorfehler, sondern ein Modellierungsfehler: Diese Signale kommen von bzw. gehen zu anderen Sheets.
+2. **Eingänge von anderen Blättern brauchen eine benannte Quelle.** Dafür das Symbol `SRC` („kommt von Sheet X"). Den Pin stattdessen auf `passive` zu setzen hätte die Prüfung nur stumm geschaltet, statt die Herkunft zu dokumentieren.
+3. **T-Abzweige brauchen eine Junction.** Mein `TX_GATE_OK`-Abgriff saß mitten auf einem Draht und war damit *nicht* verbunden. Jetzt am Endpunkt — zwei Segmente an einem Punkt gelten als verbunden.
+4. **Gedrehte Bauteile verschieben ihre Anschlusspunkte.** Der um 90° gedrehte AC-Kondensator hat seine Pins bei ±3,81 mm neben der Platzierung, nicht am Symbolrand; meine Drähte endeten daneben.
+
+**Zwei inhaltliche Funde, keine bloßen Geometriefehler:**
+- **`TX_GATE_OK` hatte gar keine Quelle.** Laut Sheet-Spec ist es die Rückmeldung des *physischen* Zustands. Entscheidend ist dabei, **wo** abgegriffen wird: Die Firmware (`onex_rfkill.c`, Session 21) vergleicht ihren Befehl gegen dieses Signal und latcht bei Abweichung einen Fault. Ein Abgriff **vor** dem Gate wäre derselbe Wert wie der Befehl — der Vergleich prüfte sich selbst und könnte nie etwas finden. Jetzt hinter der Gate-Logik.
+- **Zwei Namen für einen Knoten.** Erst hieß der Gate-Ausgang `TX_PERMIT` *und* `TX_GATE_OK` — in der Netzliste schlicht falsch (ERC: `multiple_net_names`). Jetzt durchgehend der kanonische Name `TX_GATE_OK`. Ebenso bei den nicht-AC-gekoppelten M.2-Paaren: ohne Serien-C ist es **ein** durchgehendes Netz und darf nicht auf der Gegenseite umbenannt werden.
+
+**Neu — `tools/kicad_netcheck.py`:** Prüft, dass jedes blattübergreifende Netz im kanonischen Wörterbuch `hardware/INTERFACE_NETS.md` steht. **Warum zusätzlich zu `schematic_netcheck.py`:** Jenes vergleicht die Design-Specs (Markdown) untereinander und kann nicht sehen, ob der *erzeugte Schaltplan* dieselben Namen verwendet. Genau dort entsteht Drift. Aktuell 17 globale Netze, alle kanonisch; per Mutation (`TX_GATE_OK` → `TXGATEOK`) verifiziert, dass der Check anschlägt.
+
+**Keine Spec-Änderung, keine HOLDs aufgeweicht.** Sheets, die eine RK3576-Ball-Map, LPDDR5-Topologie, UFS oder den FPGA brauchen, bleiben ungeschrieben.
+
+**Nächster Schritt (Session 27+):** (a) weitere pinmap-freie Sheets (M.2-Bridge Sheet 02 Sideband/Power, UI-Carrier-Connectorebene, RF-Core Sheet 07 Power/Antennen); (b) Netzliste per `kicad-cli sch export netlist` exportieren und die Board-Gegenstücke gegeneinander prüfen — heute prüft `kicad_netcheck` nur gegen das Wörterbuch, nicht Board gegen Board; (c) die 10 WAHL_OFFEN-Positionen im Sourcing-Register schließen.
+
+---
+
 ## 2026-09-08 — Session 25 (KiCad wird real + Sourcing-Register: Weg zur Produktion)
 
 **Auftrag des Owners:** KiCad komplettieren, Vendor-Listen, Produktions-Files fertigstellen.
