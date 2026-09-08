@@ -12,6 +12,41 @@
 
 ---
 
+## 2026-09-08 — Session 25 (KiCad wird real + Sourcing-Register: Weg zur Produktion)
+
+**Auftrag des Owners:** KiCad komplettieren, Vendor-Listen, Produktions-Files fertigstellen.
+
+**Ehrliche Vorabklärung — was heute NICHT geht:** Produktions-Gerber/CPL sind nicht erzeugbar. Zwei unabhängige Gründe: (1) es war kein KiCad installiert, (2) die BOM war zu 42 % nicht bestellbar (19 von 45 Positionen). Das wurde dem Owner mit Zahlen dargelegt, statt ein „Produktionspaket" zu liefern, das keines ist.
+
+**KiCad installiert (Owner-Freigabe):** `winget install KiCad.KiCad` → 10.0.6, als Benutzerinstallation unter `%LOCALAPPDATA%/Programs/KiCad/10.0/bin`. **Damit fällt der Einwand aus Session 15 weg** („ohne kicad-cli sind handgeschriebene .kicad_sch nicht verifizierbar") — was jetzt erzeugt wird, läuft durch `kicad-cli sch erc`.
+
+**Neu — die KiCad-Kette steht:**
+- `tools/kicad_env.py` — findet kicad-cli plattformübergreifend (winget-Benutzerinstallation, Program Files, Linux, macOS, `$KICAD_CLI`).
+- `tools/gen_kicad_sch.py` — Generator für **echte, ERC-prüfbare** Schaltpläne aus der Design-Spec. Erzeugt zusätzlich die Symbolbibliothek `hardware/kicad/onex.kicad_sym` + `sym-lib-table` je Board.
+- `tools/kicad_erc.py` — ERC-Lauf über alle erzeugten Sheets, mit **einer benannten Ausnahme samt Gegenprobe** (siehe unten).
+- **Erstes reales Sheet:** `hardware/antenna-rail/kicad/sheet_01_sma_feeds.kicad_sch` — 4× SMA, je 3 Matching-Plätze + ESD (alle DNP bis G09), J_ANT-Verbinder, Masse mit Power-Flag. **ERC-sauber.**
+
+**Was ERC sofort gefunden hat — der Nutzen ist nicht theoretisch:** Erster Lauf **120 Verstöße**. Drei Ursachen, alle in meinem Generator: (1) Pin-Koordinaten in KiCad sind der *Anschlusspunkt*, nicht der Symbolrand — ich hatte die Pin-Länge aufaddiert, alle Drähte lagen 5,08 mm daneben; (2) die Y-Achse kippt zwischen Symbol- und Blattkoordinaten, Pin 1 landete spiegelverkehrt; (3) Koordinaten müssen aufs 1,27-mm-Raster (`cy=80` ist keines). Nach der Korrektur blieben 32, darunter ein **echter Kurzschluss**: das Power-Flag saß exakt auf der Y-Position des `ANT_3`-Labels, sein Draht verband damit Masse mit einem Antennen-Feed. Im Bild unsichtbar, in der Netzliste fatal — **genau dafür macht man ERC**.
+
+**Benannte Ausnahme statt stiller Unterdrückung:** `lib_symbol_issues` wird nicht als Fehler gewertet, weil `kicad-cli` beim ERC einer *einzelnen* Datei nur die globale Symboltabelle lädt, nicht die projektbezogene. Damit das kein Wegschauen ist, **validiert `kicad_erc.py` die Bibliothek separat**, indem es sie rendern lässt (`sym export svg`, 6 Symbole).
+
+**Neu — Sourcing-Register (`tools/gen_sourcing.py`):** Erzeugt `manufacturing/SOURCING_REGISTER.md` + `BOM_ORDERABLE.csv`. Trennt drei Zustände sauber: **ENTSCHIEDEN** (konkreter MPN + Beleg) · **WAHL_OFFEN** (Familie steht, Entscheidung fehlt) · **HOLD** (externe Daten nötig). Stand: **31 / 10 / 4** von 45.
+
+**Fünf Positionen belegt konkretisiert**, zwei davon sind **inhaltliche Korrekturen**:
+- `U400/U401`: **RTL8211F-CG → RTL8211FI-CG.** Das Suffix `I` ist die Industrievariante (−40…+85 °C); die bisherige Angabe endet bei +70 °C. Für ein Feldgerät die falsche Wahl gewesen. Pin- und funktionskompatibel.
+- `U623`: **NEO-F10N-00B-20** — die Endung `-20` ist nicht beliebig, nur sie liefert Carrier-Phase-Rohdaten. Die Spec verlangt „L1/L5 raw", die Variante `-00` hätte die Anforderung verfehlt.
+- `U201` W25Q128JVSIQ · `U221` MAX98357AETE+T (I²S-Variante A, TQFN statt WLP wegen EVT-Bestückbarkeit) · `U300` BQ25792RQMR.
+
+**Zwei Bauteilentscheidungen benannt statt geraten:**
+- `U624` **DW3000-Nomenklatur geklärt**: `DW31x0` = WLCSP, `DW32x0` = µQFN; `DWx1x0` = 1 Port, `DWx2x0` = 2 Ports (PDoA). µQFN kostet ~2 dB TX, ist aber auf HDI-EVT deutlich besser bestückbar. **Bleibt trotzdem HOLD/G05** — ein Gate schließt sich erst, wenn die Wahl getroffen und in der Spec eingetragen ist, nicht dadurch, dass jemand die Auswahl verstanden hat. (Erster Entwurf meiner Klassifizierung hatte das HOLD wegsortiert — korrigiert: HOLD wird zuerst geprüft.)
+- `U503` **Z-Wave: SoC vs. vorzertifiziertes Modul** (EFR32ZG23 vs. ZGM230S). Bei dieser Zahl an Funkstrecken ist die mitgelieferte Zulassung des Moduls ein erheblicher Unterschied in Aufwand und Risiko.
+
+**Grünes Tor jetzt 7/7** (neu: KiCad-Schaltpläne, KiCad ERC, Sourcing-Register). Keine Spec-Änderung, keine HOLDs aufgeweicht.
+
+**Nächster Schritt (Session 26+):** (a) weitere Sheets generieren — als Nächstes die, die **keine** Hersteller-Pinbelegung brauchen (M.2-Bridge, UI-Carrier-Connector-Ebene, RF-Core Sheet 01); Sheets mit RK3576-Ball-Map/LPDDR5/UFS/FPGA bleiben gesperrt; (b) Netzlisten-Export aus KiCad gegen `hardware/INTERFACE_NETS.md` prüfen — würde den Markdown-Netcheck durch die *echte* Netzliste ersetzen; (c) die 10 WAHL_OFFEN-Positionen in einer Auswahlrunde schließen; (d) HOLDs brauchen weiter Rockchip/Vendor-Antworten.
+
+---
+
 ## 2026-09-08 — Session 24 (Superloop-Scheduler — Phase 2 im Kern abgeschlossen)
 
 **Umgesetzt:** `include/onex_sched.h` + `src/onex_sched.c` + `test/test_onex_sched.c` (**46 Prüfungen**). Der Scheduler fährt die Modul-Tabelle aus `onex_modules.h` so, wie `ARCHITECTURE.md` §1 es vorgibt: Module in Tabellenreihenfolge ticken, Gesundheit an den Watchdog melden, Kick-Erlaubnis holen. Gesamt **294 Prüfungen** in 5 Suiten; check_all 4/4.

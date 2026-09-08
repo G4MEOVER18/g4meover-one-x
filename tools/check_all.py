@@ -5,7 +5,10 @@ Fuehrt alle Repo-Checker nacheinander aus und fasst das Ergebnis zusammen:
   1. spec_validator.py       -- Master-Spec konsistent, keine verbotenen Claims
   2. schematic_netcheck.py   -- Inter-Board-Netznamen beidseitig gespiegelt
   3. gen_kicad_project.py     -- KiCad-Ableitung reproduzierbar + selbstgeprueft
-  4. fw_test.py               -- Firmware-Unit-Tests (Host-Compiler)
+  4. gen_kicad_sch.py         -- erzeugte Schaltplaene aktuell
+  5. kicad_erc.py             -- ERC ueber die erzeugten Schaltplaene
+  6. gen_sourcing.py          -- Sourcing-Register aktuell
+  7. fw_test.py               -- Firmware-Unit-Tests (Host-Compiler)
 
 Exit 0 nur, wenn ALLE bestehen; sonst Exit 1. CI-/Handoff-tauglich.
 
@@ -36,6 +39,9 @@ CHECKS = [
     ("Master-Spec (verbotene Claims / Konsistenz)", "spec_validator.py", ["--check"], False),
     ("Netznamen-Konsistenz (Inter-Board-Mirror)", "schematic_netcheck.py", [], False),
     ("KiCad-Ableitung (reproduzierbar + Selbstpruefung)", "gen_kicad_project.py", ["--check"], False),
+    ("KiCad-Schaltplaene (reproduzierbar erzeugt)", "gen_kicad_sch.py", ["--check"], False),
+    ("KiCad ERC (elektrische Konsistenz)", "kicad_erc.py", ["--check"], True),
+    ("Sourcing-Register (BOM -> Bestellung)", "gen_sourcing.py", ["--check"], False),
     ("Firmware-Unit-Tests (Codec/RF-Kill/Link/Power/Watchdog)", "fw_test.py", ["--check"], True),
 ]
 
