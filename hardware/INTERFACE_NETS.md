@@ -43,9 +43,17 @@
 | Kanonisch | Rolle |
 |---|---|
 | `DSI0_CLK_P` / `DSI0_CLK_N` | DSI-Takt |
-| `DSI0_D0_P/N` … `DSI0_D3_P/N` | 4 Datenlanes |
+| `DSI0_D0_P` / `DSI0_D0_N` | Datenlane 0 |
+| `DSI0_D1_P` / `DSI0_D1_N` | Datenlane 1 |
+| `DSI0_D2_P` / `DSI0_D2_N` | Datenlane 2 |
+| `DSI0_D3_P` / `DSI0_D3_N` | Datenlane 3 |
 | `LCD_RST_n`, `BL_EN`, `BL_PWM`, `VLCD_3V3` | Reset / Backlight / Panel-Rail |
 | `TP_SCL`, `TP_SDA`, `TP_INT`, `TP_RST`, `VDD_TP_3V3` | kap. Touch |
+
+> **Warum einzeln statt „`DSI0_D0..D3_P/N`" (2026-09-08):** Die Kurzschreibweise
+> ist für Menschen lesbar, für ein Werkzeug aber unvollständig — `D1`, `D2` und
+> sämtliche `_N`-Varianten kamen darin nie wörtlich vor und galten deshalb als
+> unbekannt. Eine Single Source of Truth muss vollständig sein, nicht abgekürzt.
 
 *Ersetzt:* `DSI_*` (ohne `0`).
 

@@ -461,25 +461,6 @@
 			)
 		)
 	)
-	(wire (pts (xy 44.45 67.31) (xy 49.53 67.31))
-		(stroke (width 0) (type default)) (uuid "1f84b43b-4098-56c0-be77-8dfe27193247"))
-	(symbol
-		(lib_id "ONEX:PWR_FLAG")
-		(at 49.53 67.31 0)
-		(unit 1)
-		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
-		(uuid "c03463e5-4fff-527a-ab62-6e089c8d6e33")
-		(property "Reference" "#FLG02" (at 49.53 60.96 0) (effects (font (size 1.27 1.27)) (hide yes)))
-		(property "Value" "PWR_FLAG" (at 49.53 73.66 0) (effects (font (size 1.27 1.27))))
-		(property "Footprint" "" (at 49.53 67.31 0) (effects (font (size 1.27 1.27)) (hide yes)))
-		(instances
-			(project "m2-bridge"
-				(path "/af66325e-1bb1-581d-a3ff-2fbd9cdf353b"
-					(reference "#FLG02") (unit 1)
-				)
-			)
-		)
-	)
 	(global_label "PCIE_PERST_n"
 		(shape bidirectional)
 		(at 66.04 25.40 0)

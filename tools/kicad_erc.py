@@ -12,14 +12,16 @@ Der Nutzen ist nicht theoretisch: Der erste Lauf fand 120 Verstoesse im
 Generator -- darunter ein Power-Flag, dessen Draht Masse mit einem
 Antennen-Feed kurzschloss. Im Bild unsichtbar, in der Netzliste fatal.
 
-BEKANNTE AUSNAHME (bewusst, nicht still):
-`lib_symbol_issues` wird nicht als Fehler gewertet. Grund: kicad-cli laedt bei
-der Pruefung einer EINZELNEN .kicad_sch nur die globale Symboltabelle des
-Benutzers, nicht die projektbezogene `sym-lib-table`. Die Symbole sind in
-jeder Schaltplandatei eingebettet und die Bibliothek `hardware/kicad/
-onex.kicad_sym` existiert -- was dieses Werkzeug zusaetzlich nachweist, indem
-es sie separat rendern laesst. Eine Ausnahme ohne Gegenprobe waere blosses
-Wegschauen.
+KEINE AUSNAHMEN MEHR:
+Solange Einzelblaetter geprueft wurden, war eine Ausnahme fuer
+`lib_symbol_issues` noetig -- kicad-cli laedt bei einer einzelnen .kicad_sch
+nur die globale Symboltabelle, nicht die projektbezogene `sym-lib-table`.
+Seit die Pruefung an den BOARD-ROOTS ansetzt, findet KiCad die Bibliothek und
+die Meldung entfaellt vollstaendig. Die Ausnahme wurde daraufhin entfernt:
+eine Ausnahme, die nichts mehr unterdrueckt, verdeckt irgendwann echte Faelle.
+
+Die Symbolbibliothek wird weiterhin separat validiert (rendern via
+`sym export svg`) -- das ist billig und beweist, dass sie ladbar ist.
 
 Exit 0 = sauber. 1 = Verstoesse. 2 = kicad-cli fehlt (SKIP, kein Fehler).
 """
@@ -39,10 +41,10 @@ REPO = Path(__file__).resolve().parent.parent
 SYMBOL_LIB = REPO / "hardware" / "kicad" / "onex.kicad_sym"
 
 # Kategorien, die geprueft, aber nicht als Fehler gewertet werden.
-IGNORED = {
-    "lib_symbol_issues": "Bibliothek nur projektbezogen registriert "
-                         "(wird separat validiert)",
-}
+# Bewusst LEER: im Board-Kontext ist keine noetig. Bleibt als Mechanismus
+# bestehen, damit eine kuenftige Ausnahme benannt und begruendet werden muss,
+# statt still im Code zu verschwinden.
+IGNORED: dict[str, str] = {}
 
 _CATEGORY = re.compile(r'^\[([a-z_]+)\]', re.MULTILINE)
 
@@ -89,9 +91,16 @@ def main() -> int:
               "(KiCad installieren oder $KICAD_CLI setzen).")
         return 2
 
-    sheets = sorted(REPO.glob("hardware/*/kicad/*.kicad_sch"))
+    # Board-Roots, nicht Einzelblaetter: ein Board ist mehr als die Summe
+    # seiner Blaetter. Erst im Board-Kontext verbinden sich globale Labels
+    # ueber Blattgrenzen, und genau dort entstehen die interessanten Fehler
+    # (zwei Power-Flags auf einem Netz etwa sieht man einzeln nie).
+    sheets = sorted(
+        p for p in REPO.glob("hardware/*/kicad/*.kicad_sch")
+        if p.stem == p.parent.parent.name
+    )
     if not sheets:
-        print("[UEBERSPRUNGEN] Noch keine erzeugten Schaltplaene "
+        print("[UEBERSPRUNGEN] Noch keine Board-Roots "
               "(tools/gen_kicad_sch.py).")
         return 2
 
@@ -134,8 +143,10 @@ def main() -> int:
             print(f"\nERGEBNIS: {len(sheets)} Schaltplan-Sheet(s) ERC-sauber.")
             for k, why in IGNORED.items():
                 print(f"  Bewusst ignoriert: {k} -- {why}")
+            if not IGNORED:
+                print("  Keine Ausnahmen noetig.")
         else:
-            print(f"ERC sauber ({len(sheets)} Sheet(s), Bibliothek validiert).")
+            print(f"ERC sauber ({len(sheets)} Board(s), Bibliothek validiert).")
         return 0
 
     print(f"\nERGEBNIS: {total_real} ERC-Verstoss/Verstoesse -- vor G07 beheben.")

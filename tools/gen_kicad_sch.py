@@ -298,6 +298,24 @@ def g(n: float) -> float:
 # x-Lage des Connector-Anschlusspunktes im Symbol (7 Raster vom Mittelpunkt).
 CONN_PIN_X = g(7)
 
+# Board-weite Buchhaltung der Power-Flags.
+#
+# Ein Power-Flag sagt ERC: "dieses Netz wird gespeist". Pro Netz darf es genau
+# EINES geben. Solange jedes Blatt einzeln geprueft wurde, brauchte auch jedes
+# Blatt sein eigenes Flag -- im Board-Kontext sind das dann zwei Treiber auf
+# demselben Netz, und ERC meldet zu Recht einen Konflikt (pin_to_pin).
+# Deshalb wird je Board und Netz nur das erste Flag gesetzt.
+_POWER_FLAGS: set[tuple[str, str]] = set()
+
+
+def claim_power_flag(board: str, net: str) -> bool:
+    """True, wenn dieses Blatt das Flag fuer (board, net) setzen darf."""
+    key = (board, net)
+    if key in _POWER_FLAGS:
+        return False
+    _POWER_FLAGS.add(key)
+    return True
+
 
 def conn_pin_offset(n_pins: int) -> float:
     """Y-Offset des obersten Pins im Symbol-Koordinatensystem."""
@@ -382,6 +400,10 @@ class Sheet:
             f' (dnp {"yes" if dnp else "no"})\n'
             f'\t\t(uuid "{u}")\n'
             + "\n".join(props) + "\n"
+            # Instanzpfad im BOARD-Kontext: /<board-root>/<blatt-instanz>.
+            # Ein Blatt wird nicht fuer sich betrachtet, sondern als Teil
+            # seines Boards -- nur so verbinden sich globale Labels ueber
+            # Blattgrenzen hinweg und ERC prueft das Board als Ganzes.
             f'\t\t(instances\n'
             f'\t\t\t(project "{self.board}"\n'
             f'\t\t\t\t(path "/{uid(self.board, self.sheet, "root")}"\n'
@@ -541,8 +563,9 @@ def build_antenna_rail_sheet01() -> Sheet:
     s.wire(pin_x, gy, pin_x + g(4), gy)
     s.wire(pin_x + g(4), gy, pin_x + g(4), gy + g(4))
     s.place("GND", pin_x + g(4), gy + g(4), "#PWR000", "GND")
-    s.wire(pin_x + g(4), gy, pin_x + g(8), gy)
-    s.place("PWR_FLAG", pin_x + g(8), gy, "#FLG01", "PWR_FLAG")
+    if claim_power_flag(board, "GND"):
+        s.wire(pin_x + g(4), gy, pin_x + g(8), gy)
+        s.place("PWR_FLAG", pin_x + g(8), gy, "#FLG01", "PWR_FLAG")
 
     # Statushinweise direkt im Blatt -- wer den Plan oeffnet, sieht die Grenzen.
     s.text("FIXED: genau 4x SMA, 50 Ohm (Master-Spec).", g(70), g(12), 2.0)
@@ -641,8 +664,9 @@ def build_m2_bridge_sheet01() -> Sheet:
         s.wire(cx_ + g(4), gy, cx_ + g(4), gy + g(4))
         s.place("GND", cx_ + g(4), gy + g(4), f"#PWR{tag}0", "GND")
     gy = hy - htop + g(2) * (len(host_pins) - 1)
-    s.wire(hpin_x + g(4), gy, hpin_x + g(8), gy)
-    s.place("PWR_FLAG", hpin_x + g(8), gy, "#FLG01", "PWR_FLAG")
+    if claim_power_flag(board, "GND"):
+        s.wire(hpin_x + g(4), gy, hpin_x + g(8), gy)
+        s.place("PWR_FLAG", hpin_x + g(8), gy, "#FLG01", "PWR_FLAG")
 
     s.text("FIXED: PCIe 2.1 x1 (kein Gen3 x4) + USB3. Diff-Paare, ein Treiber je Richtung.",
            g(20), g(10), 2.0)
@@ -698,8 +722,9 @@ def build_rf_core_sheet01() -> Sheet:
     s.wire(pin_x, gy, pin_x + g(4), gy)
     s.wire(pin_x + g(4), gy, pin_x + g(4), gy + g(4))
     s.place("GND", pin_x + g(4), gy + g(4), "#PWR00", "GND")
-    s.wire(pin_x + g(4), gy, pin_x + g(8), gy)
-    s.place("PWR_FLAG", pin_x + g(8), gy, "#FLG01", "PWR_FLAG")
+    if claim_power_flag(board, "GND"):
+        s.wire(pin_x + g(4), gy, pin_x + g(8), gy)
+        s.place("PWR_FLAG", pin_x + g(8), gy, "#FLG01", "PWR_FLAG")
 
     # Gemeinsames Gate: RF_KILL UND RF_KILL_SW_n. Beide muessen freigeben.
     # Die beiden Eingaenge werden von aussen getrieben -> je eine benannte
@@ -832,8 +857,9 @@ def build_m2_bridge_sheet02() -> Sheet:
         s.wire(cxx + g(4), gy, cxx + g(4), gy + g(4))
         s.place("GND", cxx + g(4), gy + g(4), f"#PWR{tag}0", "GND")
     gy = hy - top + g(2) * len(all_nets)
-    s.wire(hpin_x + g(4), gy, hpin_x + g(8), gy)
-    s.place("PWR_FLAG", hpin_x + g(8), gy, "#FLG02", "PWR_FLAG")
+    if claim_power_flag(board, "GND"):
+        s.wire(hpin_x + g(4), gy, hpin_x + g(8), gy)
+        s.place("PWR_FLAG", hpin_x + g(8), gy, "#FLG02", "PWR_FLAG")
 
     # Testpunkte fuer den gestaffelten Bring-up (Sheet 02: "messbar").
     # Jeder haengt an einem Netz, das auch anderswo verwendet wird.
@@ -859,8 +885,9 @@ def build_m2_bridge_sheet02() -> Sheet:
     for i, (net, _why) in enumerate(rails):
         fx, fy = g(88), g(38) + g(6) * i
         s.glabel(net, fx, fy)
-        s.wire(fx, fy, fx + g(4), fy)
-        s.place("PWR_FLAG", fx + g(4), fy, f"#FLG1{i}", "PWR_FLAG")
+        if claim_power_flag(board, net):
+            s.wire(fx, fy, fx + g(4), fy)
+            s.place("PWR_FLAG", fx + g(4), fy, f"#FLG1{i}", "PWR_FLAG")
 
     s.text("Power-vor-Reset: +3V3_SYS und HYPERRF_AUX_5V stabil, DANN PCIE_PERST_n freigeben.",
            g(18), g(10), 2.0)
@@ -872,11 +899,121 @@ def build_m2_bridge_sheet02() -> Sheet:
     return s
 
 
+# ------------------------------------- UI-Carrier Sheet 01 (real)
+#
+# Quelle: hardware/ui-carrier/schematic/sheet_01_display_dsi.md
+# FIXED  : 4-Lane-DSI + Takt, LCD_RST_n, BL_EN/BL_PWM, VLCD_3V3
+# TBD    : DSI-Init/Timings, Backlight-String V/I, Panel-MPN -> Gate G01
+#
+# Der RK3576 taucht hier NICHT als Symbol auf: seine Ball-Map ist HOLD. Die
+# Signale kommen als Durchfuehrung ueber J_UI/J_DSI -- genau so, wie es die
+# Design-Spec beschreibt. Damit bleibt das Blatt pinmap-frei.
+
+def build_ui_carrier_sheet01() -> Sheet:
+    board, sheet = "ui-carrier", "sheet_01_display_dsi"
+
+    lanes = ["DSI0_CLK", "DSI0_D0", "DSI0_D1", "DSI0_D2", "DSI0_D3"]
+    control = ["LCD_RST_n", "BL_EN", "BL_PWM", "TP_INT", "TP_RST"]
+
+    ui_pins: list[tuple[str, str]] = []
+    for base in lanes:
+        ui_pins.append((base + "_P", base + "_P"))
+        ui_pins.append((base + "_N", base + "_N"))
+    ui_pins += [(c, c) for c in control]
+    ui_pins.append(("VLCD_3V3", "VLCD_3V3"))
+    ui_pins.append(("GND", "GND"))
+
+    # Panel-FPC fuehrt dieselben Signale plus die Backlight-Rail.
+    fpc_pins = [(p, p) for p, _ in ui_pins if p != "GND"]
+    fpc_pins.append(("VBL", "VBL"))
+    fpc_pins.append(("GND", "GND"))
+
+    extra = "\n" + conn_symbol("J_UI_DSI", ui_pins)
+    extra += "\n" + conn_symbol("J_PANEL_FPC", fpc_pins)
+    s = Sheet(board, sheet, "ONE-X UI-Carrier - Sheet 01 - Display / MIPI-DSI", extra)
+
+    ux, uy = g(24), g(64)
+    px, py0 = g(88), g(64)
+    s.place("J_UI_DSI", ux, uy, "J40", "J_UI / J_DSI")
+    s.place("J_PANEL_FPC", px, py0, "J41", "Panel-FPC")
+
+    utop = conn_pin_offset(len(ui_pins))
+    ftop = conn_pin_offset(len(fpc_pins))
+    upin_x, fpin_x = ux + CONN_PIN_X, px + CONN_PIN_X
+
+    # DSI-Paare und Steuersignale queren unveraendert -- ein durchgehendes
+    # Netz je Signal, kein Umbenennen auf der Panelseite.
+    signal_names = [p for p, _ in ui_pins if p != "GND"]
+    for i, net in enumerate(signal_names):
+        s.wire(upin_x, uy - utop + g(2) * i, upin_x + g(4), uy - utop + g(2) * i)
+        s.glabel(net, upin_x + g(4), uy - utop + g(2) * i)
+        s.wire(fpin_x, py0 - ftop + g(2) * i, fpin_x + g(4), py0 - ftop + g(2) * i)
+        s.glabel(net, fpin_x + g(4), py0 - ftop + g(2) * i)
+
+    # Masse beidseitig.
+    for cxx, cyy, top_, tag in ((upin_x, uy, utop, "U"), (fpin_x, py0, ftop, "F")):
+        n = len(ui_pins) - 1 if tag == "U" else len(fpc_pins) - 1
+        gy = cyy - top_ + g(2) * n
+        s.wire(cxx, gy, cxx + g(4), gy)
+        s.wire(cxx + g(4), gy, cxx + g(4), gy + g(4))
+        s.place("GND", cxx + g(4), gy + g(4), f"#PWR{tag}0", "GND")
+    gy = uy - utop + g(2) * (len(ui_pins) - 1)
+    if claim_power_flag(board, "GND"):
+        s.wire(upin_x + g(4), gy, upin_x + g(8), gy)
+        s.place("PWR_FLAG", upin_x + g(8), gy, "#FLG40", "PWR_FLAG")
+
+    # Panel-Rail kommt vom Mainboard -> deklarierter Treiber.
+    s.glabel("VLCD_3V3", g(52), g(16))
+    if claim_power_flag(board, "VLCD_3V3"):
+        s.wire(g(52), g(16), g(56), g(16))
+        s.place("PWR_FLAG", g(56), g(16), "#FLG41", "PWR_FLAG")
+
+    # Backlight-Boost: erzeugt VBL aus VLCD_3V3, gesteuert ueber BL_EN/BL_PWM.
+    # String-Spannung/-Strom sind panelabhaengig und bleiben TBD (G01).
+    bx, by = g(56), g(30)
+    s.glabel("BL_EN", bx - g(12), by - g(2))
+    s.wire(bx - g(12), by - g(2), bx - g(6), by - g(2))
+    s.glabel("BL_PWM", bx - g(12), by + g(2))
+    s.wire(bx - g(12), by + g(2), bx - g(6), by + g(2))
+    s.place("AND2", bx, by, "U40", "BL_BOOST",
+            fields={"ONEX_Status": "TARGET",
+                    "ONEX_Note": "LED-Boost, String V/I TBD (G01)"})
+    # VBL ist BOARD-LOKAL: der Boost erzeugt es hier, der Panel-FPC verbraucht
+    # es hier. Es quert keinen Inter-Board-Verbinder -- also ein lokales Label,
+    # kein globales. (Als global wuerde es zu Recht im Woerterbuch fehlen.)
+    s.wire(bx + g(6), by, bx + g(10), by)
+    s.label("VBL", bx + g(10), by)
+
+    # ... und am Panel-FPC ankommen. Ohne diesen Anschluss haengt der
+    # Backlight-Pin in der Luft (ERC: pin_not_connected).
+    vbl_y = py0 - ftop + g(2) * len(signal_names)
+    s.wire(fpin_x, vbl_y, fpin_x + g(4), vbl_y)
+    s.label("VBL", fpin_x + g(4), vbl_y)
+
+    # Entkopplung der Panel-Rail nahe dem FPC.
+    s.glabel("VLCD_3V3", g(72), g(20))
+    s.wire(g(72), g(20), g(72), g(23))
+    s.place("C", g(72), g(26), s._ref("C"), "100n",
+            fields={"ONEX_Status": "TARGET", "ONEX_Note": "nahe FPC"})
+    s.wire(g(72), g(29), g(72), g(31))
+    s.place("GND", g(72), g(31), "#PWR41", "GND")
+
+    s.text("FIXED: 4 Datenlanes + Takt, LCD_RST_n, BL_EN/BL_PWM, VLCD_3V3.", g(18), g(8), 2.0)
+    s.text("Der RK3576 erscheint hier NICHT als Symbol - seine Ball-Map ist HOLD.", g(18), g(12))
+    s.text("Die Signale kommen als Durchfuehrung ueber J_UI/J_DSI (Design-Spec).", g(18), g(15))
+    s.text("TBD (Gate G01): DSI-Init-Sequenz, Lane-Timings, Backlight-String V/I, Panel-MPN.",
+           g(18), g(19))
+    s.text("Power-Sequenz: VLCD_3V3 -> LCD_RST_n freigeben -> Backlight erst bei gueltigem Video.",
+           g(18), g(22))
+    return s
+
+
 SHEETS = [
     ("antenna-rail", "sheet_01_sma_feeds", build_antenna_rail_sheet01),
     ("m2-bridge", "sheet_01_pcie_usb3", build_m2_bridge_sheet01),
     ("m2-bridge", "sheet_02_sideband_power", build_m2_bridge_sheet02),
     ("rf-core", "sheet_01_supervisor_rfkill", build_rf_core_sheet01),
+    ("ui-carrier", "sheet_01_display_dsi", build_ui_carrier_sheet01),
 ]
 
 
@@ -887,6 +1024,65 @@ SHEETS = [
 # echte .kicad_sym plus sym-lib-table loest das -- und macht die Symbole in
 # der KiCad-GUI wiederverwendbar, statt sie in generierten Dateien zu
 # vergraben.
+
+def render_board_root(board: str, sheets: list[str], titles: dict[str, str]) -> str:
+    """
+    Root-Sheet eines Boards: instanziiert alle Sub-Sheets.
+
+    Warum das mehr ist als Kosmetik: Ohne Root pruefte ERC jedes Blatt fuer
+    sich. Globale Labels, die zwei Blaetter verbinden sollen, sahen darin wie
+    einsame Netze aus -- weshalb ein Teil der Meldungen unvermeidbar war. Im
+    Board-Kontext verbinden sie sich wirklich, und ERC prueft, was das Board
+    tatsaechlich ist: die Summe seiner Blaetter samt ihrer Verbindungen.
+    """
+    root_uuid = uid(board, "board_root")
+    parts = [
+        '(kicad_sch',
+        '	(version 20250114)',
+        '	(generator "onex_gen_kicad_sch")',
+        '	(generator_version "10.0")',
+        f'	(uuid "{root_uuid}")',
+        '	(paper "A4")',
+        '	(title_block',
+        f'		(title "ONE-X {board} - Board-Root")',
+        '		(company "G4MEOVER ONE-X")',
+        '		(comment 1 "Erzeugt von tools/gen_kicad_sch.py - nicht von Hand editieren")',
+        '	)',
+        '	(lib_symbols)',
+    ]
+    y = 25.4
+    for i, sheet in enumerate(sheets):
+        inst = uid(board, sheet, "instance")
+        title = titles.get(sheet, sheet)
+        parts += [
+            '	(sheet',
+            f'		(at 25.4 {y:.2f})',
+            '		(size 152.4 20.32)',
+            '		(fields_autoplaced yes)',
+            '		(stroke (width 0.1524) (type solid))',
+            '		(fill (color 0 0 0 0.0000))',
+            f'		(uuid "{inst}")',
+            f'		(property "Sheetname" "{title}" (at 25.4 {y - 0.8:.2f} 0)',
+            '			(effects (font (size 1.27 1.27)) (justify left bottom)))',
+            f'		(property "Sheetfile" "{sheet}.kicad_sch" (at 25.4 {y + 21.0:.2f} 0)',
+            '			(effects (font (size 1.27 1.27)) (justify left top)))',
+            '		(instances',
+            f'			(project "{board}"',
+            f'				(path "/{root_uuid}" (page "{i + 2}"))',
+            '			)',
+            '		)',
+            '	)',
+        ]
+        y += 25.4
+    parts += [
+        '	(sheet_instances',
+        '		(path "/" (page "1"))',
+        '	)',
+        '	(embedded_fonts no)',
+        ')',
+    ]
+    return "\n".join(parts) + "\n"
+
 
 def render_symbol_lib(extra_defs: str) -> str:
     """Baut aus den eingebetteten Definitionen eine eigenstaendige Bibliothek."""
@@ -922,15 +1118,26 @@ def main() -> int:
 
     # (Pfad, Inhalt) -- alles, was dieser Generator besitzt.
     artifacts: list[tuple[Path, str]] = []
+    _POWER_FLAGS.clear()   # reproduzierbar, auch bei mehrfachem Aufruf
 
     extra_defs = ""
+    by_board: dict[str, list[str]] = {}
+    titles: dict[str, str] = {}
     for board, sheet, build in SHEETS:
         s = build()
         extra_defs += s.extra_symbols
+        by_board.setdefault(board, []).append(sheet)
+        titles[sheet] = s.title
         artifacts.append((REPO / "hardware" / board / "kicad" / f"{sheet}.kicad_sch",
                           s.render()))
         artifacts.append((REPO / "hardware" / board / "kicad" / "sym-lib-table",
                           SYM_LIB_TABLE))
+
+    # Je Board ein Root-Sheet, das seine Blaetter instanziiert. Dadurch prueft
+    # ERC das Board als Ganzes statt jedes Blatt fuer sich.
+    for board, sheets in by_board.items():
+        artifacts.append((REPO / "hardware" / board / "kicad" / f"{board}.kicad_sch",
+                          render_board_root(board, sorted(sheets), titles)))
 
     artifacts.append((REPO / "hardware" / "kicad" / "onex.kicad_sym",
                       render_symbol_lib(extra_defs)))

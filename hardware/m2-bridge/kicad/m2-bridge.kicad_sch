@@ -1,0 +1,51 @@
+(kicad_sch
+	(version 20250114)
+	(generator "onex_gen_kicad_sch")
+	(generator_version "10.0")
+	(uuid "5203e1a5-d32d-5558-a287-bf004b0608bc")
+	(paper "A4")
+	(title_block
+		(title "ONE-X m2-bridge - Board-Root")
+		(company "G4MEOVER ONE-X")
+		(comment 1 "Erzeugt von tools/gen_kicad_sch.py - nicht von Hand editieren")
+	)
+	(lib_symbols)
+	(sheet
+		(at 25.4 25.40)
+		(size 152.4 20.32)
+		(fields_autoplaced yes)
+		(stroke (width 0.1524) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "7ea4e24d-2839-52ca-8f55-b1086029e205")
+		(property "Sheetname" "ONE-X M.2-Bridge - Sheet 01 - PCIe 2.1 x1 / USB3" (at 25.4 24.60 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom)))
+		(property "Sheetfile" "sheet_01_pcie_usb3.kicad_sch" (at 25.4 46.40 0)
+			(effects (font (size 1.27 1.27)) (justify left top)))
+		(instances
+			(project "m2-bridge"
+				(path "/5203e1a5-d32d-5558-a287-bf004b0608bc" (page "2"))
+			)
+		)
+	)
+	(sheet
+		(at 25.4 50.80)
+		(size 152.4 20.32)
+		(fields_autoplaced yes)
+		(stroke (width 0.1524) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "8dc8e657-2762-5a3b-82cc-855e569b4fea")
+		(property "Sheetname" "ONE-X M.2-Bridge - Sheet 02 - Sideband / Power / Testpunkte" (at 25.4 50.00 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom)))
+		(property "Sheetfile" "sheet_02_sideband_power.kicad_sch" (at 25.4 71.80 0)
+			(effects (font (size 1.27 1.27)) (justify left top)))
+		(instances
+			(project "m2-bridge"
+				(path "/5203e1a5-d32d-5558-a287-bf004b0608bc" (page "3"))
+			)
+		)
+	)
+	(sheet_instances
+		(path "/" (page "1"))
+	)
+	(embedded_fonts no)
+)

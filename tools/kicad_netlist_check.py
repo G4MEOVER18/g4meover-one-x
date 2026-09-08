@@ -197,9 +197,15 @@ def main() -> int:
         print("[UEBERSPRUNGEN] kicad-cli nicht gefunden.")
         return 2
 
-    sheets = sorted(REPO.glob("hardware/*/kicad/*.kicad_sch"))
+    # Board-Roots: die Netzliste eines Boards enthaelt die Netze ALLER seiner
+    # Blaetter, blattuebergreifend zusammengefuehrt. Nur so laesst sich pruefen,
+    # ob ein PA-Enable irgendwo am Supervisor vorbeigefuehrt wird.
+    sheets = sorted(
+        p for p in REPO.glob("hardware/*/kicad/*.kicad_sch")
+        if p.stem == p.parent.parent.name
+    )
     if not sheets:
-        print("[UEBERSPRUNGEN] Noch keine erzeugten Schaltplaene.")
+        print("[UEBERSPRUNGEN] Noch keine Board-Roots.")
         return 2
 
     if not args.check:
@@ -229,7 +235,7 @@ def main() -> int:
         return 1
 
     if not args.check:
-        print(f"  [OK] {len(sheets)} Sheets, {total_nets} Netze, "
+        print(f"  [OK] {len(sheets)} Boards, {total_nets} Netze, "
               f"{len(RULES)} Regeln erfuellt:")
         for label, _ in RULES:
             print(f"       - {label}")

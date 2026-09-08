@@ -12,6 +12,26 @@
 
 ---
 
+## 2026-09-08 — Session 28 (Strukturell: Boards statt Einzelblätter + fünftes Sheet)
+
+**Grundlegende Verbesserung, nicht nur mehr Inhalt.** Bisher prüfte ERC jedes Blatt für sich. Ein Board ist aber mehr als die Summe seiner Blätter: Erst im Board-Kontext verbinden sich globale Labels über Blattgrenzen hinweg. Neu erzeugt der Generator je Board ein **Root-Sheet** (`<board>.kicad_sch`), das alle Sub-Blätter instanziiert; ERC und Netzlisten-Regeln setzen jetzt dort an.
+
+**Was das sofort gebracht hat:**
+- **Ein echter Fehler, den die Einzelblatt-Prüfung nie sehen konnte:** Jedes Blatt trug sein eigenes `PWR_FLAG` für GND — im Board-Kontext sind das **zwei Treiber auf einem Netz** (ERC: `pin_to_pin`). Behoben durch eine board-weite Buchhaltung (`claim_power_flag`): je Board und Netz genau ein Flag. Beim Umbau fiel gleich ein Folgefehler auf — der Zuleitungsdraht blieb stehen, wenn das Flag entfiel; Draht und Flag hängen jetzt zusammen.
+- **Die ERC-Ausnahme wurde überflüssig.** `lib_symbol_issues` entstand nur, weil `kicad-cli` bei einer *einzelnen* Datei die projektbezogene `sym-lib-table` nicht lädt. Am Board-Root findet es sie — die Meldung entfällt vollständig. Die Ausnahme wurde daraufhin **entfernt**: eine Ausnahme, die nichts mehr unterdrückt, verdeckt irgendwann echte Fälle. **ERC läuft jetzt ohne jede Unterdrückung.**
+
+**Fünftes Sheet: `ui-carrier/sheet_01_display_dsi`** — 4 DSI-Lanes + Takt, Panel-Power, Backlight-Boost, Touch-Durchführung. Der RK3576 erscheint bewusst **nicht** als Symbol (Ball-Map ist HOLD); die Signale kommen als Durchführung über `J_UI`/`J_DSI`, genau wie die Design-Spec es beschreibt. Damit bleibt das Blatt pinmap-frei.
+
+**Vorarbeit am Wörterbuch — eine Lücke geschlossen, die niemandem auffiel:** Die DSI-Datenlanes standen dort nur als Kurzschreibweise `DSI0_D0..D3_P/N`. Für Menschen lesbar, für ein Werkzeug unvollständig: `D1`, `D2` und **sämtliche `_N`-Varianten** kamen nie wörtlich vor und galten als unbekannt. Jetzt einzeln aufgeführt — eine Single Source of Truth muss vollständig sein, nicht abgekürzt.
+
+**Und ein Fund im neuen Sheet:** `VBL` (Backlight-String) war zunächst als globales Label angelegt und fehlte prompt im Wörterbuch. Zu Recht — `VBL` entsteht auf dem UI-Carrier und wird dort verbraucht, es quert keinen Inter-Board-Verbinder. Also **board-lokal**. Der Wörterbuch-Check hat damit eine falsche Signalklassifizierung aufgedeckt, nicht nur einen fehlenden Eintrag.
+
+**Stand:** 5 Blätter in **4 Boards**, alle ERC-sauber **ohne Ausnahmen**; 38 kanonische Netze, 75 Netze unter Regelprüfung; **check_all 9/9**.
+
+**Nächster Schritt (Session 29+):** (a) UI-Carrier Sheets 02–04 (Touch, Ring/D-Pad/Keys, Haptik/Status) — alle pinmap-frei; (b) RF-Core Sheet 07 (Power/Host/Antennen); (c) die 10 WAHL_OFFEN-Positionen im Sourcing-Register.
+
+---
+
 ## 2026-09-08 — Session 27 (Netzlisten-Regeln, KiCad in der CI, viertes Sheet)
 
 **Auftrag: „mach es richtig."** Zwei Halbheiten standen offen — ERC lief in der CI gar nicht (SKIP mangels KiCad), und die Netzprüfung verglich nur *Namen* gegen ein Wörterbuch statt die tatsächliche Verdrahtung. Beide geschlossen.
