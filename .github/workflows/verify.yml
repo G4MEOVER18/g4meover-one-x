@@ -2,6 +2,14 @@ name: verify
 
 # Serverseitiges grünes Tor — spiegelt den lokalen pre-commit-Hook (.githooks/pre-commit).
 # Greift unabhängig davon, ob jemand den lokalen Hook aktiviert hat.
+#
+# Zwei Jobs, weil sie unterschiedliche Voraussetzungen haben:
+#   check_all  — reines Python, läuft immer, in Sekunden.
+#   kicad      — braucht KiCad (Container ~1 GB). Läuft deshalb getrennt und
+#                nur, wenn sich Hardware oder die zugehörigen Werkzeuge ändern.
+#
+# Ohne den zweiten Job meldet check_all die KiCad-Prüfungen als SKIP — sichtbar,
+# aber eben ungeprüft. Genau diese Lücke schließt er.
 
 on:
   push:
@@ -29,9 +37,50 @@ jobs:
         run: |
           python tools/spec_validator.py
           python tools/gen_kicad_project.py
+          python tools/gen_kicad_sch.py
+          python tools/gen_sourcing.py
           if ! git diff --quiet; then
-            echo "::error::Abgeleitete Dateien veraltet (spec/DERIVED_*, hardware/*/kicad/*). Bitte 'python tools/spec_validator.py' und 'python tools/gen_kicad_project.py' laufen lassen und committen."
+            echo "::error::Abgeleitete Dateien veraltet. Bitte die Generatoren laufen lassen und committen."
             git --no-pager diff --stat
             exit 1
           fi
           echo "OK: alle abgeleiteten Dateien sind aktuell (kein Diff)."
+
+  kicad:
+    # Gleiche Hauptversion wie die erzeugten Dateien (version 20250114).
+    # Ein älteres KiCad könnte das Format nicht lesen.
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:10.0
+      options: --user root
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Version melden
+        run: |
+          kicad-cli --version
+          python3 --version
+
+      - name: ERC über die erzeugten Schaltpläne
+        # HOME wird im Container nicht zwingend gesetzt; kicad-cli legt dort
+        # seine Konfiguration ab und scheitert sonst.
+        env:
+          HOME: /root
+        run: python3 tools/kicad_erc.py
+
+      - name: Regelprüfung auf der Netzliste
+        env:
+          HOME: /root
+        run: python3 tools/kicad_netlist_check.py
+
+      - name: Schaltpläne reproduzierbar? (kein Diff erlaubt)
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          python3 tools/gen_kicad_sch.py
+          if ! git diff --quiet; then
+            echo "::error::Erzeugte Schaltpläne veraltet — tools/gen_kicad_sch.py laufen lassen und committen."
+            git --no-pager diff --stat
+            exit 1
+          fi
+          echo "OK: erzeugte Schaltpläne sind aktuell."

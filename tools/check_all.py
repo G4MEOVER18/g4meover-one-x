@@ -8,8 +8,9 @@ Fuehrt alle Repo-Checker nacheinander aus und fasst das Ergebnis zusammen:
   4. gen_kicad_sch.py         -- erzeugte Schaltplaene aktuell
   5. kicad_erc.py             -- ERC ueber die erzeugten Schaltplaene
   6. kicad_netcheck.py        -- Netznamen im Schaltplan sind kanonisch
-  7. gen_sourcing.py          -- Sourcing-Register aktuell
-  8. fw_test.py               -- Firmware-Unit-Tests (Host-Compiler)
+  7. kicad_netlist_check.py   -- Regeln auf der echten Netzliste
+  8. gen_sourcing.py          -- Sourcing-Register aktuell
+  9. fw_test.py               -- Firmware-Unit-Tests (Host-Compiler)
 
 Exit 0 nur, wenn ALLE bestehen; sonst Exit 1. CI-/Handoff-tauglich.
 
@@ -43,6 +44,7 @@ CHECKS = [
     ("KiCad-Schaltplaene (reproduzierbar erzeugt)", "gen_kicad_sch.py", ["--check"], False),
     ("KiCad ERC (elektrische Konsistenz)", "kicad_erc.py", ["--check"], True),
     ("Netznamen Schaltplan <-> Woerterbuch", "kicad_netcheck.py", ["--check"], False),
+    ("Netzlisten-Regeln (Sicherheit/Schnittstellen)", "kicad_netlist_check.py", ["--check"], True),
     ("Sourcing-Register (BOM -> Bestellung)", "gen_sourcing.py", ["--check"], False),
     ("Firmware-Unit-Tests (Codec/RF-Kill/Link/Power/Watchdog)", "fw_test.py", ["--check"], True),
 ]
