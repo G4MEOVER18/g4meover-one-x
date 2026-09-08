@@ -27,6 +27,57 @@
 			)
 		)
 	)
+	(sheet
+		(at 25.4 50.80)
+		(size 152.4 20.32)
+		(fields_autoplaced yes)
+		(stroke (width 0.1524) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "d26e651c-3daf-577c-8b01-9e62023f1fba")
+		(property "Sheetname" "ONE-X UI-Carrier - Sheet 02 - Kapazitiver Touch" (at 25.4 50.00 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom)))
+		(property "Sheetfile" "sheet_02_touch.kicad_sch" (at 25.4 71.80 0)
+			(effects (font (size 1.27 1.27)) (justify left top)))
+		(instances
+			(project "ui-carrier"
+				(path "/6e673d17-1c5f-5e76-b028-f1432b246f19" (page "3"))
+			)
+		)
+	)
+	(sheet
+		(at 25.4 76.20)
+		(size 152.4 20.32)
+		(fields_autoplaced yes)
+		(stroke (width 0.1524) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "ff7ede5d-2375-52f2-97e6-c56c0222688a")
+		(property "Sheetname" "ONE-X UI-Carrier - Sheet 03 - Eingabe: D-Pad / Softkeys / Ring" (at 25.4 75.40 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom)))
+		(property "Sheetfile" "sheet_03_input_ring_dpad_keys.kicad_sch" (at 25.4 97.20 0)
+			(effects (font (size 1.27 1.27)) (justify left top)))
+		(instances
+			(project "ui-carrier"
+				(path "/6e673d17-1c5f-5e76-b028-f1432b246f19" (page "4"))
+			)
+		)
+	)
+	(sheet
+		(at 25.4 101.60)
+		(size 152.4 20.32)
+		(fields_autoplaced yes)
+		(stroke (width 0.1524) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "b28dec95-e396-597a-99fb-9e3d34261b71")
+		(property "Sheetname" "ONE-X UI-Carrier - Sheet 04 - Haptik / Status-LED / Connector" (at 25.4 100.80 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom)))
+		(property "Sheetfile" "sheet_04_haptic_status_connector.kicad_sch" (at 25.4 122.60 0)
+			(effects (font (size 1.27 1.27)) (justify left top)))
+		(instances
+			(project "ui-carrier"
+				(path "/6e673d17-1c5f-5e76-b028-f1432b246f19" (page "5"))
+			)
+		)
+	)
 	(sheet_instances
 		(path "/" (page "1"))
 	)

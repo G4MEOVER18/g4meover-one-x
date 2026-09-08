@@ -197,6 +197,58 @@ SYMBOLS = """
 					(number "3" (effects (font (size 1.016 1.016)))))
 			)
 		)
+		(symbol "ONEX:SW"
+			(pin_numbers (hide yes))
+			(pin_names (offset 1.016) (hide yes))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "SW" (at 0 4.445 0) (effects (font (size 1.016 1.016))))
+			(property "Value" "SW" (at 0 -4.445 0) (effects (font (size 1.016 1.016))))
+			(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Description" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(symbol "SW_0_1"
+				(circle (center 0 2.032) (radius 0.508)
+					(stroke (width 0.2032) (type default)) (fill (type none)))
+				(circle (center 0 -2.032) (radius 0.508)
+					(stroke (width 0.2032) (type default)) (fill (type none)))
+				(polyline (pts (xy -0.508 -1.524) (xy 1.778 2.286))
+					(stroke (width 0.2032) (type default)) (fill (type none)))
+			)
+			(symbol "SW_1_1"
+				(pin passive line (at 0 5.08 270) (length 2.54)
+					(name "A" (effects (font (size 1.016 1.016))))
+					(number "1" (effects (font (size 1.016 1.016)))))
+				(pin passive line (at 0 -5.08 90) (length 2.54)
+					(name "B" (effects (font (size 1.016 1.016))))
+					(number "2" (effects (font (size 1.016 1.016)))))
+			)
+		)
+		(symbol "ONEX:LED"
+			(pin_numbers (hide yes))
+			(pin_names (offset 1.016) (hide yes))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "D" (at 3.175 1.905 0) (effects (font (size 1.016 1.016))))
+			(property "Value" "LED" (at 3.175 -1.905 0) (effects (font (size 1.016 1.016))))
+			(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Description" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(symbol "LED_0_1"
+				(polyline (pts (xy -1.27 1.27) (xy 1.27 1.27) (xy 0 -1.27) (xy -1.27 1.27))
+					(stroke (width 0.2032) (type default)) (fill (type none)))
+				(polyline (pts (xy -1.905 -1.27) (xy 1.905 -1.27))
+					(stroke (width 0.2032) (type default)) (fill (type none)))
+				(polyline (pts (xy 1.27 1.905) (xy 2.286 2.921))
+					(stroke (width 0.1524) (type default)) (fill (type none)))
+			)
+			(symbol "LED_1_1"
+				(pin passive line (at 0 5.08 270) (length 3.81)
+					(name "A" (effects (font (size 1.016 1.016))))
+					(number "1" (effects (font (size 1.016 1.016)))))
+				(pin passive line (at 0 -5.08 90) (length 3.81)
+					(name "K" (effects (font (size 1.016 1.016))))
+					(number "2" (effects (font (size 1.016 1.016)))))
+			)
+		)
 		(symbol "ONEX:TP"
 			(pin_numbers (hide yes))
 			(pin_names (offset 0) (hide yes))
@@ -1008,12 +1060,230 @@ def build_ui_carrier_sheet01() -> Sheet:
     return s
 
 
+# ------------------------------------- UI-Carrier Sheet 02 (real)
+#
+# Quelle: hardware/ui-carrier/schematic/sheet_02_touch.md
+# FIXED  : I2C-Bus + INT/RST + Rail. TBD: Adresse, Init, Timing (G01).
+
+def build_ui_carrier_sheet02() -> Sheet:
+    board, sheet = "ui-carrier", "sheet_02_touch"
+
+    ctrl_pins = [("SCL", "TP_SCL"), ("SDA", "TP_SDA"), ("INT", "TP_INT"),
+                 ("RST", "TP_RST"), ("VDD", "VDD_TP_3V3"), ("GND", "GND")]
+    host_pins = [(n, n) for _p, n in ctrl_pins[:5]] + [("GND", "GND")]
+
+    extra = "\n" + conn_symbol("J_TOUCH_FPC", [(p, p) for p, _ in ctrl_pins])
+    extra += "\n" + conn_symbol("J_UI_TOUCH", host_pins)
+    s = Sheet(board, sheet, "ONE-X UI-Carrier - Sheet 02 - Kapazitiver Touch", extra)
+
+    hx, hy = g(24), g(40)
+    cx2, cy2 = g(88), g(40)
+    s.place("J_UI_TOUCH", hx, hy, "J42", "J_UI (Touch)")
+    s.place("J_TOUCH_FPC", cx2, cy2, "J43", "Touch-FPC (GT911-Klasse)")
+
+    htop = conn_pin_offset(len(host_pins))
+    ctop = conn_pin_offset(len(ctrl_pins))
+    hpin_x, cpin_x = hx + CONN_PIN_X, cx2 + CONN_PIN_X
+
+    nets = [n for _p, n in ctrl_pins[:5]]
+    for i, net in enumerate(nets):
+        s.wire(hpin_x, hy - htop + g(2) * i, hpin_x + g(4), hy - htop + g(2) * i)
+        s.glabel(net, hpin_x + g(4), hy - htop + g(2) * i)
+        s.wire(cpin_x, cy2 - ctop + g(2) * i, cpin_x + g(4), cy2 - ctop + g(2) * i)
+        s.glabel(net, cpin_x + g(4), cy2 - ctop + g(2) * i)
+
+    for cxx, cyy, top_, n_, tag in ((hpin_x, hy, htop, len(host_pins) - 1, "H"),
+                                    (cpin_x, cy2, ctop, len(ctrl_pins) - 1, "C")):
+        gy = cyy - top_ + g(2) * n_
+        s.wire(cxx, gy, cxx + g(4), gy)
+        s.wire(cxx + g(4), gy, cxx + g(4), gy + g(4))
+        s.place("GND", cxx + g(4), gy + g(4), f"#PWRT{tag}", "GND")
+    if claim_power_flag(board, "GND"):
+        gy = hy - htop + g(2) * (len(host_pins) - 1)
+        s.wire(hpin_x + g(4), gy, hpin_x + g(8), gy)
+        s.place("PWR_FLAG", hpin_x + g(8), gy, "#FLG42", "PWR_FLAG")
+
+    # Genau EIN Pull-up-Satz am I2C (Sheet 02: "Doppel-Pull-up vermeiden").
+    for i, net in enumerate(("TP_SCL", "TP_SDA")):
+        px_ = g(56) + g(8) * i
+        s.glabel("VDD_TP_3V3", px_, g(14))
+        s.wire(px_, g(14), px_, g(18))
+        s.place("R", px_, g(22), s._ref("R"), "4k7",
+                fields={"ONEX_Status": "TARGET",
+                        "ONEX_Note": "I2C-Pull-up, genau ein Satz je Bus"})
+        s.wire(px_, g(26), px_, g(30))
+        s.glabel(net, px_, g(30))
+
+    if claim_power_flag(board, "VDD_TP_3V3"):
+        s.glabel("VDD_TP_3V3", g(40), g(14))
+        s.wire(g(40), g(14), g(44), g(14))
+        s.place("PWR_FLAG", g(44), g(14), "#FLG43", "PWR_FLAG")
+
+    s.text("FIXED: I2C-Bus + INT/RST + Rail. Genau EIN Pull-up-Satz je Bus.", g(18), g(8), 2.0)
+    s.text("TBD (G01): I2C-Adresse, Init-Register, Reset-/INT-Timing.", g(18), g(11))
+    s.text("Achtung Adress-Strapping: GT911-Klasse waehlt die Adresse ueber INT/RST-Pegel", g(18), g(56))
+    s.text("waehrend des Resets - die Boot-Sequenz entscheidet mit (Bringup G01).", g(18), g(59))
+    return s
+
+
+# ------------------------------------- UI-Carrier Sheet 03 (real)
+#
+# Quelle: hardware/ui-carrier/schematic/sheet_03_input_ring_dpad_keys.md
+#
+# HOLD-treu: Der Touch-Ring erscheint NICHT als Schaltung. Seine Anbindung
+# (Cap-Touch-AFE ueber I2C oder RP2350-Sense-Pins) ist offen; Netznamen dafuer
+# zu erfinden hiesse, die Architekturfrage stillschweigend zu entscheiden.
+
+def build_ui_carrier_sheet03() -> Sheet:
+    board, sheet = "ui-carrier", "sheet_03_input_ring_dpad_keys"
+
+    keys = ["KEY_UP", "KEY_DOWN", "KEY_LEFT", "KEY_RIGHT", "KEY_CENTER",
+            "KEY_SK1", "KEY_SK2", "KEY_SK3", "KEY_SK4", "KEY_SK5"]
+
+    pins = [(k, k) for k in keys] + [("GND", "GND")]
+    extra = "\n" + conn_symbol("J_UI_KEYS", pins)
+    s = Sheet(board, sheet,
+              "ONE-X UI-Carrier - Sheet 03 - Eingabe: D-Pad / Softkeys / Ring", extra)
+
+    cx3, cy3 = g(24), g(56)
+    s.place("J_UI_KEYS", cx3, cy3, "J44", "J_UI (RP2350-Domaene)")
+    top = conn_pin_offset(len(pins))
+    pin_x = cx3 + CONN_PIN_X
+
+    for i, key in enumerate(keys):
+        py = cy3 - top + g(2) * i
+        s.wire(pin_x, py, pin_x + g(4), py)
+        s.glabel(key, pin_x + g(4), py)
+
+        # Je Taste: Pull-up Richtung Ruhezustand + Taster gegen Masse.
+        # Aktiv-low, wie in der Spec beschrieben.
+        row_y = g(16) + g(14) * i
+        s.glabel(key, g(52), row_y)
+        s.wire(g(52), row_y, g(56), row_y)
+        s.place("SW", g(56), row_y + g(5), s._ref("SW"), key.replace("KEY_", ""),
+                fields={"ONEX_Status": "TARGET",
+                        "ONEX_Note": "mech. Taster / Dome, aktiv-low"})
+        s.wire(g(56), row_y, g(56), row_y + g(1))
+        s.wire(g(56), row_y + g(9), g(56), row_y + g(11))
+        s.place("GND", g(56), row_y + g(11), f"#PWRK{i:02d}", "GND")
+
+    gy = cy3 - top + g(2) * len(keys)
+    s.wire(pin_x, gy, pin_x + g(4), gy)
+    s.wire(pin_x + g(4), gy, pin_x + g(4), gy + g(4))
+    s.place("GND", pin_x + g(4), gy + g(4), "#PWRK99", "GND")
+    if claim_power_flag(board, "GND"):
+        s.wire(pin_x + g(4), gy, pin_x + g(8), gy)
+        s.place("PWR_FLAG", pin_x + g(8), gy, "#FLG44", "PWR_FLAG")
+
+    s.text("Alle Bedienelemente haengen am RP2350, NICHT am RK3576 -", g(18), g(8), 2.0)
+    s.text("damit Wake, Navigation vor dem Linux-Boot, Recovery und", g(18), g(11))
+    s.text("RF-Kill-Bestaetigung ohne laufendes Linux funktionieren.", g(18), g(14))
+    s.text("TOUCH-RING (Oe40) bewusst NICHT gezeichnet: die Anbindung ist offen -", g(72), g(16), 2.0)
+    s.text("Cap-Touch-AFE ueber I2C ODER RP2350-eigene Sense-Pins, AFE-MPN TBD.", g(72), g(20))
+    s.text("Netznamen dafuer zu erfinden hiesse, die Architekturfrage still zu", g(72), g(23))
+    s.text("entscheiden. Folgt mit dem AFE-Freeze (Gate G07).", g(72), g(26))
+    s.text("Entprellung: RC + Firmware-Debounce im RP2350 (onex_modules.h).", g(72), g(32))
+    return s
+
+
+# ------------------------------------- UI-Carrier Sheet 04 (real)
+#
+# Quelle: hardware/ui-carrier/schematic/sheet_04_haptic_status_connector.md
+#
+# LED_RFKILL ist sicherheitsrelevant: sie zeigt den PHYSISCHEN Kill-Zustand und
+# wird vom RP2350 getrieben -- nicht von Linux. Sonst leuchtete sie falsch,
+# sobald Linux haengt, und genau dann ist die Anzeige am wichtigsten.
+
+def build_ui_carrier_sheet04() -> Sheet:
+    board, sheet = "ui-carrier", "sheet_04_haptic_status_connector"
+
+    leds = [("LED_PWR", "Power/Charge"),
+            ("LED_RFKILL", "RF-Kill aktiv (rot) - vom RP2350"),
+            ("LED_ACT", "Aktivitaet / TX")]
+    haptic = ["HAPTIC_PWM", "HAPTIC_EN"]
+
+    pins = [(n, n) for n, _ in leds] + [(h, h) for h in haptic] + [("GND", "GND")]
+    extra = "\n" + conn_symbol("J_UI_STATUS", pins)
+    extra += "\n" + conn_symbol("J_ACTUATOR", [("VHAPTIC", "VHAPTIC"), ("GND", "GND")])
+    s = Sheet(board, sheet,
+              "ONE-X UI-Carrier - Sheet 04 - Haptik / Status-LED / Connector", extra)
+
+    cx4, cy4 = g(24), g(40)
+    s.place("J_UI_STATUS", cx4, cy4, "J45", "J_UI (Status/Haptik)")
+    top = conn_pin_offset(len(pins))
+    pin_x = cx4 + CONN_PIN_X
+
+    all_n = [n for n, _ in leds] + haptic
+    for i, net in enumerate(all_n):
+        py = cy4 - top + g(2) * i
+        s.wire(pin_x, py, pin_x + g(4), py)
+        s.glabel(net, pin_x + g(4), py)
+
+    gy = cy4 - top + g(2) * len(all_n)
+    s.wire(pin_x, gy, pin_x + g(4), gy)
+    s.wire(pin_x + g(4), gy, pin_x + g(4), gy + g(4))
+    s.place("GND", pin_x + g(4), gy + g(4), "#PWRS0", "GND")
+    if claim_power_flag(board, "GND"):
+        s.wire(pin_x + g(4), gy, pin_x + g(8), gy)
+        s.place("PWR_FLAG", pin_x + g(8), gy, "#FLG45", "PWR_FLAG")
+
+    # LEDs mit Vorwiderstand gegen Masse.
+    for i, (net, why) in enumerate(leds):
+        row_y = g(16) + g(14) * i
+        s.glabel(net, g(56), row_y)
+        s.wire(g(56), row_y, g(60), row_y)
+        s.place("R", g(60), row_y + g(4), s._ref("R"), "1k",
+                fields={"ONEX_Status": "TARGET", "ONEX_Note": "Strombegrenzung"})
+        s.wire(g(60), row_y + g(8), g(60), row_y + g(10))
+        s.place("LED", g(60), row_y + g(14), s._ref("D"), net.replace("LED_", ""),
+                fields={"ONEX_Status": "TARGET", "ONEX_Note": why})
+        s.wire(g(60), row_y + g(18), g(60), row_y + g(20))
+        s.place("GND", g(60), row_y + g(20), f"#PWRL{i}", "GND")
+
+    # Haptik-Treiber: PWM + Enable vom RP2350, Aktuator an VHAPTIC (lokal).
+    hx4, hy4 = g(88), g(24)
+    s.glabel("HAPTIC_PWM", hx4 - g(12), hy4 - g(2))
+    s.wire(hx4 - g(12), hy4 - g(2), hx4 - g(6), hy4 - g(2))
+    s.glabel("HAPTIC_EN", hx4 - g(12), hy4 + g(2))
+    s.wire(hx4 - g(12), hy4 + g(2), hx4 - g(6), hy4 + g(2))
+    s.place("AND2", hx4, hy4, "U41", "HAPTIC_DRV",
+            fields={"ONEX_Status": "TARGET",
+                    "ONEX_Note": "LRA/ERM offen - bestimmt Resonanz (TBD)"})
+    s.wire(hx4 + g(6), hy4, hx4 + g(10), hy4)
+    # VHAPTIC ist board-lokal: entsteht hier, treibt den Aktuator hier.
+    s.label("VHAPTIC", hx4 + g(10), hy4)
+
+    # Der Aktuator selbst ist ein externes Bauteil (LRA oder ERM -- die Wahl
+    # bestimmt Resonanz und Ansteuerung und ist noch offen). Er haengt an einem
+    # eigenen Anschluss; ohne ihn haette VHAPTIC keinen Verbraucher.
+    ax, ay = hx4 + g(6), hy4 + g(16)
+    s.place("J_ACTUATOR", ax, ay, "J46", "Haptik-Aktuator",
+            fields={"ONEX_Status": "TARGET", "ONEX_Note": "LRA oder ERM - TBD"})
+    atop = conn_pin_offset(2)
+    apin_x = ax + CONN_PIN_X
+    s.wire(apin_x, ay - atop, apin_x + g(4), ay - atop)
+    s.label("VHAPTIC", apin_x + g(4), ay - atop)
+    s.wire(apin_x, ay - atop + g(2), apin_x + g(4), ay - atop + g(2))
+    s.wire(apin_x + g(4), ay - atop + g(2), apin_x + g(4), ay - atop + g(6))
+    s.place("GND", apin_x + g(4), ay - atop + g(6), "#PWRA0", "GND")
+
+    s.text("LED_RFKILL ist sicherheitsrelevant: sie zeigt den PHYSISCHEN Kill-Zustand", g(18), g(8), 2.0)
+    s.text("und wird vom RP2350 getrieben, nicht von Linux. Sonst leuchtete sie falsch,", g(18), g(11))
+    s.text("sobald Linux haengt - und genau dann ist die Anzeige am wichtigsten.", g(18), g(14))
+    s.text("TBD: Haptik-Treiber-MPN und Aktuatortyp (LRA vs. ERM) - bestimmt die Ansteuerung.",
+           g(72), g(40))
+    return s
+
+
 SHEETS = [
     ("antenna-rail", "sheet_01_sma_feeds", build_antenna_rail_sheet01),
     ("m2-bridge", "sheet_01_pcie_usb3", build_m2_bridge_sheet01),
     ("m2-bridge", "sheet_02_sideband_power", build_m2_bridge_sheet02),
     ("rf-core", "sheet_01_supervisor_rfkill", build_rf_core_sheet01),
     ("ui-carrier", "sheet_01_display_dsi", build_ui_carrier_sheet01),
+    ("ui-carrier", "sheet_02_touch", build_ui_carrier_sheet02),
+    ("ui-carrier", "sheet_03_input_ring_dpad_keys", build_ui_carrier_sheet03),
+    ("ui-carrier", "sheet_04_haptic_status_connector", build_ui_carrier_sheet04),
 ]
 
 

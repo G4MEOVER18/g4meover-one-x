@@ -12,6 +12,31 @@
 
 ---
 
+## 2026-09-08 — Session 29 (UI-Carrier komplett + Ellipsen-Wächter + ein Widerspruch aufgelöst)
+
+**Umgesetzt:** Die restlichen drei UI-Carrier-Blätter — Touch (02), Eingabe (03), Haptik/Status/Connector (04). Damit sind **8 Blätter in 4 Boards** ERC-sauber, weiterhin **ohne jede Ausnahme**. `check_all` 9/9.
+
+**HOLD-Disziplin bei Sheet 03:** Der Ø40-Touch-Ring wird **nicht gezeichnet**. Seine Anbindung ist offen (Cap-Touch-AFE über I²C *oder* RP2350-eigene Sense-Pins, AFE-MPN TBD). Netznamen dafür zu erfinden hieße, die Architekturfrage stillschweigend zu entscheiden — das Blatt benennt die offene Wahl stattdessen im Klartext. D-Pad und Softkeys sind gezeichnet, deren Anzahl ist FIXED.
+
+**Ein echter Widerspruch in der Dokumentation, aufgedeckt durch den erzeugten Schaltplan:**
+`INTERFACE_NETS.md` führte `KEY_*`, `HAPTIC_*` und `LED_*` unter „**board-lokal** — queren KEINE Board-Grenze". [UI-Carrier Sheet 04](../hardware/ui-carrier/schematic/sheet_04_haptic_status_connector.md) führte dieselben Signale zugleich als Inhalt von `J_UI`. Beides zusammen geht nicht. Physisch entscheidet die Anordnung: **Die Bedienelemente sitzen auf dem UI-Carrier, der RP2350 auf dem Mainboard** — diese Signale queren zwingend eine Board-Grenze. Die Board-lokal-Liste war falsch; korrigiert und die Bedien-Domäne als eigene Tabelle ergänzt. `RING_*` bleibt vorerst board-lokal, weil die Ring-Architektur offen ist.
+
+Aufgefallen ist der Widerspruch erst, als der generierte Schaltplan diese Netze als globale Labels führte und der Wörterbuch-Check sie einforderte. Zwei Markdown-Dateien können sich jahrelang widersprechen, ohne dass es auffällt — ein Schaltplan zwingt zur Entscheidung.
+
+**Strukturelle Härtung: Ellipsen-Wächter.** Ich habe denselben Fehler wie bei den DSI-Lanes ein zweites Mal gemacht — `KEY_SK1 … KEY_SK5` als Kurzschreibweise ins Wörterbuch geschrieben, wodurch SK2/SK3/SK4 als unbekannt galten. Statt auf Disziplin zu hoffen, meldet `kicad_netcheck.py` das jetzt: Es erkennt Zählreihen mit Ellipse und prüft, ob die Zwischenwerte tatsächlich im Wörterbuch stehen. Bewusst **präzise statt pauschal** — eine Ellipse im erklärenden Fließtext (`ANT_1…ANT_4`, deren Namen in der Tabelle daneben vollständig stehen) ist harmlos und löst keinen Alarm aus. Per Gegenprobe verifiziert.
+
+**Weitere Funde beim Bauen:**
+- **Kollidierende Tastenzeilen:** Der Zeilenabstand in Sheet 03 war zu klein, die Masse-Symbole einer Zeile ragten in die nächste — ERC meldete `KEY_CENTER` und `KEY_DOWN` als *ein* Netz.
+- **`VHAPTIC` ohne Verbraucher:** Der Haptik-Treiber erzeugte die Rail, aber der Aktuator fehlte. Er ist ein externes Bauteil (LRA oder ERM — die Wahl bestimmt Resonanz und Ansteuerung und ist offen) und hängt jetzt an einem eigenen Anschluss.
+- **`VBL` war fälschlich global:** Es entsteht auf dem UI-Carrier und wird dort verbraucht → board-lokal. Der Wörterbuch-Check hat damit eine falsche Signalklassifizierung aufgedeckt, nicht bloß einen fehlenden Eintrag.
+- Zwei Drähte ins Leere (Pull-up-Anschlüsse, LED-Vorwiderstand) und ein Draht der Länge null.
+
+**Stand:** 8 Blätter / 4 Boards ERC-sauber ohne Ausnahmen · 58 kanonische Inter-Board-Netze · 97 Netze unter Regelprüfung · check_all 9/9.
+
+**Nächster Schritt (Session 30+):** (a) RF-Core Sheets 02–07 (Radios, Power/Antennen) — Sheet 07 ist pinmap-frei, die Radio-Sheets brauchen Hersteller-Pinouts und bleiben vorerst gesperrt; (b) Mainboard Sheet 17 (Connectors) — pinmap-frei, wäre das Gegenstück zu allen bisherigen Boards; (c) die 10 WAHL_OFFEN-Positionen im Sourcing-Register.
+
+---
+
 ## 2026-09-08 — Session 28 (Strukturell: Boards statt Einzelblätter + fünftes Sheet)
 
 **Grundlegende Verbesserung, nicht nur mehr Inhalt.** Bisher prüfte ERC jedes Blatt für sich. Ein Board ist aber mehr als die Summe seiner Blätter: Erst im Board-Kontext verbinden sich globale Labels über Blattgrenzen hinweg. Neu erzeugt der Generator je Board ein **Root-Sheet** (`<board>.kicad_sch`), das alle Sub-Blätter instanziiert; ERC und Netzlisten-Regeln setzen jetzt dort an.

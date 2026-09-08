@@ -57,6 +57,27 @@
 
 *Ersetzt:* `DSI_*` (ohne `0`).
 
+### Bedien-Domäne (`J_UI` — UI-Carrier ↔ Mainboard → RP2350)
+
+Diese Signale gehören zur **RP2350-Domäne**: sie müssen ohne laufendes Linux
+funktionieren (Wake, Navigation vor dem Boot, Recovery, RF-Kill-Bestätigung).
+Die Bedienelemente sitzen auf dem UI-Carrier, der RP2350 auf dem Mainboard —
+sie **queren `J_UI`** und sind damit Inter-Board-Netze.
+
+| Kanonisch | Rolle |
+|---|---|
+| `KEY_UP`, `KEY_DOWN`, `KEY_LEFT`, `KEY_RIGHT`, `KEY_CENTER` | D-Pad (aktiv-low) |
+| `KEY_SK1`, `KEY_SK2`, `KEY_SK3`, `KEY_SK4`, `KEY_SK5` | 5 Softkeys (Anzahl FIXED) |
+| `HAPTIC_PWM`, `HAPTIC_EN` | Haptik-Ansteuerung |
+| `LED_PWR`, `LED_ACT` | Status-LEDs |
+| `LED_RFKILL` | **sicherheitsrelevant** — spiegelt den physischen Kill-Zustand |
+
+> **`RING_*` fehlt hier bewusst.** Die Anbindung des Ø40-Touch-Rings ist noch
+> offen (dedizierter Cap-Touch-AFE über I²C **oder** RP2350-eigene Sense-Pins,
+> [Sheet 03](ui-carrier/schematic/sheet_03_input_ring_dpad_keys.md), AFE-MPN
+> TBD). Kanonische Netznamen dafür festzulegen hieße, die Architekturfrage
+> stillschweigend zu entscheiden — sie folgen mit dem AFE-Freeze.
+
 ### RF-Core-Bus (`J_RFCORE` — Mainboard ↔ RF-Core)
 | Kanonisch | Rolle |
 |---|---|
@@ -93,4 +114,15 @@ Die RF-Core-internen PA-Enables (`PA_EN_<radio>`) bleiben **board-lokal** (quere
 > **Namens-Präzisierung (2026-09-08):** Die M.2-Bridge führte diese Rail als „`+3V3`", der [Power-Tree](mainboard/schematic/sheet_01_power_tree.md) als `+3V3_SYS`. Es ist **dieselbe** Rail; kanonisch ist `+3V3_SYS`. Zwei Namen für eine Rail fallen erst beim Zusammenführen der Boards auf — dann aber teuer.
 
 ## Board-lokal (queren KEINE Board-Grenze — nicht im Mirror-Check)
-`PA_EN_*`, `HRF_*`, `LMSx_LML_*`, `HB_*`, `RADAR_*`, `UWB_*`, `KEY_*`, `RING_*`, `HAPTIC_*`, `LED_*`, `PMIC_*` — bleiben auf ihrem Board.
+`PA_EN_*`, `HRF_*`, `LMSx_LML_*`, `HB_*`, `RADAR_*`, `UWB_*`, `RING_*`, `PMIC_*`, `VBL`, `VHAPTIC` — bleiben auf ihrem Board.
+
+> **Korrektur (2026-09-08):** `KEY_*`, `HAPTIC_*` und `LED_*` standen hier
+> fälschlich als board-lokal, während [UI-Carrier Sheet 04](ui-carrier/schematic/sheet_04_haptic_status_connector.md)
+> sie zugleich als Inhalt von `J_UI` führte — ein glatter Widerspruch. Physisch
+> entscheidet die Anordnung: Die Bedienelemente sitzen auf dem UI-Carrier, der
+> RP2350 auf dem Mainboard. Diese Signale **queren** also eine Board-Grenze und
+> gehören in die Bedien-Domänen-Tabelle oben. Aufgefallen ist es erst, als der
+> erzeugte Schaltplan sie als globale Labels führte.
+>
+> `RING_*` bleibt vorerst hier, weil die Ring-Architektur noch offen ist — mit
+> dem AFE-Freeze wandert es voraussichtlich ebenfalls nach oben.
