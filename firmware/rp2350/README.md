@@ -40,15 +40,18 @@ IRQ    ▶│                                                                   
 | [`include/onex_link.h`](include/onex_link.h) | C-Header: Protokoll-Endpunkt `rk3576_link` |
 | [`include/onex_power.h`](include/onex_power.h) | C-Header: Rail-Sequencing + System-Zustandsmaschine |
 | [`include/onex_watchdog.h`](include/onex_watchdog.h) | C-Header: Gesundheitswächter (Kick-Erlaubnis, Eskalation) |
+| [`include/onex_sched.h`](include/onex_sched.h) | C-Header: Superloop-Scheduler (Modul-Tabelle, Events, Budget) |
 | [`src/onex_proto.c`](src/onex_proto.c) | **Implementierung** des Frame-Codecs (CRC-16, Encode, Decode, Resync) |
 | [`src/onex_rfkill.c`](src/onex_rfkill.c) | **Implementierung** des RF-Kill-Automaten (safety-critical, Priorität 0) |
 | [`src/onex_link.c`](src/onex_link.c) | **Implementierung** des Endpunkts: RX/Dispatch/ACK-NACK, Heartbeat, Events |
 | [`src/onex_power.c`](src/onex_power.c) | **Implementierung** von Rail-Sequencing + Zustandsmaschine (safety-critical) |
 | [`src/onex_watchdog.c`](src/onex_watchdog.c) | **Implementierung** des Wächters (safety-critical) |
+| [`src/onex_sched.c`](src/onex_sched.c) | **Implementierung** des Superloops — fährt die Modul-Tabelle |
 | [`test/test_onex_proto.c`](test/test_onex_proto.c) | Host-Unit-Tests — frieren das Wire-Format als Regressionsschranke ein |
 | [`test/test_onex_rfkill.c`](test/test_onex_rfkill.c) | Host-Unit-Tests — überwiegend **negativ**: was *nicht* freigeben darf |
 | [`test/test_onex_link.c`](test/test_onex_link.c) | **Integrationstests** — echte Abläufe über die Drahtdarstellung |
 | [`test/test_onex_power.c`](test/test_onex_power.c) | Host-Unit-Tests für `power` + `watchdog` + Kopplung an den RF-Kill |
+| [`test/test_onex_sched.c`](test/test_onex_sched.c) | Host-Unit-Tests für den Superloop (Reihenfolge, Events, Budget) |
 
 ## Was hier schon *verifiziert* ist
 
@@ -125,3 +128,22 @@ Die Kette `watchdog → power → rf_kill` aus `ARCHITECTURE.md` §4 ist durchge
 
 ## Build-Ziel (später)
 Pico-SDK (RP2350, Cortex-M33). Die pin-abhängige HAL-Schicht kommt erst nach dem Mainboard-Schaltplan (Phase 5 / Gate G07). Alles hier ist so geschnitten, dass es **ohne** Pinmap kompiliert — Logik oben, Hardwarezugriff unten.
+
+## Superloop-Scheduler
+
+Fährt die Modul-Tabelle aus [`onex_modules.h`](include/onex_modules.h) so, wie [`ARCHITECTURE.md` §1](ARCHITECTURE.md) es vorgibt: Module in Tabellenreihenfolge ticken, Gesundheit an den Watchdog melden, am Ende die Kick-Erlaubnis holen.
+
+**Die Reihenfolge ist Sicherheitsauslegung, keine Optimierung** — `rf_kill`, `power`, `watchdog` laufen vor allem anderen. Ein später laufendes Modul darf nie zwischen einen Sicherheitszustand und seine Wirkung geraten. Ein eigener Test hält die Reihenfolge fest.
+
+**Was der Scheduler nicht kann — bewusst benannt:** Er ist kooperativ. Ein Modul, das in `tick()` blockiert, kann von ihm *nicht* unterbrochen werden; er kann die Budgetüberschreitung (200 µs, `onex_modules.h`) nur **erkennen und melden**. Die tatsächliche Rettung bei echtem Stillstand ist der Hardware-Watchdog: bleibt der Superloop stehen, wird nicht mehr gekickt, der Chip resettet, und die Firmware startet im sicheren Default. Wer von einem kooperativen Scheduler mehr verspricht, verkauft eine Sicherheit, die es nicht gibt. Fehlt die Zeitquelle, wird die Budgeteinhaltung deshalb auch **nicht behauptet**, statt „alles in Ordnung" zu melden.
+
+**Zwei Stufen für fehlende Sicherheitsmodule**, weil der Scheduler unterschiedlich viel weiß:
+
+| Fall | Erkennung | Wirkung |
+|---|---|---|
+| `init()` liefert `false` | Modul bekannt → **aktive** `FAULT`-Meldung | Kick fällt **sofort** weg |
+| `NULL`-Platzhalter in der Tabelle | Modul-ID unbekannt (sie steht ja *im* Modul) | **passiv** über `reported[]` — Kick fällt nach der Startkarenz weg |
+
+Die Tabellenposition als Modul-ID zu deuten wäre die naheliegende Abkürzung, aber eine stille Annahme, die die Tabelle nicht garantiert — daher bewusst nicht.
+
+**Events werden aus einem Schnappschuss zugestellt.** Die Warteschlange wird *vor* der Zustellung geleert, damit ein Handler, der selbst postet, keine unbegrenzte Rekursion auslöst — sein Event läuft im nächsten Durchlauf. Läuft die Queue über, wird das **neueste** Event verworfen und gezählt: bereits angenommene Events werden garantiert zugestellt, die Reihenfolge bleibt erhalten, und der Verlust ist sichtbar statt still.

@@ -55,6 +55,15 @@ SUITES = [
         "test": FW / "test" / "test_onex_power.c",
     },
     {
+        # Superloop: faehrt die Modul-Tabelle, koppelt an den watchdog.
+        "name": "onex_sched (Superloop-Scheduler)",
+        "sources": [
+            FW / "src" / "onex_sched.c",
+            FW / "src" / "onex_watchdog.c",
+        ],
+        "test": FW / "test" / "test_onex_sched.c",
+    },
+    {
         # Integrationssuite: Codec + RF-Kill + Endpunkt ueber die Drahtdarstellung.
         "name": "onex_link (Protokoll-Endpunkt, Integration)",
         "sources": [

@@ -28,7 +28,8 @@ Weg von der synchronisierten Architektur (EVT6) zum echten EVT-Prototyp — **oh
   - **`rf_kill`-Zustandsautomat implementiert + host-getestet ✅** (64 Prüfungen, überwiegend negativ; Freigabe-Policy per Owner-Entscheidung 2026-09-07 festgelegt: One-Shot-Nonce nach physischer Geste + Karenzzeit bei Link-Verlust)
   - **`rk3576_link` (Protokoll-Endpunkt) implementiert + host-getestet ✅** (64 Prüfungen Integration; Duplikat-Cache = Wiederholungen wirken genau einmal; RF-Kill-Freigabe end-to-end über den Draht bedienbar)
   - **`power` + `watchdog` implementiert + host-getestet ✅** (80 Prüfungen; Rail-Sequenz + Umkehrung, „nie endlos warten", Watchdog kickt nur bei durchgehend gesunden kritischen Modulen) → **Sicherheitskette `watchdog → power → rf_kill` durchgehend getestet**
-  - offen: Superloop-Scheduler (fährt die Modul-Tabelle aus `onex_modules.h`), danach die übrigen Module; HAL erst nach G07.
+  - **Superloop-Scheduler implementiert + host-getestet ✅** (46 Prüfungen; Tickreihenfolge = Sicherheitspriorität, Event-Zustellung ohne Rekursion, Budget-Überwachung, Kick-Erlaubnis)
+  - **→ Phase 2 im Kern abgeschlossen.** Offen bleiben nur die HAL-nahen Module (`buttons`, `touch_ring`, `haptic`, `battery`, `fan`, `sensors`, `recovery`) — sinnvoll erst nach G07 (Pinmap).
 - **Phase 3 — Vendor-Docs / Core-BOM-Freeze** → G02/G03. Kein Mainboard-Layout davor.
 - **Phase 4 — PCBWay HDI-DFM** → G06.
 - **Phase 5 — Mainboard-Schaltplan** (18 Sheets: RK3576-Core, RK806-Power, LPDDR5, UFS, USB-C-PD, USB-Host, HDMI/DP, 2× Ethernet, Wi-Fi/BT, M.2, RP2350-Link, Audio, Sensoren, Debug/Recovery, Connectors, Power-Tree, Testpoints).

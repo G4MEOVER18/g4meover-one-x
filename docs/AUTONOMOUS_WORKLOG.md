@@ -12,6 +12,39 @@
 
 ---
 
+## 2026-09-08 — Session 24 (Superloop-Scheduler — Phase 2 im Kern abgeschlossen)
+
+**Umgesetzt:** `include/onex_sched.h` + `src/onex_sched.c` + `test/test_onex_sched.c` (**46 Prüfungen**). Der Scheduler fährt die Modul-Tabelle aus `onex_modules.h` so, wie `ARCHITECTURE.md` §1 es vorgibt: Module in Tabellenreihenfolge ticken, Gesundheit an den Watchdog melden, Kick-Erlaubnis holen. Gesamt **294 Prüfungen** in 5 Suiten; check_all 4/4.
+
+Damit ist **Phase 2 im Kern abgeschlossen**: Codec, RF-Kill, Link-Endpunkt, Power, Watchdog und Superloop sind implementiert und host-getestet. Was bleibt, braucht Externa (HAL/Pinmap nach G07, Vendor-Daten für die HOLDs).
+
+**Entwurfsentscheidungen:**
+- **Reihenfolge = Sicherheitsauslegung, keine Optimierung.** `rf_kill`, `power`, `watchdog` laufen vor allem anderen; ein später laufendes Modul darf nie zwischen einen Sicherheitszustand und seine Wirkung geraten. Eigener Test hält das fest.
+- **Zeitbasis µs.** Der Vertrag gibt `tick(uint64_t now_us)` vor — richtig so, denn das 200-µs-Budget ist in ms nicht messbar. `uint64` µs läuft praktisch nie über; die Adapter rechnen für die Module auf `uint32` ms um, wo der bekannte 49,7-Tage-Wrap greift, den sie bereits behandeln.
+- **Ehrlichkeitsgrenze benannt:** Ein kooperativer Scheduler kann ein blockierendes `tick()` **nicht unterbrechen** — nur erkennen und melden. Die Rettung bei echtem Stillstand ist der HW-Watchdog. Fehlt die Zeitquelle, wird Budgeteinhaltung deshalb auch **nicht behauptet** (`budget_exceeded` bleibt false), statt „alles in Ordnung" zu melden.
+- **Events aus einem Schnappschuss.** Die Queue wird *vor* der Zustellung geleert → ein Handler, der selbst postet, kann keine unbegrenzte Rekursion auslösen; sein Event läuft im nächsten Durchlauf. Bei Überlauf wird das **neueste** Event verworfen und gezählt: angenommene Events werden garantiert und in Reihenfolge zugestellt, der Verlust bleibt sichtbar.
+
+**Zwei Stufen für fehlende Sicherheitsmodule** (der Scheduler weiß unterschiedlich viel):
+| Fall | Erkennung | Wirkung |
+|---|---|---|
+| `init()` == false | Modul bekannt → **aktive** FAULT-Meldung | Kick fällt **sofort** weg |
+| `NULL`-Platzhalter | Modul-ID unbekannt (steht *im* Modul) | **passiv** über `reported[]` → Kick fällt nach der Startkarenz weg |
+
+Die Tabellenposition als Modul-ID zu deuten wäre die naheliegende Abkürzung — aber eine stille Annahme, die die Tabelle nicht garantiert. Bewusst nicht gemacht; der Test prüft stattdessen beide Zeitpunkte (während der Karenz läuft das System an, danach nicht mehr).
+
+**Drei Funde:**
+1. **Testfehler bei mir:** `test_missing_critical_module_blocks_kick` prüfte bei 1 ms — mitten in der 2-s-Startkarenz — und schlug zu Recht fehl. Die Ursachenanalyse ergab den obigen Zwei-Stufen-Unterschied; Test auf beide Zeitpunkte erweitert statt die Erwartung abzuschwächen.
+2. **Redundanter Code durch Mutation aufgedeckt (S5):** `onex_sched_init` meldete deaktivierte Sicherheitsmodule an den Watchdog — die Schleife in `run_once()` tut das ohnehin in jedem Durchlauf, und der Watchdog wird ausschließlich dort ausgewertet. Die init-Meldung war strikt überflüssig. **Dasselbe Muster wie der `tx_allowed`-Fund in Session 21**: zwei Kopien einer Regel driften auseinander. Entfernt statt dokumentiert.
+3. **Folgefehler daraus:** Nach dem Entfernen war der Parameter `now_us` in `onex_sched_init` tot — `-Werror=unused-parameter` fing es sofort. Statt mit `(void)` zu kaschieren aus der Signatur entfernt (Header ist neu, keine Bruchgefahr).
+
+**Mutationslauf 7/7 gefangen** (nach der Bereinigung): Reihenfolge umgedreht → 4 · Queue erst nach Zustellung geleert → 1 · Gesundheit nicht gemeldet → 3 · `init()==false` deaktiviert nicht → 5 · verbliebene FAULT-Meldestelle → 1 · Budgetüberschreitung ignoriert → 3 · ohne Watchdog trotzdem kicken → 1.
+
+**Keine Spec-Änderung, keine HOLDs berührt.**
+
+**Nächster Schritt (Session 25+):** (a) echte KiCad-Zeichnung → G07 (braucht KiCad + Vendor-Libs); (b) HOLDs mit Vendor-Rückmeldungen schließen (G02/G03/G04/G05/G06); (c) optional die verbleibenden unkritischen Module (`buttons`, `touch_ring`, `haptic`, `battery`, `fan`, `sensors`, `recovery`) — deren Logik ist aber weitgehend HAL-nah und damit erst nach G07 sinnvoll testbar.
+
+---
+
 ## 2026-09-08 — Session 23 (`power` + `watchdog` — Sicherheitskette vollständig)
 
 **Umgesetzt:** Die beiden verbleibenden safety-critical Module. Damit ist die Kette `watchdog → power → rf_kill` aus `ARCHITECTURE.md` §4 **durchgehend implementiert und getestet**. Neu: `include/onex_power.h` + `src/onex_power.c`, `include/onex_watchdog.h` + `src/onex_watchdog.c`, `test/test_onex_power.c` (**80 Prüfungen** für beide Module plus ihre Kopplung). Gesamt **248 Prüfungen** in 4 Suiten; check_all bleibt 4/4.
