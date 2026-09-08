@@ -1,0 +1,34 @@
+(kicad_sch
+	(version 20250114)
+	(generator "onex_gen_kicad_sch")
+	(generator_version "10.0")
+	(uuid "4654e219-2c67-568f-acd2-db788c5e4644")
+	(paper "A4")
+	(title_block
+		(title "ONE-X mainboard - Board-Root")
+		(company "G4MEOVER ONE-X")
+		(comment 1 "Erzeugt von tools/gen_kicad_sch.py - nicht von Hand editieren")
+	)
+	(lib_symbols)
+	(sheet
+		(at 25.4 25.40)
+		(size 152.4 20.32)
+		(fields_autoplaced yes)
+		(stroke (width 0.1524) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "4392d3d4-0f28-51bb-bb34-f25560374ccc")
+		(property "Sheetname" "ONE-X Mainboard - Sheet 17 - Connectors (Inter-Board)" (at 25.4 24.60 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom)))
+		(property "Sheetfile" "sheet_17_connectors.kicad_sch" (at 25.4 46.40 0)
+			(effects (font (size 1.27 1.27)) (justify left top)))
+		(instances
+			(project "mainboard"
+				(path "/4654e219-2c67-568f-acd2-db788c5e4644" (page "2"))
+			)
+		)
+	)
+	(sheet_instances
+		(path "/" (page "1"))
+	)
+	(embedded_fonts no)
+)

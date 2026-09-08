@@ -12,6 +12,35 @@
 
 ---
 
+## 2026-09-08 — Session 30 (Mainboard-Verteiler + Board-gegen-Board-Prüfung)
+
+**Mainboard Sheet 17 (Connectors)** ist das Gegenstück zu allen bisherigen Boards — und macht damit die stärkste Netzprüfung überhaupt erst möglich. **9 Blätter in 5 Boards**, alle ERC-sauber ohne Ausnahmen. `check_all` jetzt **10/10**.
+
+**HOLD-Disziplin:** Die RK3576-Ball-Map bleibt außen vor (Sheet 03 ist gesperrt); Sheet 17 zeigt nur die Connector-Netze. Der **RF-Core-Bus** (`RFC_SPI_*`, `RFC_UART_*`, `RFC_I2C_*`, `RFC_IRQ_*`) wird **nicht gezeichnet** — das Wörterbuch führt ihn nur als *Muster*, und wie viele Chip-Selects es gibt, ist nirgends festgelegt. Gezeichnet sind nur die eindeutigen Sicherheitsnetze (`RF_KILL`, `RF_KILL_SW_n`, `TX_GATE_OK`).
+
+**Statt einer ERC-Ausnahme: benannte Herkunft.** Sheet 17 *verteilt* nur — die Signale entstehen auf anderen, gesperrten Mainboard-Blättern. Ohne Gegenstelle hingen 58 Netze isoliert. Jede Gruppe hat deshalb einen Herkunfts-Anschluss („von Sheet 03 (RK3576) + Sheet 13 (RP2350)"). Das ist ehrlicher als eine Unterdrückung und dokumentiert zugleich, wo die Signale herkommen.
+
+**Neu — `tools/kicad_boardlink_check.py`: Board gegen Board.** Die dritte und schärfste Netzprüfung:
+| Werkzeug | prüft |
+|---|---|
+| `schematic_netcheck` | Design-Specs (Markdown) untereinander |
+| `kicad_netcheck` | Netznamen im Schaltplan sind kanonisch |
+| **`kicad_boardlink_check`** | **jedes Inter-Board-Netz hat wirklich zwei Enden** |
+
+Ein Netz, das nur auf einem Board existiert, ist eine Leitung ins Nichts: Der Stecker führt sie, das Gegenstück kennt sie nicht. Das fällt sonst erst beim Zusammenstecken auf.
+
+**Und die Prüfung fand sofort 16 solcher Leitungen:** `ANT_1`…`ANT_4` sowie sämtliche PCIe-/USB3-/USB2-Paare existierten nur auf dem Mainboard. Ursache: Auf `antenna-rail` und `m2-bridge` waren sie als **lokale** Labels angelegt — ein lokales Label bleibt im Blatt. Beim Einzelblatt-ERC fiel das nie auf, weil dort ohnehin alles isoliert war. Umgestellt; danach **58 Netze mit beidseitigem Anschluss**.
+
+Beim Umstellen kam ein Folgefehler zutage: Ohne Serien-C ist die Endpoint-Seite *dasselbe* Netz wie die Host-Seite und muss ebenfalls global sein — mit C entsteht dagegen ein neuer, board-lokaler Abschnitt. Beides mit demselben Namen zu mischen meldet ERC als `same_local_global_label`.
+
+Der Check meldet außerdem den **Ausbaustand**: wie viele kanonische Netze noch auf gar keinem Board gezeichnet sind. Das ist bewusst **kein Fehler** — die zugehörigen Blätter existieren schlicht noch nicht.
+
+**Stand:** 9 Blätter / 5 Boards ERC-sauber ohne Ausnahmen · 58 Netze beidseitig verbunden · 10/10 grün.
+
+**Nächster Schritt (Session 31+):** (a) RF-Core Sheet 07 (Power/Host/Antennen) — pinmap-frei; (b) Mainboard Sheet 18 (Testpunkte); (c) die 10 WAHL_OFFEN-Positionen im Sourcing-Register. Die Radio-Sheets (RF-Core 02–06) und alles mit Hersteller-Pinbelegung bleiben gesperrt.
+
+---
+
 ## 2026-09-08 — Session 29 (UI-Carrier komplett + Ellipsen-Wächter + ein Widerspruch aufgelöst)
 
 **Umgesetzt:** Die restlichen drei UI-Carrier-Blätter — Touch (02), Eingabe (03), Haptik/Status/Connector (04). Damit sind **8 Blätter in 4 Boards** ERC-sauber, weiterhin **ohne jede Ausnahme**. `check_all` 9/9.

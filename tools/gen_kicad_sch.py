@@ -572,12 +572,14 @@ def build_antenna_rail_sheet01() -> Sheet:
 
         # Vom Connector-Pin ein Stueck nach rechts, dort das Netzlabel.
         s.wire(pin_x, py, pin_x + g(4), py)
-        s.label(feed, pin_x + g(4), py)
+        # ANT_* quert J_ANT zum Mainboard -> global. Als lokales Label bliebe
+        # die Verbindung im Blatt und das Gegenstueck haette kein Netz.
+        s.glabel(feed, pin_x + g(4), py)
 
         # --- Feed-Strecke: Label -> 3 Matching-Plaetze -> ESD -> SMA ---
         x = g(70)
         s.wire(x - g(6), row_y, x - g(4), row_y)
-        s.label(feed, x - g(6), row_y)
+        s.glabel(feed, x - g(6), row_y)
 
         for _m in range(3):
             s.place("MATCH", x, row_y, s._ref("MP"), "TBD", dnp=True,
@@ -675,9 +677,9 @@ def build_m2_bridge_sheet01() -> Sheet:
             py = hy - htop + g(2) * i
             row_y = g(20) + g(6) * i
 
-            # Host-Seite: Pin -> Label.
+            # Host-Seite: quert J_M2 zum Mainboard -> global.
             s.wire(hpin_x, py, hpin_x + g(4), py)
-            s.label(net, hpin_x + g(4), py)
+            s.glabel(net, hpin_x + g(4), py)
 
             # Strecke in der Blattmitte.
             #
@@ -696,7 +698,7 @@ def build_m2_bridge_sheet01() -> Sheet:
                 # dann bei +/- 3.81 mm (= 3 Raster) neben der Platzierung, NICHT
                 # am Symbolrand. Die Draehte muessen genau dort enden.
                 cx_ = x0 + g(4)
-                s.label(net, x0, row_y)
+                s.glabel(net, x0, row_y)
                 s.wire(x0, row_y, cx_ - g(3), row_y)
                 s.place("C", cx_, row_y, s._ref("C"), "TBD", rot=90,
                         fields={"ONEX_Status": "Wert TBD (G08)",
@@ -705,9 +707,17 @@ def build_m2_bridge_sheet01() -> Sheet:
                 s.label(ep_net, x0 + g(12), row_y)
 
             # Endpoint-Seite.
+            #
+            # Ohne Serien-C ist es DASSELBE Netz wie auf der Host-Seite und
+            # quert damit auch J_M2 -> global. Mit C entsteht ein neuer,
+            # board-lokaler Abschnitt (*_M2) -> lokal. Beides mit demselben
+            # Namen zu mischen meldet ERC als same_local_global_label.
             epy = ey - htop + g(2) * i
             s.wire(epin_x, epy, epin_x + g(4), epy)
-            s.label(ep_net, epin_x + g(4), epy)
+            if ac:
+                s.label(ep_net, epin_x + g(4), epy)
+            else:
+                s.glabel(ep_net, epin_x + g(4), epy)
 
     # Masse beidseitig + ein Power-Flag.
     for cx_, cy_, tag in ((hpin_x, hy, "H"), (epin_x, ey, "E")):
@@ -1275,7 +1285,111 @@ def build_ui_carrier_sheet04() -> Sheet:
     return s
 
 
+# ------------------------------------- Mainboard Sheet 17 (real)
+#
+# Quelle: hardware/mainboard/schematic/sheet_17_connectors.md
+#
+# Das Gegenstueck zu allen bisherigen Boards: hier laufen die Verbinder
+# zusammen. Damit wird erstmals eine echte BOARD-GEGEN-BOARD-Pruefung moeglich
+# -- bisher konnte nur gegen das Woerterbuch geprueft werden.
+#
+# HOLD-treu: Die RK3576-Ball-Map bleibt aussen vor (der SoC steht auf Sheet 03,
+# das gesperrt ist). Hier stehen nur die Connector-Netze. Der RF-Core-Bus
+# (RFC_SPI_*, RFC_UART_*, RFC_I2C_*, RFC_IRQ_*) ist im Woerterbuch nur als
+# MUSTER gefuehrt -- wie viele Chip-Selects es gibt, ist nicht festgelegt.
+# Diese Leitungen werden deshalb NICHT gezeichnet.
+
+def build_mainboard_sheet17() -> Sheet:
+    board, sheet = "mainboard", "sheet_17_connectors"
+
+    dsi = []
+    for base in ("DSI0_CLK", "DSI0_D0", "DSI0_D1", "DSI0_D2", "DSI0_D3"):
+        dsi += [base + "_P", base + "_N"]
+    ui_display = dsi + ["TP_SCL", "TP_SDA", "TP_INT", "TP_RST",
+                        "LCD_RST_n", "BL_EN", "BL_PWM", "VLCD_3V3", "VDD_TP_3V3"]
+    ui_control = ["KEY_UP", "KEY_DOWN", "KEY_LEFT", "KEY_RIGHT", "KEY_CENTER",
+                  "KEY_SK1", "KEY_SK2", "KEY_SK3", "KEY_SK4", "KEY_SK5",
+                  "HAPTIC_PWM", "HAPTIC_EN", "LED_PWR", "LED_RFKILL", "LED_ACT"]
+    m2 = ["PCIE_TX_P", "PCIE_TX_N", "PCIE_RX_P", "PCIE_RX_N",
+          "PCIE_REFCLK_P", "PCIE_REFCLK_N",
+          "USB3_M2_TX_P", "USB3_M2_TX_N", "USB3_M2_RX_P", "USB3_M2_RX_N",
+          "USB2_M2_D_P", "USB2_M2_D_N",
+          "PCIE_PERST_n", "PCIE_CLKREQ_n", "PCIE_WAKE_n",
+          "+3V3_SYS", "HYPERRF_AUX_5V"]
+    ant = ["ANT_1", "ANT_2", "ANT_3", "ANT_4"]
+    rfcore = ["RF_KILL", "RF_KILL_SW_n", "TX_GATE_OK"]
+
+    # (Connector, Netze, Beschreibung, Herkunft auf dem Mainboard)
+    #
+    # Die Herkunft ist wichtig: Sheet 17 VERTEILT nur. Die Signale entstehen
+    # auf anderen Mainboard-Blaettern, die eine Hersteller-Pinbelegung
+    # brauchen und deshalb gesperrt sind (RK3576-Ball-Map, PMIC-Rail-Map).
+    # Statt die Netze hier im Nichts enden zu lassen, bekommt jede Gruppe
+    # einen benannten Herkunfts-Anschluss -- ehrlicher als eine ERC-Ausnahme.
+    groups = [
+        ("J_UI", ui_display + ui_control, "UI-Carrier (beide Domaenen)",
+         "Sheet 03 (RK3576) + Sheet 13 (RP2350)"),
+        ("J_M2", m2, "M.2-Bridge -> HyperRF", "Sheet 12 (M.2/HyperRF)"),
+        ("J_ANT", ant, "Antenna-Rail (4x SMA)", "RF-Core ueber J_RFCORE"),
+        ("J_RFCORE", rfcore, "RF-Core (Sicherheitsnetze)", "Sheet 13 (RP2350)"),
+    ]
+
+    extra = ""
+    for name, nets, _d, _src in groups:
+        pins = [(n, n) for n in nets] + [("GND", "GND")]
+        extra += "\n" + conn_symbol(name, pins)
+        extra += "\n" + conn_symbol("SRC_" + name, pins)
+    s = Sheet(board, sheet, "ONE-X Mainboard - Sheet 17 - Connectors (Inter-Board)", extra)
+
+    x = g(20)
+    for gi, (name, nets, desc, origin) in enumerate(groups):
+        pins = [(n, n) for n in nets] + [("GND", "GND")]
+        top = conn_pin_offset(len(pins))
+        cy_ = g(30) + top
+
+        # Links die Herkunft (anderes Mainboard-Blatt), rechts der Stecker.
+        s.place("SRC_" + name, x, cy_, f"JS{50 + gi}", f"von {origin}",
+                fields={"ONEX_Status": "Verweis",
+                        "ONEX_Note": "Quelle liegt auf einem gesperrten Blatt"})
+        s.place(name, x + g(30), cy_, f"J{50 + gi}", f"{name} - {desc}")
+        src_x = x + CONN_PIN_X
+        pin_x = x + g(30) + CONN_PIN_X
+
+        for i, net in enumerate(nets):
+            py = cy_ - top + g(2) * i
+            s.wire(src_x, py, src_x + g(4), py)
+            s.glabel(net, src_x + g(4), py)
+            s.wire(pin_x, py, pin_x + g(4), py)
+            s.glabel(net, pin_x + g(4), py)
+
+        gy = cy_ - top + g(2) * len(nets)
+        for cxx, tag in ((src_x, f"S{gi}"), (pin_x, f"C{gi}")):
+            s.wire(cxx, gy, cxx + g(4), gy)
+            s.wire(cxx + g(4), gy, cxx + g(4), gy + g(4))
+            s.place("GND", cxx + g(4), gy + g(4), f"#PWR{tag}", "GND")
+        if claim_power_flag(board, "GND"):
+            s.wire(pin_x + g(4), gy, pin_x + g(8), gy)
+            s.place("PWR_FLAG", pin_x + g(8), gy, "#FLG50", "PWR_FLAG")
+
+        x += g(76)
+
+    s.text("Zentraler Verteiler: hier laufen die Board-zu-Board-Verbinder zusammen.",
+           g(20), g(10), 2.0)
+    s.text("Netznamen exakt kanonisch (hardware/INTERFACE_NETS.md) - beide Enden gleich benannt.",
+           g(20), g(14))
+    s.text("NICHT gezeichnet: der RF-Core-Bus (RFC_SPI_*, RFC_UART_*, RFC_I2C_*, RFC_IRQ_*).",
+           g(20), g(20))
+    s.text("Das Woerterbuch fuehrt ihn nur als MUSTER - wie viele Chip-Selects es gibt,",
+           g(20), g(23))
+    s.text("ist nicht festgelegt. Die Leitungen folgen mit dem Bus-Freeze (G07).",
+           g(20), g(26))
+    s.text("Ebenfalls offen: Pin-Budget und Steckertyp/-hoehe je Interface (TBD).",
+           g(20), g(30))
+    return s
+
+
 SHEETS = [
+    ("mainboard", "sheet_17_connectors", build_mainboard_sheet17),
     ("antenna-rail", "sheet_01_sma_feeds", build_antenna_rail_sheet01),
     ("m2-bridge", "sheet_01_pcie_usb3", build_m2_bridge_sheet01),
     ("m2-bridge", "sheet_02_sideband_power", build_m2_bridge_sheet02),
