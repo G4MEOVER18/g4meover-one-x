@@ -51,7 +51,7 @@
 		(stroke (width 0.1524) (type solid))
 		(fill (color 0 0 0 0.0000))
 		(uuid "ff7ede5d-2375-52f2-97e6-c56c0222688a")
-		(property "Sheetname" "ONE-X UI-Carrier - Sheet 03 - Eingabe: D-Pad / Softkeys / Ring" (at 25.4 75.40 0)
+		(property "Sheetname" "ONE-X UI-Carrier - Sheet 03 - Eingabe - D-Pad / Softkeys / Ring" (at 25.4 75.40 0)
 			(effects (font (size 1.27 1.27)) (justify left bottom)))
 		(property "Sheetfile" "sheet_03_input_ring_dpad_keys.kicad_sch" (at 25.4 97.20 0)
 			(effects (font (size 1.27 1.27)) (justify left top)))

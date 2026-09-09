@@ -10,6 +10,10 @@ Fuehrt alle Repo-Checker nacheinander aus und fasst das Ergebnis zusammen:
   6. kicad_netcheck.py        -- Netznamen im Schaltplan sind kanonisch
   7. kicad_netlist_check.py   -- Regeln auf der echten Netzliste
   8. kicad_boardlink_check.py -- Inter-Board-Netze haben zwei Enden
+  8b. kicad_layout_check.py -- Beschriftungen ueberlagern sich nicht,
+      nichts liegt ausserhalb des Zeichenbereichs oder im Titelblock.
+      ERC prueft Elektrik; ein Blatt, das der Reviewer nicht lesen kann,
+      erfuellt seinen Zweck trotzdem nicht.
   9. gen_sourcing.py          -- Sourcing-Register aktuell
  10. fw_test.py               -- Firmware-Unit-Tests (Host-Compiler)
 
@@ -47,6 +51,7 @@ CHECKS = [
     ("Netznamen Schaltplan <-> Woerterbuch", "kicad_netcheck.py", ["--check"], False),
     ("Netzlisten-Regeln (Sicherheit/Schnittstellen)", "kicad_netlist_check.py", ["--check"], True),
     ("Board-gegen-Board (beide Enden vorhanden)", "kicad_boardlink_check.py", ["--check"], False),
+    ("Lesbarkeit der Schaltplaene (Layout)", "kicad_layout_check.py", ["--check"], False),
     ("Sourcing-Register (BOM -> Bestellung)", "gen_sourcing.py", ["--check"], False),
     ("Firmware-Unit-Tests (Codec/RF-Kill/Link/Power/Watchdog)", "fw_test.py", ["--check"], True),
 ]

@@ -12,6 +12,33 @@
 
 ---
 
+## 2026-09-09 — Session 32 (Lesbarkeit wird geprüft, nicht gehofft — 6 von 10 Blättern waren unlesbar)
+
+Session 31 endete mit einem Merkzettel: „bei jedem neuen Sheet plotten und ansehen". Genau die Sorte Vorsatz, die dieses Repo sonst nicht durchgehen lässt — der [Ellipsen-Wächter](../tools/kicad_netcheck.py) entstand aus demselben Grund. Jetzt prüft es ein Werkzeug.
+
+**Neu — `tools/kicad_layout_check.py` (11. Prüfung).** Vier Regeln: Beschriftungen überlagern sich nicht · nichts liegt außerhalb des Zeichenbereichs · nichts im Titelblock · der Blatt-Titel taugt als Dateiname.
+
+**Der Befund war schlimmer als erwartet: 6 der 10 Blätter waren unlesbar** — alle ERC-sauber. Das Muster ist überall dasselbe: Die Erläuterungstexte standen **über** der Schaltung statt darunter. Am schlimmsten traf es ausgerechnet [RF-Core Sheet 01](../hardware/rf-core/schematic/sheet_01_supervisor_rfkill.md), das sicherheitskritischste Blatt des Geräts: Der komplette Supervisor-Block lag unter dem Fließtext, im Plot war dort nichts zu entziffern.
+
+**Ein stiller Ausfall, gefunden beim Bauen des Checks:** `kicad-cli sch export svg` bildet den Dateinamen aus dem **Blatt-Titel**. UI-Carrier Sheet 03 hieß „Eingabe**:** D-Pad / Softkeys / Ring" — unter Windows trennt der Doppelpunkt einen NTFS-Datenstrom ab. Ergebnis: eine **0-Byte-Datei**, Erfolgsmeldung von kicad-cli, und das Blatt ließ sich schlicht nicht plotten — also nie reviewen. Ein Fehler, der niemandem auffällt, bis jemand genau dieses Blatt sehen will. Titel entschärft, Regel in den Wächter.
+
+**Strukturell statt punktuell — `Sheet.notes()`.** Die Textpositionen waren in jedem Builder von Hand geratene Koordinaten; daran sind sechs Blätter gescheitert. `Sheet` merkt sich jetzt die unterste gezeichnete Kante, und `notes()` setzt den Erläuterungsblock **automatisch darunter**. Reicht der Platz nicht, wirft der Generator eine Ausnahme, statt still in den Titelblock zu schreiben.
+
+**Zwei Funde am Wächter selbst — beide vom eigenen Mutationstest:**
+
+1. **Er war auf einem Auge blind.** Eine als Vorsicht gedachte Prüfung sah in die *Folgezeile* nach `(hide yes)` — und auf jede `Value`-Property folgt die versteckte `Footprint`-Property. Damit verwarf der Check **sämtliche Bauteilwerte**. Nach dem Fix: 483 → 678 geprüfte Beschriftungen, und sofort acht weitere echte Kollisionen.
+2. **Die Schwelle war falsch dimensioniert.** Ein fester Wert von 1,2 mm taugt nicht: Eine Textzeile in size 1.27 ist nur 1,52 mm hoch — der Check hätte erst bei fast vollständiger Überdeckung angeschlagen, während er bei Überschriften überempfindlich gewesen wäre. Jetzt **relativ** (40 % der kleineren Zeilenhöhe).
+
+**Gegenprobe — 7 Sonden, alle korrekt:** Text-auf-Text · Text-auf-Bauteil · außerhalb · Titelblock · Titel-Doppelpunkt — und **zwei Negativproben** (2-mm-Verschiebung, Schrägstrich im Titel), die grün bleiben müssen. Ein Wächter, der bei jeder Kleinigkeit anschlägt, wird weggeklickt und schützt vor nichts.
+
+**Behoben:** rf-core 01 (Supervisor-Block auf 50 mm gequetscht bei 420 mm Blattbreite — auseinandergezogen) · ui-carrier 01 (zwei Überschriften exakt übereinander) · 02 · 03 (Netz-Label lag auf dem Taster-Symbol; LED-Zweig: Widerstandswert und Diodenreferenz auf demselben Punkt) · 04 · m2-bridge 02 · mainboard 17 (Herkunfts-Beschriftungen breiter als die Spalte → in den Textblock verschoben, wo sie ohnehin besser lesbar sind).
+
+**Stand:** 10 Blätter / 5 Boards ERC-sauber ohne Ausnahmen · 678 Beschriftungen kollisionsfrei · **check_all 11/11**.
+
+**Nächster Schritt (Session 33+):** (a) Mainboard Sheet 18 (Testpunkte) — pinmap-frei; (b) die 10 `WAHL_OFFEN`-Positionen im Sourcing-Register; (c) G09 vorbereiten (Antennen-Zuordnungsmatrix). Radio-Sheets RF-Core 02–06 bleiben gesperrt.
+
+---
+
 ## 2026-09-09 — Session 31 (RF-Core Sheet 07 + das Wörterbuch wird zur einzigen Wahrheit)
 
 **RF-Core Sheet 07** (Power / Antennen / Bring-up-Testpoints) ist gezeichnet — das erste RF-Core-Blatt nach dem Supervisor, das ohne Hersteller-Pinbelegung auskommt. **10 Blätter in 5 Boards**, weiterhin alle ERC-sauber **ohne jede Ausnahme**.

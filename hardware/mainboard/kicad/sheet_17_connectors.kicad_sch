@@ -570,9 +570,10 @@
 		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
 		(uuid "699def57-700f-5fd9-a836-3df9fd050527")
 		(property "Reference" "JS50" (at 25.40 74.93 0) (effects (font (size 1.27 1.27))))
-		(property "Value" "von Sheet 03 (RK3576) + Sheet 13 (RP2350)" (at 25.40 87.63 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "Quelle" (at 25.40 87.63 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "" (at 25.40 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "ONEX_Status" "Verweis" (at 25.40 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "ONEX_Herkunft" "Sheet 03 (RK3576) + Sheet 13 (RP2350)" (at 25.40 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "ONEX_Note" "Quelle liegt auf einem gesperrten Blatt" (at 25.40 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(instances
 			(project "mainboard"
@@ -589,8 +590,9 @@
 		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
 		(uuid "0b2ad979-410b-5690-b6c9-7182975ce7b8")
 		(property "Reference" "J50" (at 63.50 74.93 0) (effects (font (size 1.27 1.27))))
-		(property "Value" "J_UI - UI-Carrier (beide Domaenen)" (at 63.50 87.63 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "J_UI" (at 63.50 87.63 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "" (at 63.50 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "ONEX_Ziel" "UI-Carrier (beide Domaenen)" (at 63.50 81.28 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(instances
 			(project "mainboard"
 				(path "/8d5a1fbe-e357-5f37-8ea9-6027a9875125"
@@ -1347,9 +1349,10 @@
 		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
 		(uuid "a2ad80ef-9435-5f97-8573-8717d137323c")
 		(property "Reference" "JS51" (at 121.92 53.34 0) (effects (font (size 1.27 1.27))))
-		(property "Value" "von Sheet 12 (M.2/HyperRF)" (at 121.92 66.04 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "Quelle" (at 121.92 66.04 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "" (at 121.92 59.69 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "ONEX_Status" "Verweis" (at 121.92 59.69 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "ONEX_Herkunft" "Sheet 12 (M.2/HyperRF)" (at 121.92 59.69 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "ONEX_Note" "Quelle liegt auf einem gesperrten Blatt" (at 121.92 59.69 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(instances
 			(project "mainboard"
@@ -1366,8 +1369,9 @@
 		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
 		(uuid "49a7a6fd-8ddf-5a50-8ecb-ee8e76107f7f")
 		(property "Reference" "J51" (at 160.02 53.34 0) (effects (font (size 1.27 1.27))))
-		(property "Value" "J_M2 - M.2-Bridge -> HyperRF" (at 160.02 66.04 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "J_M2" (at 160.02 66.04 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "" (at 160.02 59.69 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "ONEX_Ziel" "M.2-Bridge -> HyperRF" (at 160.02 59.69 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(instances
 			(project "mainboard"
 				(path "/8d5a1fbe-e357-5f37-8ea9-6027a9875125"
@@ -1765,9 +1769,10 @@
 		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
 		(uuid "388eaf64-fd36-5437-aa68-4a8c4280e4e4")
 		(property "Reference" "JS52" (at 218.44 36.83 0) (effects (font (size 1.27 1.27))))
-		(property "Value" "von RF-Core / HyperRF - Zuordnung TBD (G09)" (at 218.44 49.53 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "Quelle" (at 218.44 49.53 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "" (at 218.44 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "ONEX_Status" "Verweis" (at 218.44 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "ONEX_Herkunft" "RF-Core / HyperRF - Zuordnung TBD (G09)" (at 218.44 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "ONEX_Note" "Quelle liegt auf einem gesperrten Blatt" (at 218.44 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(instances
 			(project "mainboard"
@@ -1784,8 +1789,9 @@
 		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
 		(uuid "8a262bf2-0bde-5690-8d7d-b4fbeebe060f")
 		(property "Reference" "J52" (at 256.54 36.83 0) (effects (font (size 1.27 1.27))))
-		(property "Value" "J_ANT - Antenna-Rail (4x SMA)" (at 256.54 49.53 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "J_ANT" (at 256.54 49.53 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "" (at 256.54 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "ONEX_Ziel" "Antenna-Rail (4x SMA)" (at 256.54 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(instances
 			(project "mainboard"
 				(path "/8d5a1fbe-e357-5f37-8ea9-6027a9875125"
@@ -1923,9 +1929,10 @@
 		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
 		(uuid "fce6c59e-3005-5ff3-8012-e88121f27f87")
 		(property "Reference" "JS53" (at 314.96 36.83 0) (effects (font (size 1.27 1.27))))
-		(property "Value" "von Sheet 13 (RP2350) + Sheet 01 (Power-Tree)" (at 314.96 49.53 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "Quelle" (at 314.96 49.53 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "" (at 314.96 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "ONEX_Status" "Verweis" (at 314.96 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "ONEX_Herkunft" "Sheet 13 (RP2350) + Sheet 01 (Power-Tree)" (at 314.96 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(property "ONEX_Note" "Quelle liegt auf einem gesperrten Blatt" (at 314.96 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(instances
 			(project "mainboard"
@@ -1942,8 +1949,9 @@
 		(exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
 		(uuid "9f3afc7c-c000-5a4d-a98b-69050d0b6805")
 		(property "Reference" "J53" (at 353.06 36.83 0) (effects (font (size 1.27 1.27))))
-		(property "Value" "J_RFCORE - RF-Core (Sicherheit + Power)" (at 353.06 49.53 0) (effects (font (size 1.27 1.27))))
+		(property "Value" "J_RFCORE" (at 353.06 49.53 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "" (at 353.06 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(property "ONEX_Ziel" "RF-Core (Sicherheit + Power)" (at 353.06 43.18 0) (effects (font (size 1.27 1.27)) (hide yes)))
 		(instances
 			(project "mainboard"
 				(path "/8d5a1fbe-e357-5f37-8ea9-6027a9875125"
@@ -2074,18 +2082,30 @@
 			)
 		)
 	)
-	(text "Zentraler Verteiler: hier laufen die Board-zu-Board-Verbinder zusammen." (exclude_from_sim no) (at 25.40 12.70 0)
-		(effects (font (size 2.0 2.0)) (justify left bottom)) (uuid "5bee3ef2-9a5d-5b9b-a876-223296a67d26"))
-	(text "Netznamen exakt kanonisch (hardware/INTERFACE_NETS.md) - beide Enden gleich benannt." (exclude_from_sim no) (at 25.40 17.78 0)
-		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "369b80c8-b56e-51ff-aaa9-55b77f328f11"))
-	(text "NICHT gezeichnet: der RF-Core-Bus (RFC_SPI_*, RFC_UART_*, RFC_I2C_*, RFC_IRQ_*)." (exclude_from_sim no) (at 25.40 25.40 0)
-		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "b2e3ddd1-275a-5046-9c9b-f0b2c908dd70"))
-	(text "Das Woerterbuch fuehrt ihn nur als MUSTER - wie viele Chip-Selects es gibt," (exclude_from_sim no) (at 25.40 29.21 0)
-		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "2084e40d-acd1-5f61-9af1-b9a3720a52ed"))
-	(text "ist nicht festgelegt. Die Leitungen folgen mit dem Bus-Freeze (G07)." (exclude_from_sim no) (at 25.40 33.02 0)
-		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "cfb7fbc5-08bf-5c71-8a72-be247e8c2d33"))
-	(text "Ebenfalls offen: Pin-Budget und Steckertyp/-hoehe je Interface (TBD)." (exclude_from_sim no) (at 25.40 38.10 0)
-		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "471f63a0-c493-5340-a587-33249cadd809"))
+	(text "Zentraler Verteiler: hier laufen die Board-zu-Board-Verbinder zusammen." (exclude_from_sim no) (at 20.32 146.43 0)
+		(effects (font (size 2.0 2.0)) (justify left bottom)) (uuid "788dee6c-7064-56e8-8499-215d8343b4f2"))
+	(text "Netznamen exakt kanonisch (hardware/INTERFACE_NETS.md) - beide Enden gleich benannt." (exclude_from_sim no) (at 20.32 150.83 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "48c2f53a-a736-551b-8d49-63a445bb50e5"))
+	(text "" (exclude_from_sim no) (at 20.32 153.62 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "421d1b93-9c2c-5076-ae68-1e221c217b1d"))
+	(text "J_UI  ->  UI-Carrier (beide Domaenen)   |   Quelle auf dem Mainboard: Sheet 03 (RK3576) + Sheet 13 (RP2350)" (exclude_from_sim no) (at 20.32 156.42 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "72fa74a2-c906-5297-97ca-146458907ff6"))
+	(text "J_M2  ->  M.2-Bridge -> HyperRF   |   Quelle auf dem Mainboard: Sheet 12 (M.2/HyperRF)" (exclude_from_sim no) (at 20.32 159.21 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "f341552f-d937-5ab7-ad67-af87db28803f"))
+	(text "J_ANT  ->  Antenna-Rail (4x SMA)   |   Quelle auf dem Mainboard: RF-Core / HyperRF - Zuordnung TBD (G09)" (exclude_from_sim no) (at 20.32 162.01 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "ef640d6c-2e90-5b22-850e-72cb26a97b9d"))
+	(text "J_RFCORE  ->  RF-Core (Sicherheit + Power)   |   Quelle auf dem Mainboard: Sheet 13 (RP2350) + Sheet 01 (Power-Tree)" (exclude_from_sim no) (at 20.32 164.80 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "8fbcf667-d1a1-5182-921e-8fe19003b88e"))
+	(text "" (exclude_from_sim no) (at 20.32 167.59 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "ae872db9-6700-58ae-8519-b395fbf7dfac"))
+	(text "NICHT gezeichnet: der RF-Core-Bus (RFC_SPI_*, RFC_UART_*, RFC_I2C_*, RFC_IRQ_*)." (exclude_from_sim no) (at 20.32 170.39 0)
+		(effects (font (size 2.0 2.0)) (justify left bottom)) (uuid "fa0e1605-2a7c-5469-a3c7-b1338a8c84d2"))
+	(text "Das Woerterbuch fuehrt ihn nur als MUSTER - wie viele Chip-Selects es gibt," (exclude_from_sim no) (at 20.32 174.79 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "b4892a28-3a60-51c7-87f9-7d750458601d"))
+	(text "ist nicht festgelegt. Die Leitungen folgen mit dem Bus-Freeze (G07)." (exclude_from_sim no) (at 20.32 177.58 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "b6ef1005-ee7a-587f-96fd-e8afd92f85f1"))
+	(text "Ebenfalls offen: Pin-Budget und Steckertyp/-hoehe je Interface (TBD)." (exclude_from_sim no) (at 20.32 180.38 0)
+		(effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "a7316fbc-34cf-59c1-ada0-e8f3f66c4876"))
 	(sheet_instances
 		(path "/" (page "1"))
 	)

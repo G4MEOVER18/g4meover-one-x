@@ -441,13 +441,24 @@ class Sheet:
         self.extra_symbols = extra_symbols
         self.items: list[str] = []
         self.refs: dict[str, int] = {}
+        # Unterster Punkt der ZEICHNUNG (ohne Erlaeuterungstexte). Damit kann
+        # notes() seinen Block darunter setzen, statt dass jeder Builder die
+        # Koordinate raet -- genau daran sind bis Session 31 sechs Blaetter
+        # gescheitert: Text lag ueber der Schaltung, ERC sah es nicht.
+        self._used_y = 0.0
 
     def _ref(self, prefix: str) -> str:
         self.refs[prefix] = self.refs.get(prefix, 0) + 1
         return f"{prefix}{self.refs[prefix]}"
 
+    def _mark(self, y: float) -> None:
+        self._used_y = max(self._used_y, y)
+
     def place(self, lib: str, x: float, y: float, ref: str, value: str,
               rot: int = 0, dnp: bool = False, fields: dict[str, str] | None = None) -> None:
+        # +8 mm: Der Wert eines Bauteils steht 6,35 mm unter seinem Ankerpunkt,
+        # plus halbe Zeilenhoehe.
+        self._mark(y + 8.0)
         u = uid(self.board, self.sheet, "sym", ref)
         props = [
             f'\t\t(property "Reference" "{ref}" (at {x:.2f} {y - 6.35:.2f} 0)'
@@ -489,6 +500,7 @@ class Sheet:
         )
 
     def wire(self, x1: float, y1: float, x2: float, y2: float) -> None:
+        self._mark(max(y1, y2))
         u = uid(self.board, self.sheet, "w", f"{x1},{y1},{x2},{y2}")
         self.items.append(
             f'\t(wire (pts (xy {x1:.2f} {y1:.2f}) (xy {x2:.2f} {y2:.2f}))\n'
@@ -496,6 +508,7 @@ class Sheet:
         )
 
     def label(self, text: str, x: float, y: float, rot: int = 0) -> None:
+        self._mark(y + 2.0)
         u = uid(self.board, self.sheet, "lbl", f"{text}@{x},{y}")
         self.items.append(
             f'\t(label "{text}" (at {x:.2f} {y:.2f} {rot})\n'
@@ -509,6 +522,7 @@ class Sheet:
         meldet solche Netze zu Recht als isoliert. Signale, die andere Sheets
         erreichen (PA_EN_*, TX_GATE_OK ...), muessen global sein.
         """
+        self._mark(y + 2.0)
         u = uid(self.board, self.sheet, "glbl", f"{text}@{x},{y}")
         self.items.append(
             f'\t(global_label "{text}"\n'
@@ -538,6 +552,33 @@ class Sheet:
             f'\t(text "{esc}" (exclude_from_sim no) (at {x:.2f} {y:.2f} 0)\n'
             f'\t\t(effects (font (size {size} {size})) (justify left bottom)) (uuid "{u}"))'
         )
+
+    def notes(self, lines: list, x: float = None, gap: float = g(7)) -> None:
+        """
+        Setzt einen Erlaeuterungsblock UNTER die fertige Zeichnung.
+
+        `lines` ist eine Liste aus Strings oder (Text, Groesse)-Paaren. Der
+        Block beginnt `gap` unterhalb des untersten gezeichneten Elements --
+        deshalb erst NACH allen place()/wire()/glabel()-Aufrufen rufen.
+
+        Reicht der Platz nicht, wird eine Ausnahme geworfen statt still
+        weiterzuzeichnen: Ein Text, der halb im Titelblock liegt, ist genau
+        die Sorte Fehler, die niemandem auffaellt, bis jemand das Blatt
+        lesen will.
+        """
+        x = g(16) if x is None else x
+        y = self._used_y + gap
+        for entry in lines:
+            text, size = entry if isinstance(entry, tuple) else (entry, 1.27)
+            self.text(text, x, y, size)
+            y += size * 2.2
+        # A3 ist 297 mm hoch; der Titelblock beginnt bei y = 235.
+        limit = 235.0 if x + 120.0 > 215.0 else 287.0
+        if y > limit:
+            raise ValueError(
+                f"{self.board}/{self.sheet}: Erlaeuterungsblock reicht bis "
+                f"y={y:.0f} mm, erlaubt bis {limit:.0f}. Zeichnung kuerzen "
+                f"oder den Block per x= seitlich setzen.")
 
     def render(self) -> str:
         return (
@@ -790,7 +831,7 @@ def build_rf_core_sheet01() -> Sheet:
               "ONE-X RF-Core - Sheet 01 - Supervisor / RF-Kill (sicherheitskritisch)", extra)
 
     # Eingaenge vom RP2350 und vom physischen Notfallschalter.
-    cx, cy = g(20), g(28)
+    cx, cy = g(18), g(26)
     s.place("J_SUP", cx, cy, "J30", "J_RFCORE (Supervisor)")
     top = conn_pin_offset(len(sup_pins))
     pin_x = cx + CONN_PIN_X
@@ -813,15 +854,18 @@ def build_rf_core_sheet01() -> Sheet:
     # Gemeinsames Gate: RF_KILL UND RF_KILL_SW_n. Beide muessen freigeben.
     # Die beiden Eingaenge werden von aussen getrieben -> je eine benannte
     # Quelle, damit ERC den Pfad als versorgt erkennt.
-    gate_x, gate_y = g(48), g(24)
+    gate_x, gate_y = g(80), g(26)
     for dy, src_note in ((-g(2), "RP2350"), (g(2), "Notfallschalter")):
         y = gate_y + dy
         # Anschlusspunkt der Quelle liegt auf ihrer Platzierung -> genau auf
         # den Draht setzen, sonst haengt sie daneben (ERC: "not driven").
-        s.source(gate_x - g(14), y, src_note)
-        s.wire(gate_x - g(14), y, gate_x - g(6), y)
-    s.glabel("RF_KILL", gate_x - g(12), gate_y - g(2))
-    s.glabel("RF_KILL_SW_n", gate_x - g(12), gate_y + g(2))
+        # Quelle bewusst weit links: ihre Beschriftung sitzt 6,35 mm
+        # unter dem Symbol und lag sonst auf dem Label der Leitung
+        # darunter (die AND2-Eingaenge stehen fest).
+        s.source(gate_x - g(30), y, src_note)
+        s.wire(gate_x - g(30), y, gate_x - g(6), y)
+    s.glabel("RF_KILL", gate_x - g(20), gate_y - g(2))
+    s.glabel("RF_KILL_SW_n", gate_x - g(20), gate_y + g(2))
 
     s.place("AND2", gate_x, gate_y, "U30", "TX_GATE",
             fields={"ONEX_Status": "FIXED (fail-safe)",
@@ -843,11 +887,11 @@ def build_rf_core_sheet01() -> Sheet:
 
     # Je Radio: eigenes Gate aus TX_PERMIT, mit Pull-Down Richtung Kill.
     for i, (radio, band) in enumerate(radios):
-        ry = g(40) + g(14) * i
+        ry = g(52) + g(14) * i
 
         # Freigabe aus dem Supervisor-Gate (U30) dieses Blattes.
-        s.glabel("TX_GATE_OK", g(40), ry - g(2))
-        s.wire(g(40), ry - g(2), g(44), ry - g(2))
+        s.glabel("TX_GATE_OK", g(38), ry - g(2))
+        s.wire(g(38), ry - g(2), g(44), ry - g(2))
 
         # Die Sendeanforderung kommt vom jeweiligen Radio-Chip auf einem
         # anderen Sheet (02-06) -- global plus benannte Quelle, exakt auf
@@ -873,19 +917,15 @@ def build_rf_core_sheet01() -> Sheet:
         s.wire(g(62), ry, g(70), ry)
         s.glabel(f"PA_EN_{radio}", g(70), ry)
 
-    s.text("REGEL: Jedes PA/TX-Enable laeuft ueber dieses Gate. Kein verdeckter TX-Pfad.",
-           g(20), g(12), 2.0)
-    s.text("Default nach Boot/Reset/Fault = Kill aktiv. Pull-Downs ziehen jedes Enable Richtung Kill,",
-           g(20), g(16))
-    s.text("auch wenn der RP2350 haengt (sheet_01_supervisor_rfkill.md, Regel 2).", g(20), g(19))
-    s.text("TX_GATE_OK wird HINTER der Gate-Logik abgegriffen und an den RP2350 zurueckgemeldet.",
-           g(20), g(22))
-    s.text("Die Firmware vergleicht ihn gegen den Befehl und latcht bei Abweichung einen Fault",
-           g(20), g(25))
-    s.text("(onex_rfkill.c). Ein Abgriff VOR dem Gate waere derselbe Wert wie der Befehl -",
-           g(20), g(28))
-    s.text("der Vergleich pruefte sich selbst. Endgueltige Sense-Stelle hinter den PA-Enables: TBD.",
-           g(20), g(31))
+    s.notes([
+        ("REGEL: Jedes PA/TX-Enable laeuft ueber dieses Gate. Kein verdeckter TX-Pfad.", 2.0),
+        "Default nach Boot/Reset/Fault = Kill aktiv. Pull-Downs ziehen jedes Enable Richtung Kill,",
+        "auch wenn der RP2350 haengt (sheet_01_supervisor_rfkill.md, Regel 2).",
+        "TX_GATE_OK wird HINTER der Gate-Logik abgegriffen und an den RP2350 zurueckgemeldet.",
+        "Die Firmware vergleicht ihn gegen den Befehl und latcht bei Abweichung einen Fault",
+        "(onex_rfkill.c). Ein Abgriff VOR dem Gate waere derselbe Wert wie der Befehl -",
+        "der Vergleich pruefte sich selbst. Endgueltige Sense-Stelle hinter den PA-Enables: TBD.",
+    ])
     return s
 
 
@@ -967,19 +1007,20 @@ def build_m2_bridge_sheet02() -> Sheet:
     # Rails brauchen einen deklarierten Treiber, sonst gelten sie als
     # ungespeist -- sie kommen physisch vom Mainboard.
     for i, (net, _why) in enumerate(rails):
-        fx, fy = g(88), g(38) + g(6) * i
+        fx, fy = g(88), g(52) + g(6) * i
         s.glabel(net, fx, fy)
         if claim_power_flag(board, net):
             s.wire(fx, fy, fx + g(4), fy)
             s.place("PWR_FLAG", fx + g(4), fy, f"#FLG1{i}", "PWR_FLAG")
 
-    s.text("Power-vor-Reset: +3V3_SYS und HYPERRF_AUX_5V stabil, DANN PCIE_PERST_n freigeben.",
-           g(18), g(10), 2.0)
-    s.text("Rail heisst kanonisch +3V3_SYS (Power-Tree), nicht '+3V3' - zwei Namen fuer eine",
-           g(18), g(14))
-    s.text("Rail waeren beim Zusammenfuehren der Boards ein Fehler.", g(18), g(17))
-    s.text("TBD: Kontakt-/Strombudget fuer HYPERRF_AUX_5V (bis 5 A) - Layout-Review G08.",
-           g(18), g(56))
+    NOTES_M2B = [
+        ("Power-vor-Reset: +3V3_SYS und HYPERRF_AUX_5V stabil, DANN PCIE_PERST_n freigeben.", 2.0),
+        "Rail heisst kanonisch +3V3_SYS (Power-Tree), nicht '+3V3' - zwei Namen fuer eine",
+        "Rail waeren beim Zusammenfuehren der Boards ein Fehler.",
+    ]
+    s.notes(NOTES_M2B + [
+        "TBD: Kontakt-/Strombudget fuer HYPERRF_AUX_5V (bis 5 A) - Layout-Review G08.",
+    ])
     return s
 
 
@@ -1082,13 +1123,15 @@ def build_ui_carrier_sheet01() -> Sheet:
     s.wire(g(72), g(29), g(72), g(31))
     s.place("GND", g(72), g(31), "#PWR41", "GND")
 
-    s.text("FIXED: 4 Datenlanes + Takt, LCD_RST_n, BL_EN/BL_PWM, VLCD_3V3.", g(18), g(8), 2.0)
-    s.text("Der RK3576 erscheint hier NICHT als Symbol - seine Ball-Map ist HOLD.", g(18), g(12))
-    s.text("Die Signale kommen als Durchfuehrung ueber J_UI/J_DSI (Design-Spec).", g(18), g(15))
-    s.text("TBD (Gate G01): DSI-Init-Sequenz, Lane-Timings, Backlight-String V/I, Panel-MPN.",
-           g(18), g(19))
-    s.text("Power-Sequenz: VLCD_3V3 -> LCD_RST_n freigeben -> Backlight erst bei gueltigem Video.",
-           g(18), g(22))
+    NOTES01 = [
+        ("FIXED: 4 Datenlanes + Takt, LCD_RST_n, BL_EN/BL_PWM, VLCD_3V3.", 2.0),
+        "Der RK3576 erscheint hier NICHT als Symbol - seine Ball-Map ist HOLD.",
+        "Die Signale kommen als Durchfuehrung ueber J_UI/J_DSI (Design-Spec).",
+    ]
+    s.notes(NOTES01 + [
+        "TBD (Gate G01): DSI-Init-Sequenz, Lane-Timings, Backlight-String V/I, Panel-MPN.",
+        "Power-Sequenz: VLCD_3V3 -> LCD_RST_n freigeben -> Backlight erst bei gueltigem Video.",
+    ])
     return s
 
 
@@ -1137,7 +1180,7 @@ def build_ui_carrier_sheet02() -> Sheet:
 
     # Genau EIN Pull-up-Satz am I2C (Sheet 02: "Doppel-Pull-up vermeiden").
     for i, net in enumerate(("TP_SCL", "TP_SDA")):
-        px_ = g(56) + g(8) * i
+        px_ = g(56) + g(14) * i
         s.glabel("VDD_TP_3V3", px_, g(14))
         s.wire(px_, g(14), px_, g(18))
         s.place("R", px_, g(22), s._ref("R"), "4k7",
@@ -1151,10 +1194,12 @@ def build_ui_carrier_sheet02() -> Sheet:
         s.wire(g(40), g(14), g(44), g(14))
         s.place("PWR_FLAG", g(44), g(14), "#FLG43", "PWR_FLAG")
 
-    s.text("FIXED: I2C-Bus + INT/RST + Rail. Genau EIN Pull-up-Satz je Bus.", g(18), g(8), 2.0)
-    s.text("TBD (G01): I2C-Adresse, Init-Register, Reset-/INT-Timing.", g(18), g(11))
-    s.text("Achtung Adress-Strapping: GT911-Klasse waehlt die Adresse ueber INT/RST-Pegel", g(18), g(56))
-    s.text("waehrend des Resets - die Boot-Sequenz entscheidet mit (Bringup G01).", g(18), g(59))
+    s.notes([
+        ("FIXED: I2C-Bus + INT/RST + Rail. Genau EIN Pull-up-Satz je Bus.", 2.0),
+        "TBD (G01): I2C-Adresse, Init-Register, Reset-/INT-Timing.",
+        "Achtung Adress-Strapping: GT911-Klasse waehlt die Adresse ueber INT/RST-Pegel",
+        "waehrend des Resets - die Boot-Sequenz entscheidet mit (Bringup G01).",
+    ])
     return s
 
 
@@ -1175,7 +1220,7 @@ def build_ui_carrier_sheet03() -> Sheet:
     pins = [(k, k) for k in keys] + [("GND", "GND")]
     extra = "\n" + conn_symbol("J_UI_KEYS", pins)
     s = Sheet(board, sheet,
-              "ONE-X UI-Carrier - Sheet 03 - Eingabe: D-Pad / Softkeys / Ring", extra)
+              "ONE-X UI-Carrier - Sheet 03 - Eingabe - D-Pad / Softkeys / Ring", extra)
 
     cx3, cy3 = g(24), g(56)
     s.place("J_UI_KEYS", cx3, cy3, "J44", "J_UI (RP2350-Domaene)")
@@ -1190,14 +1235,17 @@ def build_ui_carrier_sheet03() -> Sheet:
         # Je Taste: Pull-up Richtung Ruhezustand + Taster gegen Masse.
         # Aktiv-low, wie in der Spec beschrieben.
         row_y = g(16) + g(14) * i
-        s.glabel(key, g(52), row_y)
-        s.wire(g(52), row_y, g(56), row_y)
-        s.place("SW", g(56), row_y + g(5), s._ref("SW"), key.replace("KEY_", ""),
+        # Label bewusst weit links: bei g(52) lag es auf dem Taster-Symbol
+        # (Referenz SWn sitzt genau auf Drahthoehe) -- vom Layout-Waechter
+        # gefunden, im Plot bestaetigt.
+        s.glabel(key, g(48), row_y)
+        s.wire(g(48), row_y, g(64), row_y)
+        s.place("SW", g(64), row_y + g(5), s._ref("SW"), key.replace("KEY_", ""),
                 fields={"ONEX_Status": "TARGET",
                         "ONEX_Note": "mech. Taster / Dome, aktiv-low"})
-        s.wire(g(56), row_y, g(56), row_y + g(1))
-        s.wire(g(56), row_y + g(9), g(56), row_y + g(11))
-        s.place("GND", g(56), row_y + g(11), f"#PWRK{i:02d}", "GND")
+        s.wire(g(64), row_y, g(64), row_y + g(1))
+        s.wire(g(64), row_y + g(9), g(64), row_y + g(11))
+        s.place("GND", g(64), row_y + g(11), f"#PWRK{i:02d}", "GND")
 
     gy = cy3 - top + g(2) * len(keys)
     s.wire(pin_x, gy, pin_x + g(4), gy)
@@ -1207,14 +1255,17 @@ def build_ui_carrier_sheet03() -> Sheet:
         s.wire(pin_x + g(4), gy, pin_x + g(8), gy)
         s.place("PWR_FLAG", pin_x + g(8), gy, "#FLG44", "PWR_FLAG")
 
-    s.text("Alle Bedienelemente haengen am RP2350, NICHT am RK3576 -", g(18), g(8), 2.0)
-    s.text("damit Wake, Navigation vor dem Linux-Boot, Recovery und", g(18), g(11))
-    s.text("RF-Kill-Bestaetigung ohne laufendes Linux funktionieren.", g(18), g(14))
-    s.text("TOUCH-RING (Oe40) bewusst NICHT gezeichnet: die Anbindung ist offen -", g(72), g(16), 2.0)
-    s.text("Cap-Touch-AFE ueber I2C ODER RP2350-eigene Sense-Pins, AFE-MPN TBD.", g(72), g(20))
-    s.text("Netznamen dafuer zu erfinden hiesse, die Architekturfrage still zu", g(72), g(23))
-    s.text("entscheiden. Folgt mit dem AFE-Freeze (Gate G07).", g(72), g(26))
-    s.text("Entprellung: RC + Firmware-Debounce im RP2350 (onex_modules.h).", g(72), g(32))
+    s.notes([
+        ("Alle Bedienelemente haengen am RP2350, NICHT am RK3576 - damit Wake,", 2.0),
+        "Navigation vor dem Linux-Boot, Recovery und RF-Kill-Bestaetigung ohne",
+        "laufendes Linux funktionieren.",
+        "",
+        ("TOUCH-RING (Oe40) bewusst NICHT gezeichnet: die Anbindung ist offen -", 2.0),
+        "Cap-Touch-AFE ueber I2C ODER RP2350-eigene Sense-Pins, AFE-MPN TBD.",
+        "Netznamen dafuer zu erfinden hiesse, die Architekturfrage still zu",
+        "entscheiden. Folgt mit dem AFE-Freeze (Gate G07).",
+        "Entprellung: RC + Firmware-Debounce im RP2350 (onex_modules.h).",
+    ])
     return s
 
 
@@ -1261,16 +1312,18 @@ def build_ui_carrier_sheet04() -> Sheet:
 
     # LEDs mit Vorwiderstand gegen Masse.
     for i, (net, why) in enumerate(leds):
-        row_y = g(16) + g(14) * i
+        # Zeilenabstand g(26): der LED-Zweig ist jetzt laenger (s.u.), bei
+        # g(14) waere die Masse der einen Zeile in die naechste geragt.
+        row_y = g(16) + g(26) * i
         s.glabel(net, g(56), row_y)
         s.wire(g(56), row_y, g(60), row_y)
         s.place("R", g(60), row_y + g(4), s._ref("R"), "1k",
                 fields={"ONEX_Status": "TARGET", "ONEX_Note": "Strombegrenzung"})
-        s.wire(g(60), row_y + g(8), g(60), row_y + g(10))
-        s.place("LED", g(60), row_y + g(14), s._ref("D"), net.replace("LED_", ""),
+        s.wire(g(60), row_y + g(8), g(60), row_y + g(13))
+        s.place("LED", g(60), row_y + g(17), s._ref("D"), net.replace("LED_", ""),
                 fields={"ONEX_Status": "TARGET", "ONEX_Note": why})
-        s.wire(g(60), row_y + g(18), g(60), row_y + g(20))
-        s.place("GND", g(60), row_y + g(20), f"#PWRL{i}", "GND")
+        s.wire(g(60), row_y + g(21), g(60), row_y + g(23))
+        s.place("GND", g(60), row_y + g(23), f"#PWRL{i}", "GND")
 
     # Haptik-Treiber: PWM + Enable vom RP2350, Aktuator an VHAPTIC (lokal).
     hx4, hy4 = g(88), g(24)
@@ -1299,11 +1352,14 @@ def build_ui_carrier_sheet04() -> Sheet:
     s.wire(apin_x + g(4), ay - atop + g(2), apin_x + g(4), ay - atop + g(6))
     s.place("GND", apin_x + g(4), ay - atop + g(6), "#PWRA0", "GND")
 
-    s.text("LED_RFKILL ist sicherheitsrelevant: sie zeigt den PHYSISCHEN Kill-Zustand", g(18), g(8), 2.0)
-    s.text("und wird vom RP2350 getrieben, nicht von Linux. Sonst leuchtete sie falsch,", g(18), g(11))
-    s.text("sobald Linux haengt - und genau dann ist die Anzeige am wichtigsten.", g(18), g(14))
-    s.text("TBD: Haptik-Treiber-MPN und Aktuatortyp (LRA vs. ERM) - bestimmt die Ansteuerung.",
-           g(72), g(40))
+    NOTES04 = [
+        ("LED_RFKILL ist sicherheitsrelevant: sie zeigt den PHYSISCHEN Kill-Zustand", 2.0),
+        "und wird vom RP2350 getrieben, nicht von Linux. Sonst leuchtete sie falsch,",
+        "sobald Linux haengt - und genau dann ist die Anzeige am wichtigsten.",
+    ]
+    s.notes(NOTES04 + [
+        "TBD: Haptik-Treiber-MPN und Aktuatortyp (LRA vs. ERM) - bestimmt die Ansteuerung.",
+    ])
     return s
 
 
@@ -1382,10 +1438,18 @@ def build_mainboard_sheet17() -> Sheet:
         cy_ = g(30) + top
 
         # Links die Herkunft (anderes Mainboard-Blatt), rechts der Stecker.
-        s.place("SRC_" + name, x, cy_, f"JS{50 + gi}", f"von {origin}",
+        #
+        # Beschriftungen bewusst KURZ: die vollen Texte ("von Sheet 03
+        # (RK3576) + Sheet 13 (RP2350)") sind breiter als die Spalte und
+        # liefen in die Netz-Labels der Nachbarspalte -- vom Layout-Waechter
+        # gefunden. Die Zuordnung steht vollstaendig im Textblock unten, wo
+        # sie ohnehin besser lesbar ist als an einem Symbol.
+        s.place("SRC_" + name, x, cy_, f"JS{50 + gi}", "Quelle",
                 fields={"ONEX_Status": "Verweis",
+                        "ONEX_Herkunft": origin,
                         "ONEX_Note": "Quelle liegt auf einem gesperrten Blatt"})
-        s.place(name, x + g(30), cy_, f"J{50 + gi}", f"{name} - {desc}")
+        s.place(name, x + g(30), cy_, f"J{50 + gi}", name,
+                fields={"ONEX_Ziel": desc})
         src_x = x + CONN_PIN_X
         pin_x = x + g(30) + CONN_PIN_X
 
@@ -1407,18 +1471,20 @@ def build_mainboard_sheet17() -> Sheet:
 
         x += g(76)
 
-    s.text("Zentraler Verteiler: hier laufen die Board-zu-Board-Verbinder zusammen.",
-           g(20), g(10), 2.0)
-    s.text("Netznamen exakt kanonisch (hardware/INTERFACE_NETS.md) - beide Enden gleich benannt.",
-           g(20), g(14))
-    s.text("NICHT gezeichnet: der RF-Core-Bus (RFC_SPI_*, RFC_UART_*, RFC_I2C_*, RFC_IRQ_*).",
-           g(20), g(20))
-    s.text("Das Woerterbuch fuehrt ihn nur als MUSTER - wie viele Chip-Selects es gibt,",
-           g(20), g(23))
-    s.text("ist nicht festgelegt. Die Leitungen folgen mit dem Bus-Freeze (G07).",
-           g(20), g(26))
-    s.text("Ebenfalls offen: Pin-Budget und Steckertyp/-hoehe je Interface (TBD).",
-           g(20), g(30))
+    s.notes(
+        [("Zentraler Verteiler: hier laufen die Board-zu-Board-Verbinder zusammen.", 2.0),
+         "Netznamen exakt kanonisch (hardware/INTERFACE_NETS.md) - beide Enden gleich benannt.",
+         ""]
+        # Volle Zuordnung als Text statt als Symbol-Beschriftung: an den
+        # Symbolen waren diese Zeilen breiter als die Spalte und liefen in die
+        # Netz-Labels der Nachbarspalte.
+        + [f"{name_}  ->  {desc_}   |   Quelle auf dem Mainboard: {origin_}"
+           for name_, _n, desc_, origin_ in groups]
+        + ["",
+           ("NICHT gezeichnet: der RF-Core-Bus (RFC_SPI_*, RFC_UART_*, RFC_I2C_*, RFC_IRQ_*).", 2.0),
+           "Das Woerterbuch fuehrt ihn nur als MUSTER - wie viele Chip-Selects es gibt,",
+           "ist nicht festgelegt. Die Leitungen folgen mit dem Bus-Freeze (G07).",
+           "Ebenfalls offen: Pin-Budget und Steckertyp/-hoehe je Interface (TBD)."])
     return s
 
 
