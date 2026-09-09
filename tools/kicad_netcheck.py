@@ -30,7 +30,9 @@ except (AttributeError, ValueError):           # Zeichen wie Ohm.
     pass
 
 REPO = Path(__file__).resolve().parent.parent
-DICT = REPO / "hardware" / "INTERFACE_NETS.md"
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from netdict import DICT, board_local_patterns, canonical_names   # noqa: E402
 
 _GLOBAL = re.compile(r'\(global_label\s+"([^"]+)"')
 # Netznamen duerfen "+", "-" und "." enthalten (Rails wie "+3V3_SYS").
@@ -39,12 +41,12 @@ _GLOBAL = re.compile(r'\(global_label\s+"([^"]+)"')
 # teuersten ist.
 _TICKED = re.compile(r'`([A-Za-z0-9_+.\-]+)`')
 
-# Netze, die bewusst kein Eintrag im Woerterbuch sind: sie existieren pro
-# Radio und werden dort als Muster gefuehrt, nicht einzeln aufgezaehlt.
-PATTERNS = [
-    re.compile(r'^PA_EN_[A-Z0-9]+$'),     # sheet_01_supervisor_rfkill.md: PA_EN_<radio>
-    re.compile(r'^TXREQ_[A-Z0-9]+$'),     # Sendeanforderung je Radio
-]
+# Netze, die bewusst kein woertlicher Eintrag im Woerterbuch sind: sie
+# existieren pro Radio bzw. pro Instanz und werden dort als FAMILIE gefuehrt
+# (`PA_EN_*`). Die Familien kommen aus dem Woerterbuch selbst -- frueher stand
+# hier eine handgepflegte Kopie daneben, die bei jedem neuen board-lokalen
+# Netz haette mitgepflegt werden muessen. Siehe tools/netdict.py.
+PATTERNS = board_local_patterns()
 
 
 # Zeilen, die zwei Netznamen mit einer Ellipse verbinden ("`A` … `B`").
@@ -57,11 +59,6 @@ _ELLIPSIS_ROW = re.compile(
     r'`([A-Za-z0-9_+.\-]+)`\s*(?:…|\.\.\.|\.\.)\s*`([A-Za-z0-9_+.\-]+)`')
 # Gemeinsamer Stamm + laufende Nummer, z.B. DSI0_D0_P / DSI0_D3_P
 _RANGE = re.compile(r'^(.*?)(\d+)(.*)$')
-
-
-def canonical_names() -> set[str]:
-    text = DICT.read_text(encoding="utf-8")
-    return set(_TICKED.findall(text))
 
 
 def find_ellipsis_gaps(known: set[str]) -> list[str]:

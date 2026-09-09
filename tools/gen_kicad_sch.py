@@ -172,6 +172,28 @@ SYMBOLS = """
 					(number "2" (effects (font (size 1.27 1.27)))))
 			)
 		)
+		(symbol "ONEX:FB"
+			(pin_numbers (hide yes))
+			(pin_names (offset 1.016) (hide yes))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "FB" (at 2.54 1.27 0) (effects (font (size 1.27 1.27))))
+			(property "Value" "FB" (at 2.54 -1.27 0) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Description" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(symbol "FB_0_1"
+				(rectangle (start -1.016 2.54) (end 1.016 -2.54)
+					(stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "FB_1_1"
+				(pin passive line (at 0 5.08 270) (length 2.54)
+					(name "A" (effects (font (size 1.27 1.27))))
+					(number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 0 -5.08 90) (length 2.54)
+					(name "B" (effects (font (size 1.27 1.27))))
+					(number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
 		(symbol "ONEX:AND2"
 			(pin_names (offset 0.254))
 			(exclude_from_sim no) (in_bom yes) (on_board yes)
@@ -1317,7 +1339,17 @@ def build_mainboard_sheet17() -> Sheet:
           "PCIE_PERST_n", "PCIE_CLKREQ_n", "PCIE_WAKE_n",
           "+3V3_SYS", "HYPERRF_AUX_5V"]
     ant = ["ANT_1", "ANT_2", "ANT_3", "ANT_4"]
-    rfcore = ["RF_KILL", "RF_KILL_SW_n", "TX_GATE_OK"]
+    # Die Design-Spec dieses Blattes fuehrt J_RFCORE mit "..., Antennen-Feeds,
+    # Power". Gezeichnet waren bisher nur die drei Sicherheitsnetze -- die
+    # Versorgung des RF-Core fehlte, obwohl sowohl das Woerterbuch
+    # ("+3V3_SYS ... J_RFCORE") als auch RF-Core Sheet 07 sie ueber diesen
+    # Stecker fuehren. Ein Board ohne Versorgungspin am eigenen Stecker faellt
+    # erst beim Zusammenstecken auf; hier nachgezogen.
+    #
+    # Die Antennen-Feeds bleiben dagegen ungezeichnet: welcher Feed auf welchem
+    # SMA landet, ist TBD (G09) -- solange laesst sich kein kanonischer Name
+    # vergeben (Begruendung auf RF-Core Sheet 07).
+    rfcore = ["RF_KILL", "RF_KILL_SW_n", "TX_GATE_OK", "+3V3_SYS"]
 
     # (Connector, Netze, Beschreibung, Herkunft auf dem Mainboard)
     #
@@ -1330,8 +1362,10 @@ def build_mainboard_sheet17() -> Sheet:
         ("J_UI", ui_display + ui_control, "UI-Carrier (beide Domaenen)",
          "Sheet 03 (RK3576) + Sheet 13 (RP2350)"),
         ("J_M2", m2, "M.2-Bridge -> HyperRF", "Sheet 12 (M.2/HyperRF)"),
-        ("J_ANT", ant, "Antenna-Rail (4x SMA)", "RF-Core ueber J_RFCORE"),
-        ("J_RFCORE", rfcore, "RF-Core (Sicherheitsnetze)", "Sheet 13 (RP2350)"),
+        ("J_ANT", ant, "Antenna-Rail (4x SMA)",
+         "RF-Core / HyperRF - Zuordnung TBD (G09)"),
+        ("J_RFCORE", rfcore, "RF-Core (Sicherheit + Power)",
+         "Sheet 13 (RP2350) + Sheet 01 (Power-Tree)"),
     ]
 
     extra = ""
@@ -1388,12 +1422,188 @@ def build_mainboard_sheet17() -> Sheet:
     return s
 
 
+# ------------------------------------- RF-Core Sheet 07 (real)
+#
+# Quelle: hardware/rf-core/schematic/sheet_07_power_host_antennas.md
+#
+# Das erste RF-Core-Blatt nach dem Supervisor, das OHNE Hersteller-Pinbelegung
+# auskommt: Versorgung, Sicherheits-Testpunkte und Antennen-Aggregation. Die
+# Radio-Blaetter 02-06 bleiben gesperrt (CC1101/SX1262/CC2652P7/ZG23/E710/
+# PN7160 brauchen jeweils ein reales Pinout).
+#
+# WAS HIER BEWUSST FEHLT:
+#
+# 1. Der Host-Bus (RFC_SPI_*, RFC_UART_*, RFC_I2C_*, RFC_IRQ_*). Das
+#    Woerterbuch fuehrt ihn nur als MUSTER -- wie viele Chip-Selects und
+#    IRQ-Leitungen es gibt, haengt an den Radio-Blaettern. Gleiche Begruendung
+#    wie auf Mainboard Sheet 17; eine erfundene Leitungszahl waere eine
+#    stillschweigende Architekturentscheidung.
+#
+# 2. Die kanonischen Antennen-Namen ANT_1..ANT_4. Welcher Feed auf welchem SMA
+#    landet, ist TBD (G09). Die Feeds werden deshalb unter ihren
+#    physikalischen Namen (ANT_SUBGHZ ...) bis an den Uebergabepunkt gefuehrt
+#    und dort NICHT umbenannt. Ein Netz hat genau einen Namen -- solange die
+#    Zuordnung offen ist, laesst sich der kanonische nicht vergeben.
+#
+# 3. Der Supervisor-Teil von J_RFCORE. Der steht auf Sheet 01 (J30) und gehoert
+#    zu demselben physischen Stecker; ihn hier ein zweites Mal zu zeichnen
+#    haette zwei Stecker fuer ein Signal bedeutet. Die Aufteilung der Pins auf
+#    den einen Verbinder ist Sache des Pin-Budgets (TBD, Sheet 17).
+
+def build_rf_core_sheet07() -> Sheet:
+    board, sheet = "rf-core", "sheet_07_power_host_antennas"
+
+    # Antennen-Feeds: Name -> (Quell-Blatt, Band-Notiz)
+    feeds = [
+        ("ANT_SUBGHZ", "CC1101/SX1262 (Sheet 02)", "Sub-GHz 300-950 MHz"),
+        ("ANT_2G4",    "CC2652P7 (Sheet 03)",      "2,4 GHz"),
+        ("ANT_ZWAVE",  "EFR32ZG23 (Sheet 03)",     "Z-Wave 868/908 MHz"),
+        ("ANT_UHF",    "E710 (Sheet 05)",          "UHF RAIN 860-960 MHz"),
+    ]
+
+    pwr_pins = [("+3V3_SYS", "+3V3_SYS"), ("GND", "GND")]
+    extra = "\n" + conn_symbol("J_RFCORE_PWR", pwr_pins)
+    s = Sheet(board, sheet,
+              "ONE-X RF-Core - Sheet 07 - Power / Host-Link / Antennen / Testpoints",
+              extra)
+
+    # ------------------------------------------------ Power-Eingang
+    #
+    # Sheet 17 (Mainboard) fuehrt J_RFCORE laut seiner Design-Spec mit
+    # "Antennen-Feeds, Power" -- gezeichnet waren dort bisher nur die drei
+    # Sicherheitsnetze. Dieses Blatt ist das Gegenstueck der Power-Seite;
+    # Sheet 17 wurde entsprechend nachgezogen, sonst haette die Rail nur
+    # ein Ende.
+    px, py = g(20), g(34)
+    s.place("J_RFCORE_PWR", px, py, "J70", "J_RFCORE (Power)")
+    top = conn_pin_offset(len(pwr_pins))
+    pin_x = px + CONN_PIN_X
+
+    s.wire(pin_x, py - top, pin_x + g(4), py - top)
+    s.glabel("+3V3_SYS", pin_x + g(4), py - top)
+    if claim_power_flag(board, "+3V3_SYS"):
+        s.wire(pin_x + g(4), py - top, pin_x + g(10), py - top)
+        s.place("PWR_FLAG", pin_x + g(10), py - top, "#FLG70", "PWR_FLAG")
+
+    gy = py + top
+    s.wire(pin_x, gy, pin_x + g(4), gy)
+    s.wire(pin_x + g(4), gy, pin_x + g(4), gy + g(4))
+    s.place("GND", pin_x + g(4), gy + g(4), "#PWR70", "GND")
+
+    # ------------------------------------------------ pi-Filter -> RF-Rail
+    #
+    # "Getrennte, gefilterte Analog-/RF-Rails wo noetig (Ferrit/pi-Filter je
+    # Radio)" -- gezeichnet ist der EINE Eingangspfad. Wie viele solcher Rails
+    # es am Ende gibt, entscheidet sich mit den Radio-Blaettern; das hier
+    # vorwegzunehmen hiesse, den Rail-Zuschnitt zu erfinden.
+    fx = g(52)
+    s.glabel("+3V3_SYS", fx, g(24))
+    s.wire(fx, g(24), fx, g(28))
+    s.place("FB", fx, g(32), "FB70", "600R@100MHz",
+            fields={"ONEX_Status": "TARGET",
+                    "ONEX_Note": "Impedanz/Strom nach Radio-Lastprofil (G09)"})
+    s.wire(fx, g(36), fx, g(40))
+    s.glabel("V3V3_RF", fx, g(40))
+
+    for cxx, node_y, tag, note in ((fx - g(11), g(28), "IN", "Eingangsseite"),
+                                   (fx + g(11), g(36), "OUT", "Rail-Seite")):
+        s.wire(fx, node_y, cxx, node_y)
+        s.place("C", cxx, node_y + g(3), f"C7{tag}", "TBD",
+                fields={"ONEX_Status": "TBD",
+                        "ONEX_Note": f"pi-Filter {note} - Wert mit Layout (G09)"})
+        s.wire(cxx, node_y + g(6), cxx, node_y + g(8))
+        s.place("GND", cxx, node_y + g(8), f"#PWR7{tag}", "GND")
+
+    # ------------------------------------------------ Bring-up-Testpunkte
+    #
+    # Reihenfolge aus der Design-Spec: ZUERST RF_KILL und jedes PA_EN_*.
+    # Die physische Kill-Wirksamkeit wird vor jedem TX-Test gemessen, nicht
+    # danach -- deshalb stehen die Sicherheitsnetze hier vorne und die Rails
+    # dahinter.
+    safety = ["RF_KILL", "RF_KILL_SW_n", "TX_GATE_OK"]
+    pa = [f"PA_EN_{r}" for r in ("CC1101", "SX1262", "CC2652P7", "ZG23",
+                                 "E710", "LFRFID", "IRTX")]
+    rails = ["+3V3_SYS", "V3V3_RF"]
+
+    tp_y = g(170)
+    for i, net in enumerate(safety + pa + rails):
+        tx = g(16) + g(15) * i
+        s.glabel(net, tx, tp_y - g(9))
+        s.wire(tx, tp_y - g(9), tx, tp_y)
+        s.place("TP", tx, tp_y, s._ref("TP7"), net,
+                fields={"ONEX_Status": "FIXED" if net in safety or net in pa
+                                       else "TARGET",
+                        "ONEX_Note": "Bring-up-Messpunkt"})
+
+    s.text("BRING-UP-REIHENFOLGE: erst RF_KILL und jedes PA_EN_* messen, dann erst Radios versorgen.",
+           g(16), tp_y + g(11), 2.0)
+    s.text("Kein TX-Test ohne bestaetigtes Gate (Sheet 01). Die Testpunkte greifen dieselben Netze ab,",
+           g(16), tp_y + g(15))
+    s.text("die der Supervisor treibt - gemessen wird die Wirkung, nicht der Befehl.",
+           g(16), tp_y + g(18))
+
+    # ------------------------------------------------ Antennen-Aggregation
+    #
+    # Der Matching-Platz ist ein SERIENELEMENT: links und rechts davon liegen
+    # zwei verschiedene Netze. Beiden denselben Namen zu geben haette die
+    # Anpassung in der Netzliste stillschweigend ueberbrueckt -- derselbe
+    # Fehler wie bei den PCIe-Serien-Cs (Session 30).
+    #
+    # Der Abschnitt HINTER dem Matching bekommt deshalb bewusst keinen Namen:
+    # wie er heisst, entscheidet sich erst mit der SMA-Zuordnung (G09). Und es
+    # wird KEIN Uebergabe-Stecker gezeichnet -- ob die Feeds ueber den
+    # Mainboard-Verbinder laufen oder per Koax direkt zur Antenna-Rail, ist
+    # genau die offene Frage. Ein gezeichneter Stecker waere die Antwort
+    # darauf, die es noch nicht gibt.
+    ax = g(152)
+    for i, (net, src_sheet, band) in enumerate(feeds):
+        ry = g(38) + g(14) * i
+        s.source(ax, ry, src_sheet)
+        s.wire(ax, ry, ax + g(14), ry)
+        s.glabel(net, ax + g(2), ry)
+        s.place("MATCH", ax + g(18), ry, s._ref("MP7"), "TBD",
+                fields={"ONEX_Status": "TBD",
+                        "ONEX_Note": f"{band} - Anpassung mit Antennenkonzept (G09)"})
+        s.wire(ax + g(22), ry, ax + g(30), ry)
+        s.place("TP", ax + g(30), ry, s._ref("TP7A"), f"{net} Uebergabe",
+                fields={"ONEX_Status": "TBD",
+                        "ONEX_Note": "Weg zum SMA offen (G09) - Pad, kein Stecker"})
+
+    s.text("ANTENNEN-AGGREGATION - die Feeds tragen hier ihren PHYSIKALISCHEN Namen,",
+           ax, g(16), 2.0)
+    s.text("nicht den kanonischen ANT_1..ANT_4. Welcher Feed auf welchem SMA landet,", ax, g(20))
+    s.text("ist TBD (G09); ein Netz hat genau einen Namen, also laesst sich der", ax, g(23))
+    s.text("kanonische erst nach dem Antennen-Freeze vergeben.", ax, g(26))
+
+    s.text("OFFEN - WEG ZUM SMA: Sheet 17 fuehrt J_RFCORE laut Design-Spec mit", ax, g(94), 2.0)
+    s.text("'Antennen-Feeds, Power'; das Woerterbuch fuehrt dieselben Feeds zugleich als", ax, g(99))
+    s.text("board-lokal. Beides zusammen geht nicht. Ob die Feeds ueber den Mainboard-", ax, g(103))
+    s.text("Stecker laufen oder per Koax direkt zur Antenna-Rail, entscheidet G09 --", ax, g(107))
+    s.text("bis dahin endet jede Kette an einem Uebergabe-Pad (TP) ohne Steckerbehauptung.", ax, g(111))
+    s.text("Das Netz hinter dem Matching traegt bewusst KEINEN Namen - ein Serienelement", ax, g(115))
+    s.text("trennt zwei Netze, und wie das zweite heisst, entscheidet erst G09.", ax, g(119))
+
+    s.text("HF-Loop (PN7160, Sheet 04), LF-Coil (Sheet 04) und das IR-Fenster (Sheet 06)",
+           ax, g(126))
+    s.text("gehen NICHT auf SMA - eigene Strahler, deshalb hier nicht aggregiert.", ax, g(130))
+
+    s.text("NICHT gezeichnet: der Host-Bus (RFC_SPI_*, RFC_UART_*, RFC_I2C_*, RFC_IRQ_*).",
+           g(16), g(96), 2.0)
+    s.text("Das Woerterbuch fuehrt ihn nur als MUSTER - die Leitungszahl haengt an den", g(16), g(103))
+    s.text("Radio-Blaettern 02-06 und folgt mit dem Bus-Freeze (G07).", g(16), g(107))
+    s.text("Ebenfalls nicht hier: der Supervisor-Teil von J_RFCORE - der steht auf Sheet 01",
+           g(16), g(113))
+    s.text("und gehoert zu demselben Stecker. Pin-Budget/Steckertyp TBD (Sheet 17).", g(16), g(117))
+    return s
+
+
 SHEETS = [
     ("mainboard", "sheet_17_connectors", build_mainboard_sheet17),
     ("antenna-rail", "sheet_01_sma_feeds", build_antenna_rail_sheet01),
     ("m2-bridge", "sheet_01_pcie_usb3", build_m2_bridge_sheet01),
     ("m2-bridge", "sheet_02_sideband_power", build_m2_bridge_sheet02),
     ("rf-core", "sheet_01_supervisor_rfkill", build_rf_core_sheet01),
+    ("rf-core", "sheet_07_power_host_antennas", build_rf_core_sheet07),
     ("ui-carrier", "sheet_01_display_dsi", build_ui_carrier_sheet01),
     ("ui-carrier", "sheet_02_touch", build_ui_carrier_sheet02),
     ("ui-carrier", "sheet_03_input_ring_dpad_keys", build_ui_carrier_sheet03),

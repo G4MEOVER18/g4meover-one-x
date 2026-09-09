@@ -27,6 +27,23 @@
 			)
 		)
 	)
+	(sheet
+		(at 25.4 50.80)
+		(size 152.4 20.32)
+		(fields_autoplaced yes)
+		(stroke (width 0.1524) (type solid))
+		(fill (color 0 0 0 0.0000))
+		(uuid "ddf8b347-28c0-546a-98ff-43f0c54af37d")
+		(property "Sheetname" "ONE-X RF-Core - Sheet 07 - Power / Host-Link / Antennen / Testpoints" (at 25.4 50.00 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom)))
+		(property "Sheetfile" "sheet_07_power_host_antennas.kicad_sch" (at 25.4 71.80 0)
+			(effects (font (size 1.27 1.27)) (justify left top)))
+		(instances
+			(project "rf-core"
+				(path "/9d1eb520-c7c2-59f1-92bf-588e7f40e418" (page "3"))
+			)
+		)
+	)
 	(sheet_instances
 		(path "/" (page "1"))
 	)

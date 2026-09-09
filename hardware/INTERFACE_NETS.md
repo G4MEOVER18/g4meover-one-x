@@ -88,8 +88,17 @@ sie **queren `J_UI`** und sind damit Inter-Board-Netze.
 | `RF_KILL` | HW-Master-Kill (aktiv = TX aus) |
 | `RF_KILL_SW_n` | optionaler physischer Notfall-Kill |
 | `TX_GATE_OK` | Status: TX physisch freigegeben (→ RP2350/LED) |
+| `+3V3_SYS` | Versorgung des RF-Core (Filterung board-lokal, RF-Core Sheet 07) |
 
 Die RF-Core-internen PA-Enables (`PA_EN_<radio>`) bleiben **board-lokal** (queren `J_RFCORE` nicht).
+
+> **Ergänzung (2026-09-09):** `+3V3_SYS` stand bisher nur weiter unten unter
+> „Power/Sonstiges" mit dem Klammerhinweis `J_RFCORE`, fehlte in dieser Tabelle
+> aber — und damit auch in der Zeichnung von [Mainboard Sheet 17](mainboard/schematic/sheet_17_connectors.md):
+> Der RF-Core-Stecker war ohne Versorgungspin gezeichnet. Aufgefallen ist es
+> beim Zeichnen von [RF-Core Sheet 07](rf-core/schematic/sheet_07_power_host_antennas.md),
+> dessen Power-Eingang sonst nur ein Ende gehabt hätte. Beide Seiten sind
+> nachgezogen.
 
 ### Antennen-Feeds (`J_ANT` — Mainboard ↔ Antenna-Rail)
 Über den Verbinder queren die 4 kanonischen Feeds `ANT_1`…`ANT_4` (50 Ω). Welcher Radio-Feed auf welchem SMA landet, ist **TBD 📄** (→ G09) — hier als Zuordnungs-Tabelle geführt, damit die Namen trotzdem eindeutig brücken:
@@ -101,7 +110,22 @@ Die RF-Core-internen PA-Enables (`PA_EN_<radio>`) bleiben **board-lokal** (quere
 | `ANT_3` | HyperRF-SDR-Feed (`LMSx_ANT_*`) | HyperRF |
 | `ANT_4` | UHF-RAIN (`ANT_UHF`) / Ersatz | RF-Core |
 
-> Die Quell-Feed-Netze (`ANT_SUBGHZ` etc.) sind **board-lokal**; am `J_ANT`-Übergang heißen sie kanonisch `ANT_1..4`. Die endgültige Zuordnung wird mit dem Antennenkonzept eingefroren (G09).
+Die Quell-Feed-Netze heißen auf dem RF-Core `ANT_SUBGHZ`, `ANT_2G4`, `ANT_ZWAVE` und `ANT_UHF`; der HyperRF-Feed liegt auf `LMSx_ANT_*`.
+
+> **Offener Punkt (2026-09-09) — bis G09 bewusst nicht entschieden.**
+> [Mainboard Sheet 17](mainboard/schematic/sheet_17_connectors.md) führt `J_RFCORE`
+> mit „Antennen-Feeds, Power"; hier galten dieselben Feeds zugleich als
+> **board-lokal**. Beides zusammen geht nicht — was board-lokal ist, quert
+> keinen Stecker.
+>
+> Auflösen lässt sich das erst mit der SMA-Zuordnung: Ein Netz hat genau **einen**
+> Namen. Solange offen ist, welcher Feed auf welchem SMA landet, kann ein
+> RF-Core-Feed nicht `ANT_1` heißen — und „am Stecker umbenennen" gibt es
+> elektrisch nicht. Bis dahin gelten die Quell-Feeds als board-lokal, und
+> [RF-Core Sheet 07](rf-core/schematic/sheet_07_power_host_antennas.md) führt sie
+> bis an ein Übergabe-Pad, **ohne** einen Stecker zu behaupten. Mit G09 fällt
+> zugleich, ob sie über das Mainboard laufen oder per Koax direkt zur
+> Antenna-Rail.
 
 ### Power / Sonstiges (board-übergreifend)
 | Kanonisch | Rolle |
@@ -114,7 +138,7 @@ Die RF-Core-internen PA-Enables (`PA_EN_<radio>`) bleiben **board-lokal** (quere
 > **Namens-Präzisierung (2026-09-08):** Die M.2-Bridge führte diese Rail als „`+3V3`", der [Power-Tree](mainboard/schematic/sheet_01_power_tree.md) als `+3V3_SYS`. Es ist **dieselbe** Rail; kanonisch ist `+3V3_SYS`. Zwei Namen für eine Rail fallen erst beim Zusammenführen der Boards auf — dann aber teuer.
 
 ## Board-lokal (queren KEINE Board-Grenze — nicht im Mirror-Check)
-`PA_EN_*`, `HRF_*`, `LMSx_LML_*`, `HB_*`, `RADAR_*`, `UWB_*`, `RING_*`, `PMIC_*`, `VBL`, `VHAPTIC` — bleiben auf ihrem Board.
+`PA_EN_*`, `TXREQ_*`, `HRF_*`, `LMSx_LML_*`, `HB_*`, `RADAR_*`, `UWB_*`, `RING_*`, `PMIC_*`, `VBL`, `VHAPTIC`, `V3V3_RF`, `ANT_SUBGHZ`, `ANT_2G4`, `ANT_ZWAVE`, `ANT_UHF` — bleiben auf ihrem Board.
 
 > **Korrektur (2026-09-08):** `KEY_*`, `HAPTIC_*` und `LED_*` standen hier
 > fälschlich als board-lokal, während [UI-Carrier Sheet 04](ui-carrier/schematic/sheet_04_haptic_status_connector.md)

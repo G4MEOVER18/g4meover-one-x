@@ -165,10 +165,21 @@ def rule_diff_pairs_complete(nets, comps, sheet: str) -> list[str]:
 
 def rule_no_single_node_local_nets(nets, comps, sheet: str) -> list[str]:
     """
-    Ein Netz mit nur einem Knoten verbindet nichts. Erlaubt ist das nur, wo das
-    Signal das Blatt verlaesst (TXREQ_* kommt von einem anderen Sheet).
+    Ein Netz mit nur einem Knoten verbindet nichts.
+
+    Erlaubt ist das nur, wo der zweite Knoten auf einem Blatt liegt, das es
+    noch NICHT gibt -- die Radio-Blaetter 02-06 des RF-Core brauchen alle eine
+    Hersteller-Pinbelegung und sind gesperrt. Bis dahin ist ein Feed, der von
+    dort kommt, zeichnerisch einseitig, ohne dass etwas falsch waere.
+
+    Bewusst KEINE Praefix-Familie: die Ausnahme gilt genau diesen Netzen und
+    soll verfallen, sobald ihr Quell-Blatt gezeichnet ist. Ein weiches
+    "^ANT_" haette jeden kuenftigen Antennen-Namen mit abgedeckt -- auch den,
+    bei dem der fehlende zweite Knoten ein echter Fehler waere.
     """
-    allowed = re.compile(r'^(TXREQ_|PA_EN_|TX_GATE_OK$|RF_KILL)')
+    allowed = re.compile(
+        r'^(TXREQ_|PA_EN_|TX_GATE_OK$|RF_KILL'
+        r'|ANT_SUBGHZ$|ANT_2G4$|ANT_ZWAVE$|ANT_UHF$)')
     bad = []
     for net, nodes in nets.items():
         if len(nodes) < 2 and not allowed.match(net):

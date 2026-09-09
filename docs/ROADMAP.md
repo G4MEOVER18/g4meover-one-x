@@ -35,6 +35,8 @@ Weg von der synchronisierten Architektur (EVT6) zum echten EVT-Prototyp — **oh
 - **Phase 5 — Mainboard-Schaltplan** (18 Sheets: RK3576-Core, RK806-Power, LPDDR5, UFS, USB-C-PD, USB-Host, HDMI/DP, 2× Ethernet, Wi-Fi/BT, M.2, RP2350-Link, Audio, Sensoren, Debug/Recovery, Connectors, Power-Tree, Testpoints).
 - **Phase 6 — SI/PI-first Layout**.
 - **Phase 7 — RF-Core** (ein Radio nach dem anderen: Supervisor/Kill → CC1101 → SX1262 → CC2652P7 → PN7160 → LF-RFID → Z-Wave → UHF-RFID → IR/1-Wire).
+  - Sheet 01 Supervisor/RF-Kill ✅ · Sheet 07 Power/Antennen/Testpoints ✅ (beide ERC-sauber, pinmap-frei)
+  - Sheets 02–06 (Radios) **gesperrt** bis Hersteller-Pinouts vorliegen; Antennen-Feed→SMA-Zuordnung offen (→ G09)
 - **Phase 8 — HyperRF-FPGA-Auswahl** → G04 (Scored Candidate Matrix, nicht aus altem Bild wählen).
 - **Phase 9 — HyperRF-Hardware** (fpga-core, lms-a/b, converters, filterbank, 5g, ntn, gnss, uwb, radar-tile, clock, power).
 - **Phase 10 — Mechanik-EVT** (CadQuery aus finalen Bauteilhöhen, Kollisions-/Montage-Checks).

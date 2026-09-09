@@ -12,6 +12,39 @@
 
 ---
 
+## 2026-09-09 — Session 31 (RF-Core Sheet 07 + das Wörterbuch wird zur einzigen Wahrheit)
+
+**RF-Core Sheet 07** (Power / Antennen / Bring-up-Testpoints) ist gezeichnet — das erste RF-Core-Blatt nach dem Supervisor, das ohne Hersteller-Pinbelegung auskommt. **10 Blätter in 5 Boards**, weiterhin alle ERC-sauber **ohne jede Ausnahme**.
+
+**Zwei echte Widersprüche, die erst der Schaltplan sichtbar gemacht hat:**
+
+1. **Der RF-Core-Stecker hatte keinen Versorgungspin.** [Sheet 17](../hardware/mainboard/schematic/sheet_17_connectors.md) führte `J_RFCORE` in seiner eigenen Design-Spec mit „…, Antennen-Feeds, **Power**"; gezeichnet waren nur die drei Sicherheitsnetze. Auch das [Wörterbuch](../hardware/INTERFACE_NETS.md) nennt `J_RFCORE` bei `+3V3_SYS` ausdrücklich. Aufgefallen ist es erst, als Sheet 07 seinen Power-Eingang brauchte und die Rail sonst nur ein Ende gehabt hätte. Beide Seiten nachgezogen — `+3V3_SYS` verbindet jetzt **drei** Boards (`m2-bridge ↔ mainboard ↔ rf-core`).
+
+2. **Die Antennen-Feeds können nicht beides sein.** Sheet 17 führt sie über `J_RFCORE`, das Wörterbuch führt dieselben Feeds als **board-lokal** — was board-lokal ist, quert keinen Stecker. Auflösen lässt sich das erst mit G09: Ein Netz hat genau **einen** Namen, und solange offen ist, welcher Feed auf welchem SMA landet, kann ein RF-Core-Feed nicht `ANT_1` heißen; „am Stecker umbenennen" gibt es elektrisch nicht. **Bewusst nicht entschieden**, sondern als offener Punkt festgehalten. Sheet 07 führt die Feeds unter ihrem physikalischen Namen bis an ein Übergabe-**Pad** — ohne einen Stecker zu behaupten, denn ein gezeichneter Stecker wäre die Antwort auf genau die offene Frage.
+
+**Ein Fehler beim Bauen, zweimal derselbe Mechanismus wie in Session 30:** Ich hatte dem Netz vor und hinter dem Matching-Platz denselben Namen gegeben. Ein Matching-Platz ist ein **Serienelement** — das hätte die Anpassung in der Netzliste stillschweigend überbrückt. Der Abschnitt dahinter bleibt jetzt **unbenannt**; wie er heißt, entscheidet G09.
+
+**Strukturell: das Wörterbuch wird zur einzigen Wahrheit (`tools/netdict.py`).** `kicad_netcheck` und `kicad_boardlink_check` lasen es bisher jedes für sich — mit einer wortgleichen Kopie von `canonical_names()` und je einer **handgepflegten Liste** board-lokaler Netze daneben. Das Wörterbuch führt dieselbe Liste selbst. Drei Stellen für einen Sachverhalt sind genau die Drift, die dieses Repo sonst verhindert: Vergisst man eine, meldet ein Werkzeug einen Fehler, den es nicht gibt — oder keinen, den es gibt.
+
+Beim Parsen lauerte eine Falle: Der Board-lokal-Abschnitt endet mit der **Korrektur-Notiz aus Session 29**, die `KEY_*`, `HAPTIC_*` und `LED_*` nennt — als Namen, die dort *fälschlich* standen. Wer den Abschnitt naiv einliest, baut ausgerechnet die Korrektur als Regel ein und hat den behobenen Fehler wieder drin. Blockquote-Zeilen werden deshalb übersprungen: Der Abschnitt führt seine Regel im Fließtext, seine Historie in Zitaten.
+
+**Gegenprobe statt Vertrauen** — vier Sonden gegen die umgebauten Prüfungen:
+
+| Sonde | erwartet | Ergebnis |
+|---|---|---|
+| `VBL_SENSE` | Fehler (`VBL` ist ein **exakter** Eintrag, kein Präfix) | ✅ gefangen |
+| `PA_EN_XYZ` | grün (Familie `PA_EN_*`) | ✅ akzeptiert |
+| `KEY_ERFUNDEN` (netcheck) | Fehler (Blockquote ist keine Regel) | ✅ gefangen |
+| `KEY_ERFUNDEN` (boardlink) | Fehler (einseitiges Netz) | ✅ gefangen |
+
+**Und ein Befund, den keine der zehn Prüfungen sieht:** Der erste Wurf war ERC-sauber, aber als geplotteter Schaltplan **unlesbar** — Testpunktreihe und Textblöcke lagen übereinander, die Feed-Labels auf den Matching-Symbolen, und drei Viertel des A3-Blattes waren leer. Sichtbar wurde das erst durch `kicad-cli sch export svg` + Headless-Render. Ein ERC prüft Elektrik, keine Lesbarkeit — und ein Blatt, das der Reviewer nicht lesen kann, ist als Review-Grundlage wertlos. In vier klar getrennte Zonen umgebaut (Power links oben · Antennen rechts oben · Erläuterungen Mitte · Testpunkte unten) und visuell verifiziert.
+
+**Stand:** 10 Blätter / 5 Boards ERC-sauber ohne Ausnahmen · 58 Netze beidseitig · 148 globale Netze kanonisch · 166 Netze unter Regelprüfung · **check_all 10/10**.
+
+**Nächster Schritt (Session 32+):** (a) Mainboard Sheet 18 (Testpunkte) — pinmap-frei; (b) die 10 `WAHL_OFFEN`-Positionen im Sourcing-Register; (c) G09 vorbereiten: Antennen-Zuordnungs-Matrix (Band-Isolation, SMA-Belegung), womit die offene Feed-Benennung fällt. Radio-Sheets (RF-Core 02–06) und alles mit Hersteller-Pinbelegung bleiben gesperrt.
+
+---
+
 ## 2026-09-08 — Session 30 (Mainboard-Verteiler + Board-gegen-Board-Prüfung)
 
 **Mainboard Sheet 17 (Connectors)** ist das Gegenstück zu allen bisherigen Boards — und macht damit die stärkste Netzprüfung überhaupt erst möglich. **9 Blätter in 5 Boards**, alle ERC-sauber ohne Ausnahmen. `check_all` jetzt **10/10**.

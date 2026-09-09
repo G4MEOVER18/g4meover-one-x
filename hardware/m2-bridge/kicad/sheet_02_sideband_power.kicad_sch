@@ -134,6 +134,28 @@
 					(number "2" (effects (font (size 1.27 1.27)))))
 			)
 		)
+		(symbol "ONEX:FB"
+			(pin_numbers (hide yes))
+			(pin_names (offset 1.016) (hide yes))
+			(exclude_from_sim no) (in_bom yes) (on_board yes)
+			(property "Reference" "FB" (at 2.54 1.27 0) (effects (font (size 1.27 1.27))))
+			(property "Value" "FB" (at 2.54 -1.27 0) (effects (font (size 1.27 1.27))))
+			(property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Datasheet" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(property "Description" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+			(symbol "FB_0_1"
+				(rectangle (start -1.016 2.54) (end 1.016 -2.54)
+					(stroke (width 0.254) (type default)) (fill (type background)))
+			)
+			(symbol "FB_1_1"
+				(pin passive line (at 0 5.08 270) (length 2.54)
+					(name "A" (effects (font (size 1.27 1.27))))
+					(number "1" (effects (font (size 1.27 1.27)))))
+				(pin passive line (at 0 -5.08 90) (length 2.54)
+					(name "B" (effects (font (size 1.27 1.27))))
+					(number "2" (effects (font (size 1.27 1.27)))))
+			)
+		)
 		(symbol "ONEX:AND2"
 			(pin_names (offset 0.254))
 			(exclude_from_sim no) (in_bom yes) (on_board yes)

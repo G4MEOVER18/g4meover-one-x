@@ -35,21 +35,19 @@ except (AttributeError, ValueError):
     pass
 
 REPO = Path(__file__).resolve().parent.parent
-DICT = REPO / "hardware" / "INTERFACE_NETS.md"
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from netdict import (                                          # noqa: E402
+    DICT, UBIQUITOUS, board_local_patterns, canonical_names,
+)
 
 _GLOBAL = re.compile(r'\(global_label\s+"([^"]+)"')
-_TICKED = re.compile(r'`([A-Za-z0-9_+.\-]+)`')
 
-# Netze, die per Definition auf genau einem Board leben (Muster aus der
-# Design-Spec) und daher kein Gegenstueck brauchen.
-BOARD_LOCAL = [
-    re.compile(r'^PA_EN_'),      # RF-Core-intern, quert J_RFCORE nicht
-    re.compile(r'^TXREQ_'),      # dito
-]
-
-# Masse und Rails liegen naturgemaess auf jedem Board -- als "Verbindung"
-# aussagelos, deshalb hier nicht betrachtet.
-UBIQUITOUS = {"GND", "AGND"}
+# Netze, die per Definition auf genau einem Board leben, kommen aus dem
+# Woerterbuch selbst (Abschnitt "Board-lokal") -- frueher stand hier eine
+# handgepflegte Kopie daneben. Eine zweite Wahrheit neben der Single Source
+# of Truth driftet zwangslaeufig; siehe tools/netdict.py.
+BOARD_LOCAL = board_local_patterns()
 
 
 def boards_with_nets() -> dict[str, set[str]]:
@@ -60,12 +58,6 @@ def boards_with_nets() -> dict[str, set[str]]:
         nets = set(_GLOBAL.findall(sch.read_text(encoding="utf-8")))
         out.setdefault(board, set()).update(nets)
     return out
-
-
-def canonical_names() -> set[str]:
-    if not DICT.is_file():
-        return set()
-    return set(_TICKED.findall(DICT.read_text(encoding="utf-8")))
 
 
 def main() -> int:

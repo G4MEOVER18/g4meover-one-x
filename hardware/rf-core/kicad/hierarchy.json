@@ -135,10 +135,12 @@
       "title": "RF-Core Sheet 07 — Power / Host-Link / Antennen / Testpoints",
       "uuid": "6489c131-a4e0-59b2-8fcc-406ad22c986e",
       "nets": [
+        "ANT_1..ANT_4",
         "ANT_2G4",
         "ANT_SUBGHZ",
         "ANT_UHF",
         "ANT_ZWAVE",
+        "GND",
         "J_RFCORE",
         "PA_EN",
         "RFC_I2C",
@@ -146,7 +148,8 @@
         "RFC_SPI",
         "RFC_UART",
         "RF_KILL",
-        "TX_GATE_OK"
+        "TX_GATE_OK",
+        "V3V3_RF"
       ],
       "interboard_nets": [
         "RFC_I2C",
@@ -160,6 +163,9 @@
     }
   ],
   "net_index": {
+    "ANT_1..ANT_4": [
+      "07"
+    ],
     "ANT_2G4": [
       "03",
       "07"
@@ -208,6 +214,9 @@
     ],
     "EVT_RFKILL": [
       "01"
+    ],
+    "GND": [
+      "07"
     ],
     "IR_RX": [
       "06"
@@ -319,6 +328,9 @@
     ],
     "UHF_PA_EN": [
       "05"
+    ],
+    "V3V3_RF": [
+      "07"
     ],
     "ZWAVE_RESETn": [
       "03"
