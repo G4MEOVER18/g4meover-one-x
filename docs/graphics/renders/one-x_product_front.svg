@@ -1,0 +1,304 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2330" height="1670" viewBox="0 0 2330 1670">
+
+<defs>
+  <linearGradient id="bgGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#14181d"/><stop offset="1" stop-color="#080a0c"/>
+  </linearGradient>
+
+  <!-- Gehaeuse: Magnesium-/Verbundschale, Licht von oben links -->
+  <linearGradient id="caseGrad" x1="0.1" y1="0" x2="0.75" y2="1">
+    <stop offset="0"    stop-color="#5a626c"/>
+    <stop offset="0.18" stop-color="#3d444d"/>
+    <stop offset="0.55" stop-color="#2a3037"/>
+    <stop offset="1"    stop-color="#171b20"/>
+  </linearGradient>
+  <linearGradient id="caseEdge" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#7d858f" stop-opacity="0.9"/>
+    <stop offset="0.5" stop-color="#4a515a" stop-opacity="0.25"/>
+    <stop offset="1" stop-color="#0d1014" stop-opacity="0.9"/>
+  </linearGradient>
+
+  <!-- Gummierte Griffzonen -->
+  <linearGradient id="gripGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#22262b"/><stop offset="1" stop-color="#101317"/>
+  </linearGradient>
+
+  <!-- Displayglas: dunkel mit schraegem Reflex -->
+  <linearGradient id="glassGrad" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0"    stop-color="#1a2733"/>
+    <stop offset="0.35" stop-color="#0b1016"/>
+    <stop offset="1"    stop-color="#05080b"/>
+  </linearGradient>
+  <linearGradient id="glare" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0"   stop-color="#ffffff" stop-opacity="0.16"/>
+    <stop offset="0.45" stop-color="#ffffff" stop-opacity="0.03"/>
+    <stop offset="1"   stop-color="#ffffff" stop-opacity="0"/>
+  </linearGradient>
+
+  <!-- Metall (SMA, Ringfassung, Schrauben) -->
+  <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0"    stop-color="#e8ecef"/>
+    <stop offset="0.25" stop-color="#9aa3ac"/>
+    <stop offset="0.5"  stop-color="#5c646d"/>
+    <stop offset="0.75" stop-color="#98a1aa"/>
+    <stop offset="1"    stop-color="#3a4149"/>
+  </linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#f6dd9a"/><stop offset="0.45" stop-color="#d3a943"/>
+    <stop offset="1" stop-color="#8a6a1f"/>
+  </linearGradient>
+
+  <!-- Leiterplatte: Loetstopplack mit feiner Textur -->
+  <linearGradient id="pcbGrad" x1="0" y1="0" x2="0.6" y2="1">
+    <stop offset="0" stop-color="#12312a"/><stop offset="0.5" stop-color="#0c241f"/>
+    <stop offset="1" stop-color="#071612"/>
+  </linearGradient>
+  <linearGradient id="pcbHdi" x1="0" y1="0" x2="0.6" y2="1">
+    <stop offset="0" stop-color="#1b1f24"/><stop offset="0.5" stop-color="#121519"/>
+    <stop offset="1" stop-color="#0a0c0f"/>
+  </linearGradient>
+
+  <!-- IC-Gehaeuse: geschliffener Kunststoff -->
+  <linearGradient id="icGrad" x1="0.2" y1="0" x2="0.8" y2="1">
+    <stop offset="0" stop-color="#3c4148"/><stop offset="0.5" stop-color="#23272c"/>
+    <stop offset="1" stop-color="#15181c"/>
+  </linearGradient>
+  <!-- Abschirmblech -->
+  <linearGradient id="shield" x1="0" y1="0" x2="0.8" y2="1">
+    <stop offset="0" stop-color="#b9c1c9"/><stop offset="0.4" stop-color="#828b95"/>
+    <stop offset="1" stop-color="#575f68"/>
+  </linearGradient>
+
+  <filter id="grain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" seed="7"/>
+    <feColorMatrix type="saturate" values="0"/>
+    <feComponentTransfer><feFuncA type="linear" slope="0.11"/></feComponentTransfer>
+    <feComposite operator="in" in2="SourceGraphic"/>
+  </filter>
+  <filter id="softShadow" x="-30%" y="-30%" width="180%" height="190%">
+    <feDropShadow dx="0" dy="19.8" stdDeviation="18.0"
+                  flood-color="#000" flood-opacity="0.62"/>
+  </filter>
+  <filter id="tinyShadow" x="-40%" y="-40%" width="190%" height="200%">
+    <feDropShadow dx="0" dy="2.52" stdDeviation="1.98"
+                  flood-color="#000" flood-opacity="0.66"/>
+  </filter>
+  <filter id="innerGlow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="8.1"/>
+  </filter>
+</defs>
+
+<rect width="2330" height="100%" fill="url(#bgGrad)"/>
+<text x="56" y="70" font-family="Inter,Segoe UI,sans-serif" font-size="40"
+      font-weight="700" fill="#eef2f5" letter-spacing="1.5">G4MEOVER ONE-X</text>
+<text x="56" y="108" font-family="Inter,Segoe UI,sans-serif" font-size="23"
+      fill="#00d4c8" letter-spacing="0.6">Endprodukt — Frontansicht</text>
+<text x="56" y="140" font-family="Inter,Segoe UI,sans-serif" font-size="17"
+      fill="#8d99a5">Massstabsgetreu · Gehaeuse 230 × 110 × 64 mm (FIXED)</text>
+<text x="2274" y="70" text-anchor="end" font-family="Inter,Segoe UI,sans-serif"
+      font-size="15" fill="#6f7b87">Konzept-Rendering · kein Foto</text>
+<g filter="url(#softShadow)">
+<rect x="130.0" y="250.0" width="2070.0" height="990.0" rx="144.0" fill="url(#caseGrad)" stroke="#0a0d10" stroke-width="2"/>
+</g>
+<rect x="133.0" y="253.0" width="2064.0" height="984.0" rx="141.0" fill="none" stroke="url(#caseEdge)" stroke-width="3.5"/>
+<rect x="130.0" y="250.0" width="2070.0" height="990.0" rx="144.0" fill="#8899aa" filter="url(#grain)" opacity="0.5"/>
+<rect x="152.5" y="322.0" width="414.0" height="846.0" rx="81.0" fill="url(#gripGrad)" opacity="0.92"/>
+<rect x="188.5" y="376.0" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="378.2" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="431.79999999999995" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="433.99999999999994" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="487.6" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="489.8" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="543.4000000000001" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="545.6000000000001" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="599.2" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="601.4000000000001" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="655.0" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="657.2" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="710.8" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="713.0" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="766.6" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="768.8000000000001" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="822.4" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="824.6" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="878.2" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="880.4000000000001" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="934.0" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="936.2" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="989.8000000000001" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="992.0000000000001" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="188.5" y="1045.6" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="188.5" y="1047.8" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1763.5" y="322.0" width="414.0" height="846.0" rx="81.0" fill="url(#gripGrad)" opacity="0.92"/>
+<rect x="1799.5" y="376.0" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="378.2" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="431.79999999999995" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="433.99999999999994" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="487.6" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="489.8" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="543.4000000000001" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="545.6000000000001" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="599.2" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="601.4000000000001" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="655.0" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="657.2" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="710.8" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="713.0" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="766.6" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="768.8000000000001" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="822.4" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="824.6" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="878.2" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="880.4000000000001" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="934.0" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="936.2" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="989.8000000000001" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="992.0000000000001" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="1799.5" y="1045.6" width="342.0" height="2.0" rx="1" fill="#000" opacity="0.30"/>
+<rect x="1799.5" y="1047.8" width="342.0" height="1.2" rx="1" fill="#59626c" opacity="0.22"/>
+<rect x="495.40000000000003" y="227.5" width="97.2" height="63.0" rx="10.799999999999999" fill="#242a31" stroke="#141a1f" stroke-width="1.4"/>
+<rect x="502.59999999999997" y="164.5" width="82.8" height="90.0" rx="14.4" fill="url(#metal)" stroke="#20262c" stroke-width="1.6"/>
+<rect x="506.2" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="526.9" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="547.5999999999999" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="568.3" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<circle cx="544.0" cy="208.6" r="22.5" fill="url(#gold)"/>
+<circle cx="544.0" cy="208.6" r="7.2" fill="#15181c"/>
+<text x="544.0" y="137.5" text-anchor="middle" font-size="15" font-family="Inter,Segoe UI,sans-serif" fill="#7f8b96">ANT 1</text>
+<rect x="909.4" y="227.5" width="97.2" height="63.0" rx="10.799999999999999" fill="#242a31" stroke="#141a1f" stroke-width="1.4"/>
+<rect x="916.6" y="164.5" width="82.8" height="90.0" rx="14.4" fill="url(#metal)" stroke="#20262c" stroke-width="1.6"/>
+<rect x="920.1999999999999" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="940.9" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="961.5999999999999" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="982.3000000000001" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<circle cx="958.0" cy="208.6" r="22.5" fill="url(#gold)"/>
+<circle cx="958.0" cy="208.6" r="7.2" fill="#15181c"/>
+<text x="958.0" y="137.5" text-anchor="middle" font-size="15" font-family="Inter,Segoe UI,sans-serif" fill="#7f8b96">ANT 2</text>
+<rect x="1323.3999999999999" y="227.5" width="97.2" height="63.0" rx="10.799999999999999" fill="#242a31" stroke="#141a1f" stroke-width="1.4"/>
+<rect x="1330.6000000000001" y="164.5" width="82.8" height="90.0" rx="14.4" fill="url(#metal)" stroke="#20262c" stroke-width="1.6"/>
+<rect x="1334.2" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="1354.9" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="1375.6000000000001" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="1396.3000000000002" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<circle cx="1372.0" cy="208.6" r="22.5" fill="url(#gold)"/>
+<circle cx="1372.0" cy="208.6" r="7.2" fill="#15181c"/>
+<text x="1372.0" y="137.5" text-anchor="middle" font-size="15" font-family="Inter,Segoe UI,sans-serif" fill="#7f8b96">ANT 3</text>
+<rect x="1737.3999999999999" y="227.5" width="97.2" height="63.0" rx="10.799999999999999" fill="#242a31" stroke="#141a1f" stroke-width="1.4"/>
+<rect x="1744.6000000000001" y="164.5" width="82.8" height="90.0" rx="14.4" fill="url(#metal)" stroke="#20262c" stroke-width="1.6"/>
+<rect x="1748.2" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="1768.9" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="1789.6000000000001" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<rect x="1810.3000000000002" y="169.0" width="9.9" height="77.39999999999999" fill="#000" opacity="0.20"/>
+<circle cx="1786.0" cy="208.6" r="22.5" fill="url(#gold)"/>
+<circle cx="1786.0" cy="208.6" r="7.2" fill="#15181c"/>
+<text x="1786.0" y="137.5" text-anchor="middle" font-size="15" font-family="Inter,Segoe UI,sans-serif" fill="#7f8b96">ANT 4</text>
+<rect x="544.0" y="380.5" width="1242.0" height="729.0" rx="31.5" fill="#0a0c0f" stroke="#3b434c" stroke-width="2"/>
+<rect x="548.0" y="384.5" width="1234.0" height="721.0" rx="27.0" fill="url(#glassGrad)"/>
+<rect x="658.75" y="454.75" width="1012.5" height="580.5" fill="#04070a"/>
+<g clip-path="url(#scr)">
+<defs><clipPath id="scr"><rect x="658.75" y="454.75" width="1012.5" height="580.5"/></clipPath></defs>
+<rect x="658.75" y="454.75" width="1012.5" height="580.5" fill="#070b10"/>
+<rect x="658.75" y="454.75" width="1012.5" height="66.75750000000001" fill="#0d141c"/>
+<text x="679.0" y="501.48025" font-size="34.7" font-family="Inter,Segoe UI,sans-serif" fill="#00d4c8">ONE-X</text>
+<rect x="1003.0" y="468.1015" width="222.75" height="38.71935" rx="19.359675" fill="#2a0e12" stroke="#ff5a5f" stroke-width="1.2"/>
+<text x="1114.375" y="500.1451" text-anchor="middle" font-size="28.0" font-family="Inter,Segoe UI,sans-serif" fill="#ff5a5f">RF-KILL AKTIV</text>
+<text x="1640.875" y="501.48025" text-anchor="end" font-size="30.0" font-family="Inter,Segoe UI,sans-serif" fill="#8e9aa6">72 Wh</text>
+<rect x="684.0625" y="562.1425" width="227.8125" height="232.20000000000002" rx="30.186000000000003" fill="#101820" stroke="#3ba7ff" stroke-width="1.6" opacity="0.95"/>
+<rect x="684.0625" y="562.1425" width="227.8125" height="41.796" rx="20.898" fill="#3ba7ff" opacity="0.30"/>
+<text x="797.96875" y="706.1065000000001" text-anchor="middle" font-size="44.1" font-family="Inter,Segoe UI,sans-serif" fill="#3ba7ff">Sub-GHz</text>
+<rect x="928.58125" y="562.1425" width="227.8125" height="232.20000000000002" rx="30.186000000000003" fill="#101820" stroke="#7bd88f" stroke-width="1.6" opacity="0.95"/>
+<rect x="928.58125" y="562.1425" width="227.8125" height="41.796" rx="20.898" fill="#7bd88f" opacity="0.30"/>
+<text x="1042.4875" y="706.1065000000001" text-anchor="middle" font-size="44.1" font-family="Inter,Segoe UI,sans-serif" fill="#7bd88f">2,4 GHz</text>
+<rect x="1173.1" y="562.1425" width="227.8125" height="232.20000000000002" rx="30.186000000000003" fill="#101820" stroke="#ffb020" stroke-width="1.6" opacity="0.95"/>
+<rect x="1173.1" y="562.1425" width="227.8125" height="41.796" rx="20.898" fill="#ffb020" opacity="0.30"/>
+<text x="1287.00625" y="706.1065000000001" text-anchor="middle" font-size="35.3" font-family="Inter,Segoe UI,sans-serif" fill="#ffb020">NFC / RFID</text>
+<rect x="1417.61875" y="562.1425" width="227.8125" height="232.20000000000002" rx="30.186000000000003" fill="#101820" stroke="#c58cff" stroke-width="1.6" opacity="0.95"/>
+<rect x="1417.61875" y="562.1425" width="227.8125" height="41.796" rx="20.898" fill="#c58cff" opacity="0.30"/>
+<text x="1531.525" y="706.1065000000001" text-anchor="middle" font-size="32.1" font-family="Inter,Segoe UI,sans-serif" fill="#c58cff">HyperRF SDR</text>
+<rect x="684.0625" y="840.7825" width="961.875" height="127.71" rx="11.61" fill="#0a1018" stroke="#1c2731" stroke-width="1.2"/>
+<polyline points="689.1,917.4 697.1,889.4 705.1,897.8 713.1,893.4 721.1,879.3 729.1,904.5 737.1,930.9 745.1,926.0 753.1,938.8 761.1,941.4 769.1,942.7 777.1,924.4 785.1,934.3 793.1,922.8 801.1,903.6 809.1,925.5 817.1,947.4 825.1,945.7 833.1,932.0 841.1,899.7 849.1,907.8 857.1,914.3 865.1,901.0 873.1,919.1 881.1,946.3 889.1,936.1 897.1,931.3 905.1,944.7 913.1,924.1 921.1,894.8 929.1,901.1 937.1,899.2 945.1,881.9 953.1,902.6 961.1,933.3 969.1,932.9 977.0,946.6 985.0,926.3 993.0,935.5 1001.0,948.6 1009.0,943.5 1017.0,949.8 1025.0,925.2 1033.0,939.4 1041.0,941.6 1049.0,945.7 1057.0,926.3 1065.0,890.9 1073.0,893.6 1081.0,901.3 1089.0,887.0 1097.0,901.7 1105.0,934.4 1113.0,932.2 1121.0,930.3 1129.0,950.3 1137.0,939.1 1145.0,910.4 1153.0,914.9 1161.0,915.4 1169.0,895.3 1177.0,909.5 1185.0,941.9 1193.0,944.5 1201.0,945.1 1209.0,910.8 1217.0,911.7 1225.0,929.2 1233.0,919.7 1241.0,925.6 1249.0,947.2 1257.0,950.1 1265.0,931.6 1273.0,939.3 1281.0,927.3 1289.0,891.6 1297.0,889.8 1305.0,898.9 1313.0,884.0 1321.0,894.1 1329.0,930.2 1337.0,935.6 1345.0,936.0 1353.0,940.5 1360.9,941.8 1368.9,933.6 1376.9,936.1 1384.9,939.0 1392.9,916.2 1400.9,922.3 1408.9,948.7 1416.9,944.8 1424.9,935.7 1432.9,899.3 1440.9,892.8 1448.9,909.6 1456.9,901.3 1464.9,904.2 1472.9,937.1 1480.9,942.0 1488.9,927.7 1496.9,939.4 1504.9,936.4 1512.9,902.9 1520.9,897.3 1528.9,907.6 1536.9,892.5 1544.9,896.8 1552.9,933.6 1560.9,945.0 1568.9,946.6 1576.9,926.3 1584.9,918.2 1592.9,942.0 1600.9,941.7 1608.9,936.9 1616.9,940.1 1624.9,936.9 1632.9,938.1 1640.9,934.7" fill="none" stroke="#00d4c8" stroke-width="1.6" opacity="0.95"/>
+<text x="770.125" y="1012.0300000000001" text-anchor="middle" font-size="31.9" font-family="Inter,Segoe UI,sans-serif" fill="#6f7d8a">SCAN</text>
+<text x="962.5" y="1012.0300000000001" text-anchor="middle" font-size="31.9" font-family="Inter,Segoe UI,sans-serif" fill="#6f7d8a">TX</text>
+<text x="1154.875" y="1012.0300000000001" text-anchor="middle" font-size="31.9" font-family="Inter,Segoe UI,sans-serif" fill="#6f7d8a">LOG</text>
+<text x="1347.25" y="1012.0300000000001" text-anchor="middle" font-size="31.9" font-family="Inter,Segoe UI,sans-serif" fill="#6f7d8a">MAP</text>
+<text x="1539.625" y="1012.0300000000001" text-anchor="middle" font-size="31.9" font-family="Inter,Segoe UI,sans-serif" fill="#6f7d8a">SYS</text>
+</g>
+<path d="M 548.0 384.5 L 1314.04 384.5 L 548.0 1007.4399999999999 Z" fill="url(#glare)"/>
+<text x="1165.0" y="1270.0" text-anchor="middle" font-size="16" font-family="Inter,Segoe UI,sans-serif" fill="#8d99a5">5" IPS · 1280 × 720 quer · 4-Lane MIPI-DSI (FIXED)</text>
+<circle cx="364.0" cy="745.0" r="180.0" fill="#12161a" stroke="url(#metal)" stroke-width="14.4"/>
+<circle cx="364.0" cy="745.0" r="175.0" fill="none" stroke="#000" stroke-width="2" opacity="0.7"/>
+<circle cx="364.0" cy="745.0" r="112.5" fill="url(#caseGrad)" stroke="#565e68" stroke-width="1.5"/>
+<line x1="490.0" y1="745.0" x2="518.8" y2="745.0" stroke="#00d4c8" stroke-width="2.4" opacity="0.85"/>
+<line x1="485.7" y1="777.6" x2="513.5" y2="785.1" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="473.1" y1="808.0" x2="498.1" y2="822.4" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="453.1" y1="834.1" x2="473.5" y2="854.5" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="427.0" y1="854.1" x2="441.4" y2="879.1" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="396.6" y1="866.7" x2="404.1" y2="894.5" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="364.0" y1="871.0" x2="364.0" y2="899.8" stroke="#00d4c8" stroke-width="2.4" opacity="0.85"/>
+<line x1="331.4" y1="866.7" x2="323.9" y2="894.5" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="301.0" y1="854.1" x2="286.6" y2="879.1" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="274.9" y1="834.1" x2="254.5" y2="854.5" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="254.9" y1="808.0" x2="229.9" y2="822.4" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="242.3" y1="777.6" x2="214.5" y2="785.1" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="238.0" y1="745.0" x2="209.2" y2="745.0" stroke="#00d4c8" stroke-width="2.4" opacity="0.85"/>
+<line x1="242.3" y1="712.4" x2="214.5" y2="704.9" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="254.9" y1="682.0" x2="229.9" y2="667.6" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="274.9" y1="655.9" x2="254.5" y2="635.5" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="301.0" y1="635.9" x2="286.6" y2="610.9" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="331.4" y1="623.3" x2="323.9" y2="595.5" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="364.0" y1="619.0" x2="364.0" y2="590.2" stroke="#00d4c8" stroke-width="2.4" opacity="0.85"/>
+<line x1="396.6" y1="623.3" x2="404.1" y2="595.5" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="427.0" y1="635.9" x2="441.4" y2="610.9" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="453.1" y1="655.9" x2="473.5" y2="635.5" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="473.1" y1="682.0" x2="498.1" y2="667.6" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<line x1="485.7" y1="712.4" x2="513.5" y2="704.9" stroke="#4a545e" stroke-width="2.4" opacity="0.85"/>
+<text x="364.0" y="988.0" text-anchor="middle" font-size="14" font-family="Inter,Segoe UI,sans-serif" fill="#ff5a5f">Ring Ø40 FIXED · AFE HOLD</text>
+<circle cx="1993.0" cy="745.0" r="189.72" fill="#14181d" stroke="#454d56" stroke-width="2"/>
+<rect x="1947.1" y="597.202" width="91.8" height="140.76000000000002" rx="25.704" fill="url(#caseGrad)" stroke="#5d666f" stroke-width="1.4" filter="url(#tinyShadow)"/>
+<rect x="1947.1" y="752.038" width="91.8" height="140.76000000000002" rx="25.704" fill="url(#caseGrad)" stroke="#5d666f" stroke-width="1.4" filter="url(#tinyShadow)"/>
+<rect x="1845.2019999999998" y="699.1" width="140.76000000000002" height="91.8" rx="25.704" fill="url(#caseGrad)" stroke="#5d666f" stroke-width="1.4" filter="url(#tinyShadow)"/>
+<rect x="2000.038" y="699.1" width="140.76000000000002" height="91.8" rx="25.704" fill="url(#caseGrad)" stroke="#5d666f" stroke-width="1.4" filter="url(#tinyShadow)"/>
+<circle cx="1993.0" cy="745.0" r="40.391999999999996" fill="#1b2026" stroke="#5d666f" stroke-width="1.4"/>
+<text x="1993.0" y="961.0" text-anchor="middle" font-size="14" font-family="Inter,Segoe UI,sans-serif" fill="#7f8b96">D-Pad 34 × 34 FIXED</text>
+<rect x="631.444" y="1127.5" width="153.0" height="63.0" rx="19.8" fill="url(#caseGrad)" stroke="#5d666f" stroke-width="1.4" filter="url(#tinyShadow)"/>
+<rect x="634.444" y="1130.5" width="147.0" height="26.459999999999997" rx="14.4" fill="#fff" opacity="0.07"/>
+<text x="707.944" y="1165.0" text-anchor="middle" font-size="15" font-family="Inter,Segoe UI,sans-serif" fill="#9aa5b0">F1</text>
+<rect x="859.972" y="1127.5" width="153.0" height="63.0" rx="19.8" fill="url(#caseGrad)" stroke="#5d666f" stroke-width="1.4" filter="url(#tinyShadow)"/>
+<rect x="862.972" y="1130.5" width="147.0" height="26.459999999999997" rx="14.4" fill="#fff" opacity="0.07"/>
+<text x="936.472" y="1165.0" text-anchor="middle" font-size="15" font-family="Inter,Segoe UI,sans-serif" fill="#9aa5b0">F2</text>
+<rect x="1088.5" y="1127.5" width="153.0" height="63.0" rx="19.8" fill="url(#caseGrad)" stroke="#5d666f" stroke-width="1.4" filter="url(#tinyShadow)"/>
+<rect x="1091.5" y="1130.5" width="147.0" height="26.459999999999997" rx="14.4" fill="#fff" opacity="0.07"/>
+<text x="1165.0" y="1165.0" text-anchor="middle" font-size="15" font-family="Inter,Segoe UI,sans-serif" fill="#9aa5b0">F3</text>
+<rect x="1317.028" y="1127.5" width="153.0" height="63.0" rx="19.8" fill="url(#caseGrad)" stroke="#5d666f" stroke-width="1.4" filter="url(#tinyShadow)"/>
+<rect x="1320.028" y="1130.5" width="147.0" height="26.459999999999997" rx="14.4" fill="#fff" opacity="0.07"/>
+<text x="1393.528" y="1165.0" text-anchor="middle" font-size="15" font-family="Inter,Segoe UI,sans-serif" fill="#9aa5b0">F4</text>
+<rect x="1545.556" y="1127.5" width="153.0" height="63.0" rx="19.8" fill="url(#caseGrad)" stroke="#5d666f" stroke-width="1.4" filter="url(#tinyShadow)"/>
+<rect x="1548.556" y="1130.5" width="147.0" height="26.459999999999997" rx="14.4" fill="#fff" opacity="0.07"/>
+<text x="1622.056" y="1165.0" text-anchor="middle" font-size="15" font-family="Inter,Segoe UI,sans-serif" fill="#9aa5b0">F5</text>
+<circle cx="688.0" cy="304.0" r="13.5" fill="#00d4c8" opacity="0.95"/>
+<circle cx="688.0" cy="304.0" r="23.400000000000002" fill="#00d4c8" opacity="0.22" filter="url(#innerGlow)"/>
+<text x="716.8000000000001" y="314.8" font-size="12.5" font-family="Inter,Segoe UI,sans-serif" fill="#78838e">PWR</text>
+<circle cx="787.0" cy="304.0" r="13.5" fill="#ff5a5f" opacity="0.95"/>
+<circle cx="787.0" cy="304.0" r="23.400000000000002" fill="#ff5a5f" opacity="0.22" filter="url(#innerGlow)"/>
+<text x="815.8000000000001" y="314.8" font-size="12.5" font-family="Inter,Segoe UI,sans-serif" fill="#78838e">RF-KILL</text>
+<circle cx="886.0" cy="304.0" r="13.5" fill="#ffb020" opacity="0.95"/>
+<circle cx="886.0" cy="304.0" r="23.400000000000002" fill="#ffb020" opacity="0.22" filter="url(#innerGlow)"/>
+<text x="914.8000000000001" y="314.8" font-size="12.5" font-family="Inter,Segoe UI,sans-serif" fill="#78838e">ACT</text>
+<text x="1165.0" y="1222.0" text-anchor="middle" font-size="17" font-weight="600" letter-spacing="4" font-family="Inter,Segoe UI,sans-serif" fill="#5d676f">G4MEOVER ONE-X</text>
+<line x1="130.0" y1="1316.0" x2="2200.0" y2="1316.0" stroke="#4c565f" stroke-width="1.5"/>
+<line x1="130.0" y1="1307.0" x2="130.0" y2="1325.0" stroke="#4c565f" stroke-width="1.5"/>
+<line x1="2200.0" y1="1307.0" x2="2200.0" y2="1325.0" stroke="#4c565f" stroke-width="1.5"/>
+<rect x="1113.0" y="1301.0" width="104" height="30" rx="6" fill="#0b0e11"/>
+<text x="1165.0" y="1322.0" text-anchor="middle" font-size="17" font-family="Inter,Segoe UI,sans-serif" fill="#c3ccd4">230 mm</text>
+<line x1="2252.0" y1="250.0" x2="2252.0" y2="1240.0" stroke="#4c565f" stroke-width="1.5"/>
+<text x="2262.0" y="745.0" font-size="17" font-family="Inter,Segoe UI,sans-serif" fill="#c3ccd4">110 mm</text>
+<rect x="56" y="1460" width="2218" height="134" rx="10" fill="#0e1216" stroke="#2a3138" stroke-width="1.5"/>
+<circle cx="76" cy="1485" r="5.5" fill="#7bd88f"/>
+<text x="92" y="1490" font-family="Inter,Segoe UI,sans-serif" font-size="15" fill="#b7c2cc">FIXED — Aussenmasse, Display-Fenster, Touch-Ring Ø40, D-Pad, 5 Softkeys, 4× SMA: aus der Master-Spec</text>
+<circle cx="76" cy="1511" r="5.5" fill="#ffb020"/>
+<text x="92" y="1516" font-family="Inter,Segoe UI,sans-serif" font-size="15" fill="#b7c2cc">TARGET — Masse 800–950 g, Panel-Referenzklasse, Akku 72 Wh</text>
+<circle cx="76" cy="1537" r="5.5" fill="#ff5a5f"/>
+<text x="92" y="1542" font-family="Inter,Segoe UI,sans-serif" font-size="15" fill="#b7c2cc">HOLD — Touch-Ring-AFE (G07) · Panel-Bringup (G01) · keine IP-Schutzart behauptet (DEFERRED)</text>
+<circle cx="76" cy="1563" r="5.5" fill="#6f7b87"/>
+<text x="92" y="1568" font-family="Inter,Segoe UI,sans-serif" font-size="15" fill="#b7c2cc">Oberflaechen, Farben und Beschriftung sind Illustration — kein Industriedesign-Freeze.</text>
+</svg>

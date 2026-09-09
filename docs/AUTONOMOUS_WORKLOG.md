@@ -12,6 +12,24 @@
 
 ---
 
+## 2026-09-09 — Session 33 (Konzept-Renderings: Produkt, Platinen, Innenaufbau)
+
+**Neu — `tools/gen_renders.py`**: drei fotorealistische Ansichten, erzeugt **aus der Master-Spec**, nicht von Hand gezeichnet: Endprodukt-Frontansicht · Platinen-Set (6 Boards massstabsgetreu zueinander) · Innenaufbau als isometrische Explosionsansicht. Dazu `tools/render_png.py` (SVG → PNG).
+
+**Die entscheidende Zurückhaltung:** `pcb.current_files_status` hält fest, dass es **nur Floorplan-Boards und kein geroutetes Layout** gibt. Die Platinenbilder zeigen deshalb Bauteil-*Blöcke* auf maßstäblichen Outlines — keine Leiterbahnen, keine Pinbelegung — und tragen den Hinweis „KEIN geroutetes Layout" sichtbar im Bild. Ohne ihn wäre ein hübsches Platinenbild gegenüber einem Fertiger die stille Behauptung „Layout fertig". Aus demselben Grund tragen alle HOLD-Positionen (G02 LPDDR5, G03 UFS, G04 FPGA, G05 UWB, G07 Ring-AFE, G10 Thermik, G11 Akku) ihr Gate direkt im Bild.
+
+**Was echt ist:** Gehäuse-Envelope, Display-Recess und -Fenster, Touch-Ring Ø40, D-Pad, 5 Softkeys, 4× SMA, alle sechs Board-Outlines, 12 Lagen Mainboard, Akku-Topologie — alles FIXED aus Spec bzw. `BOARD_SET.md`. Oberflächen, Farben, Bauteilpositionen und Bildschirminhalt sind Illustration.
+
+**Zwei Fehler beim Bauen, beide vom Typ „still":**
+- **Falsche Fenstergröße beim Rendern.** Fest gesetzt statt aus dem SVG gelesen — Folge: rechts ein schwarzer Rand und die Statuslegende am unteren Rand fehlte **vollständig** im Bild. `render_png.py` liest die Größe jetzt aus dem `<svg>`-Tag.
+- **Ein `&` zerlegte ein SVG.** In einer parallel entstandenen Grafik brach `xmlParseEntityRef` das Dokument; der Browser rendert dann nur bis zur Fehlerstelle, und eine ganze Spalte fehlte — sieht aus wie ein Layoutfehler, ist aber ein Parserfehler. Konsequenz: Textinhalte werden maskiert und die Dateien nach dem Erzeugen gegen einen XML-Parser geprüft.
+
+**Sichtprüfung:** alle drei Ansichten gerendert und angesehen; mehrere Überläufe behoben (Display-Kacheln, Panel-Hinweis hinter den Softkeys, HOLD-Marken über dem Board-Rand, Steckerbeschriftung auf den Goldkontakten).
+
+**Stand:** check_all unverändert **11/11**. Die Renderings sind reproduzierbar aus der Spec — ändert sich ein Maß, ändern sich die Bilder mit.
+
+---
+
 ## 2026-09-09 — Session 32 (Lesbarkeit wird geprüft, nicht gehofft — 6 von 10 Blättern waren unlesbar)
 
 Session 31 endete mit einem Merkzettel: „bei jedem neuen Sheet plotten und ansehen". Genau die Sorte Vorsatz, die dieses Repo sonst nicht durchgehen lässt — der [Ellipsen-Wächter](../tools/kicad_netcheck.py) entstand aus demselben Grund. Jetzt prüft es ein Werkzeug.
